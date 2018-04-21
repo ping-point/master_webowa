@@ -82,62 +82,17 @@
 
     </div>
 
-
-
-            <h1>Witaj {{login}}! </h1>
-
-            {% for mecz in mecze %}
+            <h1>Ranking</h1>
             <div class="jumbotron">
-                <h2>Mecz przeciwko: {{ mecz['przeciwnik'] }}</h2>
-				{% if mecz['data'] %}
-					<p>Data: {{ mecz['data'] }}</p>
-					<p>{% if mecz['wynik_meczu'][0] > mecz['wynik_meczu'][1]%}
-							Wygrana:
-						{% elif mecz['wynik_meczu'][0] < mecz['wynik_meczu'][1]%}
-							Przegrana:
-						{% else %}
-							Remis:
-						{% endif %}
-						 {{mecz['wynik_meczu'][0]}} : {{mecz['wynik_meczu'][1]}}</p>
-					<p>{% for i in mecz['wyniki_setow'] %}
-						{{ loop.index }}
-						{% endfor %}
-					</p>
-
-					<div class="well">
-					{% for i in mecz['przebieg_meczu'] %}
-						<p>set {{loop.index}}
-							{% if mecz['punkty_moje'][loop.index] > mecz['punkty_przeciwnika'][loop.index] %}
-								wygrany
-							{% elif mecz['punkty_moje'][loop.index] < mecz['punkty_przeciwnika'][loop.index] %}
-								przegrany
-							{% else %}
-								remis
-							{% endif %}
-							</p>
-							{{mecz['punkty_moje'][loop.index]}} : {{mecz['punkty_przeciwnika'][loop.index]}}
-							{% for j in i %}
-								{% if j == 0 %}
-									<img id="red2"  src="../static/img/red2.png">
-								{% elif j == 1 %}
-									<img id="blue2"  src="../static/img/blue2.png">
-								{% endif %}
-							{% endfor %}
-						<p></p>
-					{% endfor %}
-					</div>
-
-				{% else %}
-					<p>Mecz się nie odbył</p>
-				{% endif %}
-            </div>
+                {% for pozycja in ranking %}
+                    <h3>{{pozycja[0]}}  wygrał {{ranking[pozycja]}} meczy</h3>
                 {% endfor %}
+            </div>
 
 
-
-<footer class="footer">
-        &copy; Zespół 10. Wszelkie prawa zastrzeżone
-    </footer>
+         <footer class="footer">
+            &copy; Zespół 10. Wszelkie prawa zastrzeżone
+         </footer>
 
     </div>
 </body>
