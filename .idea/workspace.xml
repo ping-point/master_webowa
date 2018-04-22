@@ -2,16 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="9cdbca38-f5ab-4485-9c4c-238e54cac308" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change beforePath="$PROJECT_DIR$/python/app/static/css/signup.css" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/python/app/static/css/style.css" afterPath="$PROJECT_DIR$/python/app/static/css/style.css" />
-      <change beforePath="$PROJECT_DIR$/python/app/static/js/angular.js" afterPath="$PROJECT_DIR$/python/app/static/js/angular.js" />
-      <change beforePath="$PROJECT_DIR$/python/app/static/js/index.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/python/app/templates/index.html" afterPath="$PROJECT_DIR$/python/app/templates/index.html" />
       <change beforePath="$PROJECT_DIR$/python/app/templates/newTournament.html" afterPath="$PROJECT_DIR$/python/app/templates/newTournament.html" />
-      <change beforePath="$PROJECT_DIR$/python/app/templates/rank.html" afterPath="$PROJECT_DIR$/python/app/templates/rank.html" />
       <change beforePath="$PROJECT_DIR$/python/app/templates/userHome.html" afterPath="$PROJECT_DIR$/python/app/templates/userHome.html" />
-      <change beforePath="$PROJECT_DIR$/venv/pip-selfcheck.json" afterPath="$PROJECT_DIR$/venv/pip-selfcheck.json" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -75,9 +67,11 @@
       <file leaf-file-name="newTournament.html" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/python/app/templates/newTournament.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="136">
-              <caret line="38" column="130" lean-forward="false" selection-start-line="38" selection-start-column="130" selection-end-line="38" selection-end-column="130" />
-              <folding />
+            <state relative-caret-position="108">
+              <caret line="42" column="0" lean-forward="true" selection-start-line="42" selection-start-column="0" selection-end-line="42" selection-end-column="0" />
+              <folding>
+                <element signature="n#style#0;n#div#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -653,9 +647,11 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/python/app/templates/newTournament.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="136">
-          <caret line="38" column="130" lean-forward="false" selection-start-line="38" selection-start-column="130" selection-end-line="38" selection-end-column="130" />
-          <folding />
+        <state relative-caret-position="108">
+          <caret line="42" column="0" lean-forward="true" selection-start-line="42" selection-start-column="0" selection-end-line="42" selection-end-column="0" />
+          <folding>
+            <element signature="n#style#0;n#div#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
