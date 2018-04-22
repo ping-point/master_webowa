@@ -120,14 +120,17 @@ def userHome():
                 przeciwnik = i[2]
 
             id_meczu = i[0]     #zmienna zawiera id danego meczu
+
             #zmienna punkty_meczu zawiera informacje czy uzytkownik zdobyl, czy stracil punkt [[1, 1 ,0, 0, 0,...], ...]
             przebieg_meczu = []
+
             #zmienne beda przechowywac dla kazdego setu ilosc zdobytych punktow przez gracza
             punkty_moje = {}
             punkty_przeciwnika = {}
             p_set = []
             data = i[4]
             wynik_meczu = [0, 0]    #zmienna przechowuje ilosc wygranych setow przez obu graczy
+            id_turnieju = i[1]
 
             if data:    #jeżeli mecz się odbył pobieram dane o punktach w tym meczu:
                 #wywoluje w bazie procedure ktora dla danego meczu wyswietli punkty:
@@ -162,7 +165,8 @@ def userHome():
                              'punkty_moje':punkty_moje,
                              'punkty_przeciwnika': punkty_przeciwnika,
                              'przebieg_meczu': przebieg_meczu,
-                             'wynik_meczu': wynik_meczu
+                             'wynik_meczu': wynik_meczu,
+                             'id_turnieju': id_turnieju,
                              })
             else:
                 mecze2.append({'przeciwnik': przeciwnik,
@@ -170,7 +174,8 @@ def userHome():
                              'punkty_moje':punkty_moje,
                              'punkty_przeciwnika': punkty_przeciwnika,
                              'przebieg_meczu': przebieg_meczu,
-                             'wynik_meczu': wynik_meczu
+                             'wynik_meczu': wynik_meczu,
+                             'id_turnieju': id_turnieju,
                              })
 
         #mecze - lista meczy, które się odbyły
@@ -189,7 +194,20 @@ def userHome():
 
 @app.route('/showTournamentForm')
 def showTournamentForm():
-    return render_template('newTournament.html', nadzorca = session.get('user'))
+
+    # tworze listę loginów wszystkich użytkowników
+    uzytkownicy = []
+    con = mysql.connect()
+    cursor = con.cursor()
+    cursor.callproc('sp_getUsers', ())
+    dane = cursor.fetchall()
+    con.commit()
+    cursor.close()
+    con.close()
+    for i in dane:
+        uzytkownicy.append(i[0])
+
+    return render_template('newTournament.html', nadzorca = session.get('user'), uzytkownicy = uzytkownicy)
 
 @app.route('/newTournament',  methods=['POST'])
 def newTournament():
@@ -203,15 +221,12 @@ def newTournament():
         p_login = session.get('user')
         info = 'Nie utworzono turnieju!'
 
-
         #Tworze turniej w bazie danych
         con = mysql.connect()
         cursor = con.cursor()
         cursor.callproc('sp_newTurniej', (p_punkty, p_sety, p_typ, p_opis, p_login))  #
         id_turnieju = cursor.fetchall()
         con.commit()
-        cursor.close()
-        con.close()
 
         liczba_uczestnikow = len(uczestnicy)
         pary = []  # zmienna bedzie zawierac pary graczy ktorzy beda rozgrywac mecz
@@ -237,8 +252,6 @@ def newTournament():
                 info = 'Zla liczba uczestnikow!'
 
         #wywoluje procedure SQL w bazie, ktora tworzy pojedyncze mecze dla turnieju:
-        con = mysql.connect()
-        cursor = con.cursor()
         for i in pary:
             cursor.callproc('sp_newMecz', (id_turnieju, i[0], i[1]))
             con.commit()
@@ -286,6 +299,10 @@ def myTournaments():
                 dane2 = cursor.fetchall()
                 mecze = []
                 mecze2 = []
+                id = dane3[0][0]
+                nadzorca = dane3[0][5]
+                typ = dane3[0][3]
+                opis = dane3[0][4]
                 for k in dane2: #dla każdego z meczy wydobywam informacje z bazy i dodaje do listy meczy 'mecze = []'
                     # zmienna punkty_meczu zawiera informacje czy uzytkownik zdobyl, czy stracil punkt [[1, 1 ,0, 0, 0,...], ...]
                     przebieg_meczu = []
@@ -342,16 +359,32 @@ def myTournaments():
                             'przebieg_meczu' : przebieg_meczu ,
                             'wynik_meczu' : wynik_meczu ,
                         })
-
                 mecze = mecze + mecze2
 
-                turnieje.append({  # zapisuję słownik z danymi turnieju do listy turniejów 'turnieje = []'
-                    'id': dane3[0][0],
-                    'nadzorca': dane3[0][5],
-                    'typ': dane3[0][3],
-                    'opis': dane3[0][4],
+                if typ == 'pucharowy':
+                    print('pucharowy')
+
+                    #zmienna będzie zawierać mecze wraz z wynikami
+                    for i in mecze:
+                        print(i)
+
+
+
+
+                elif typ == 'ligowy':
+                    print('turniejowy')
+
+
+
+                turnieje.append({  # zapisuję dane turnieju do listy turniejów 'turnieje = []'
+                    'id': id,
+                    'nadzorca': nadzorca,
+                    'typ': typ,
+                    'opis': opis,
                     'mecze': mecze,
                 })
+
+
 
         con.commit()
         cursor.close()
@@ -381,8 +414,11 @@ def rank():
     # wywoluje procedure SQL graczy, ktrorzy nie wygrali zadnego meczu
     cursor.callproc('sp_getLoosers', )
     dane = cursor.fetchall()
+
+    """
     for i in dane:  # dodaje tych graczy takze do rankingu z wynikiem rownym 0
         ranking[i] = 0
+    """
 
     # sortuje wyniki graczy od najlepszego:
     ranking = OrderedDict(sorted(ranking.items(), key=lambda x: x[1], reverse=True))

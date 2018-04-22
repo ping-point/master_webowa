@@ -84,6 +84,11 @@
 
       <div class="jumbotron">
         <h3>Nadzorca: {{nadzorca}}</h3>
+		  <p>Wybierz graczy:</p>
+		  <p>{% for user in uzytkownicy %}
+		  {{user}}, 
+		  {% endfor %}
+		  </p>
           <form class="form-signin" action="/newTournament" method="post">
             <label for="inputPunkty" class="sr-only">Punkty</label>
             <input type="number" name="inputPunkty" id="inputPunkty" class="form-control" placeholder="Punkty" required autofocus>

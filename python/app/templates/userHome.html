@@ -89,6 +89,9 @@
             {% for mecz in mecze %}
             <div class="jumbotron">
                 <h2>Mecz przeciwko: {{ mecz['przeciwnik'] }}</h2>
+				{% if mecz['id_turnieju'] %}
+				<p>id turnieju: {{mecz['id_turnieju']}}</p>
+				{% endif %}
 				{% if mecz['data'] %}
 					<p>Data: {{ mecz['data'] }}</p>
 					<p>{% if mecz['wynik_meczu'][0] > mecz['wynik_meczu'][1]%}
