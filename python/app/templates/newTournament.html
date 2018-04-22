@@ -26,64 +26,14 @@
 
 </head>
 
-<body ng-app="myApp" ng-controller="myCtrl">
+  <body id="backgroundSing">
 
-<div class="container-fluid" >
-    <div class="header" >
-        <nav>
-            <div class="row">
-				<a ng-click="menu()">
-                <div class="col-lg-2 col-md-3 col-sm-3 col-xs-12 col-lg-offset-0 col-md-offset-0 col-sm-offset-0 col-xs-offset-0 menuHeight">
-					<img id="logo"  src="../static/img/logo.png">
-				</div>
-				</a>
-				<div class="menuPc">
-					<a href="/userHome">
-						<div  class="col-lg-1 col-md-1 col-sm-1 col-xs-12  col-lg-offset-5 col-md-offset-4 col-sm-offset-3   menuHeight" >
-							<b>HOME</b>
-						</div>
-					</a>
 
-					<a href="/showSignIn">
-						<div class="col-lg-2 col-md-2 col-sm-2 col-xs-12  col-lg-offset-0 col-md-offset-0 col-sm-offset-0   menuHeight">
-							<b>LOGOWANIE</b>
-						</div>
-					</a>
 
-					<a href="/showSignUp">
-						<div class="col-lg-2 col-md-2 col-sm-3 col-xs-12  col-lg-offset-0 col-md-offset-0 col-sm-offset-0   menuHeight" style="background-color:#e03238">
-							<b>UTWÓRZ KONTO</b>
-						</div>
-					</a>
-				</div>
-
-                <div class="menuMobile" ng-show="open">
-					<a href="/userHome">
-						<div  class="col-lg-1 col-md-1 col-sm-1 col-xs-12  col-lg-offset-5 col-md-offset-4 col-sm-offset-3   menuHeight" >
-							<b>HOME</b>
-						</div>
-					</a>
-
-					<a href="/showSignIn">
-						<div class="col-lg-2 col-md-2 col-sm-2 col-xs-12  col-lg-offset-0 col-md-offset-0 col-sm-offset-0   menuHeight">
-							<b>LOGOWANIE</b>
-						</div>
-					</a>
-
-					<a href="/showSignUp">
-						<div class="col-lg-2 col-md-2 col-sm-3 col-xs-12  col-lg-offset-0 col-md-offset-0 col-sm-offset-0   menuHeight" style="background-color:#e03238">
-							<b>UTWÓRZ KONTO</b>
-						</div>
-					</a>
-				</div>
-
-            </div>
-        </nav>
-
-    </div>
-
-      <div class="jumbotron">
-        <h3>Nadzorca: {{nadzorca}}</h3>
+      <div class="backgroundSing">
+		  <div class="singFrame">
+			  <div style="text-align:center"> <img id="logoSingIn"   src="../static/img/logoSing.png">
+			  <h1>Konfiguracja Turnieju</h1>
           <form class="form-signin" action="/newTournament" method="post">
             <label for="inputPunkty" class="sr-only">Punkty</label>
             <input type="number" name="inputPunkty" id="inputPunkty" class="form-control" placeholder="Punkty" required autofocus>
@@ -97,14 +47,12 @@
             <label for="inputOpis" class="sr-only">Opis</label>
             <input type="name" name="inputOpis" id="inputOpis" class="form-control" placeholder="Opis" required>
 
-            <button id="btnTrn" class="btn btn-lg btn-primary btn-block" type="submit">Zaloguj</button>
+            <button id="btnTrn" class="btn btn-lg btn-primary btn-block" type="submit">Utwórz</button>
           </form>
+			  </div>
+		  </div>
       </div>
- 
-       
- <footer class="footer">
-        &copy; Zespół 10. Wszelkie prawa zastrzeżone
-    </footer>
-    </div>
+
+
   </body>
 </html>

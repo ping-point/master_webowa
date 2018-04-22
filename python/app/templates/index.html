@@ -20,13 +20,13 @@
 
 
 	<script src="../static/js/angular.js" rel="stylesheet"></script>
-	<script src="../static/js/index.js" rel="stylesheet"></script>
+
 
 
 
 </head>
 
-<body ng-app="myApp" ng-controller="myCtrl">
+<body >
 
 <div class="container-fluid" >
     <div class="header" >
@@ -42,7 +42,7 @@
 
 					<a href="/showSignIn">
 						<div class="col-lg-2 col-md-2 col-sm-2 col-xs-12  col-lg-offset-6 col-md-offset-5 col-sm-offset-4   menuHeight">
-							<b>LOGOWANIE</b>
+							<b ng-init="myText='Hello World!'">LOGOWANIE</b>
 						</div>
 					</a>
 
@@ -86,11 +86,11 @@
 
     </div>
 
-	<footer class="footer">
-        &copy; Zespół 10. Wszelkie prawa zastrzeżone
-    </footer>
+	<footer class="footer">&copy; Zespół 10. Wszelkie prawa zastrzeżone</footer>
 
+	<script src="../static/js/index.js" rel="stylesheet"></script>
 </div>
+
 </body>
 
 </html>

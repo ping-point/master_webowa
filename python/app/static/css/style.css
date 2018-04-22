@@ -169,6 +169,138 @@ a:hover {
 
 }
 
+
+
+
+
+
+            /* USER HOME */
+
+
+.userMenu {
+    position:relative;
+    float:center;
+    margin: 0px;
+    margin-left : auto;
+    margin-right: auto;
+    text-align:center;
+    display: none;
+    width:60%;
+    height:auto;
+    padding: 0px;
+    border: 1px solid #02647d;
+    border-radius: 5px;
+    font-size: 1.5vh;
+}
+
+.match {
+    margin-left: 5%;
+    width: 40%;
+    height: auto;
+    padding: 0px 0px 0px; 8px;
+    background: #f6f6f6;
+    border: 1px solid silver;
+    font: 16px calibri;
+    letter-spacing: -1px;
+    -webkit-box-shadow: 0 0 2px silver;
+    -moz-box-shadow: 0 0 2px silver;
+    box-shadow: 0 0 2px silver;
+}
+
+.itemMatch {
+    width:100%;
+    background-color:#02647d;
+    height:auto;
+    text-align: center;
+    margin: 0px;
+    padding:0px;
+}
+
+.piM {
+    color:#fff;
+    font-size :50px;
+    margin: 0px;
+    padding: 5px;
+
+}
+
+.itemData {
+    width:100%;
+    background-color: #cccccc;
+    height:auto;
+    text-align: left;
+}
+
+.piD {
+    margin: 0px 0px 0px 0px;
+    color: #666;
+    padding:5px;
+}
+
+.itemScore {
+    letter-spacing: 0.7mm;
+    width: 100%;
+    padding:20px;
+    height:auto;
+    line-height:auto;
+    font-size: 3.7vh;
+
+}
+
+.piS {
+    text-align: center;
+    position:relative;
+    float:center;
+    margin-left : auto;
+    margin-right: auto;
+
+}
+
+#itemHours {
+    position:relative;
+    float:left;
+    height:auto;
+    font-size: 2.7vh;
+    padding: 5px;
+    border-radius: 5px;
+    letter-spacing: 0px;
+    color: #999;
+}
+
+.imgPlayer {
+	position:relative;
+	float:center;
+    vertical-align: middle;
+    width: 6vh;
+    height: auto;
+    border-radius: 50%;
+	margin-top:0%;
+}
+
+#detailsScore {
+    position:relative;
+    float:right;
+    height:auto;
+    font-size: 2.7vh;
+    padding: 5px;
+    border-radius: 5px;
+    letter-spacing: 0px;
+    border: 2px  #cccccc solid;
+    cursor: pointer;
+}
+
+.detailsMatch {
+  margin-left: 30px;
+  background-color: #f5f5f5;
+  border: 1px solid #e3e3e3;
+  border-radius: 4px;
+  display:none;
+
+}
+
+            /* ////// USER-HOME \\\\\\\ */
+
+
 .footer {
     width: 100%;
     height: 50px;
