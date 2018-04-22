@@ -91,7 +91,9 @@
 					<p>id turnieju: {{turniej['id']}}</p>
 					<p>nadzorca: {{turniej['nadzorca']}}</p>
 					<p>typ: {{turniej['typ']}}</p>
-					<p>opis: {{turniej['opis']}}</p>
+					{% if turniej['opis'] %}
+						<p>opis: {{turniej['opis']}}</p>
+					{% endif %}
 					<p>mecze:</p>
 
 					{% for mecz in turniej['mecze'] %}
@@ -99,8 +101,8 @@
 
 							<h3>{{mecz['gracz1']}} - {{mecz['gracz2']}}</h3>
 							{% if mecz['data'] %}
+								<p>Data: {{mecz['data']}}</p>
 								<p>{{mecz['wynik_meczu'][0]}} : {{mecz['wynik_meczu'][1]}}</p>
-
 									<div class="well">
 										{% for i in mecz['przebieg_meczu'] %}
 											<p>set {{loop.index}}</p>
