@@ -30,27 +30,81 @@
 
 <div class="container-fluid" >
     <div class="header" >
-        <nav>
-            <div class="row">
-				<a ng-click="menu()">
-                <div class="col-lg-2 col-md-3 col-sm-3 col-xs-12 col-lg-offset-0 col-md-offset-0 col-sm-offset-0 col-xs-offset-0 menuHeight">
-					<img id="logo"  src="../static/img/logo.png">
-				</div>
-				</a>
-				<div class="menuPc">
+        {% if login %}
+            <nav>
+                <div class="row">
+                    <a ng-click="menu()">
+                        <div class="col-lg-2 col-md-3 col-sm-3 col-xs-12 col-lg-offset-0 col-md-offset-0 col-sm-offset-0 col-xs-offset-0 menuHeight">
+                            <img id="logo"  src="../static/img/logo.png">
+                        </div>
+                    </a>
+                    <div class="menuPc">
+                        <a href="/rank">
+                            <div  class="col-lg-1 col-md-1 col-sm-1 col-xs-12  col-lg-offset-5 col-md-offset-4 col-sm-offset-3   menuHeight" >
+                                <b>RANKING</b>
+                            </div>
+                        </a>
+
+                        <a href="/showTournamentForm">
+                            <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12  col-lg-offset-0 col-md-offset-0 col-sm-offset-0   menuHeight">
+                                <b>STWÓRZ TURNIEJ</b>
+                            </div>
+                        </a>
+
+
+                        <div  id="clickOpenMenuUser"  class="col-lg-2 col-md-2 col-sm-3 col-xs-12  col-lg-offset-0 col-md-offset-0 col-sm-offset-0   menuHeight" >
+                            <img style="cursor:pointer;" src="../static/img/avatar.jpg"  class="imgPlayer">
+
+                            <div class="userMenu ">
+                                <p style="border-bottom: 1px solid #02647d;margin: 0px; padding:0px;"><b>{{login}}</b></p>
+                                <a href="/logout"><b>WYLOGUJ</b></a>
+                            </div>
+                        </div>
+                    </div>
+
+                <!-- do poprawy!!! -->
+
+
+                <div class="menuMobile" ng-show="open">
 					<a href="/userHome">
 						<div  class="col-lg-1 col-md-1 col-sm-1 col-xs-12  col-lg-offset-5 col-md-offset-4 col-sm-offset-3   menuHeight" >
-							<b>HOME</b>
+							<b>RANKING</b>
 						</div>
 					</a>
 
 					<a href="/showSignIn">
 						<div class="col-lg-2 col-md-2 col-sm-2 col-xs-12  col-lg-offset-0 col-md-offset-0 col-sm-offset-0   menuHeight">
-							<b>LOGOWANIE</b>
+							<b>STWÓRZ TURNIEJ</b>
 						</div>
 					</a>
 
 					<a href="/showSignUp">
+						<div  class="col-lg-2 col-md-2 col-sm-3 col-xs-12  col-lg-offset-0 col-md-offset-0 col-sm-offset-0   menuHeight" style="background-color:#e03238">
+							<b> {{login}}</b>
+						</div>
+					</a>
+				</div>
+
+            </div>
+        </nav>
+        {% else %}
+            <nav>
+            <div class="row">
+				<a ng-click="menu()" href="#">
+                <div class="col-lg-2 col-md-3 col-sm-3 col-xs-12 col-lg-offset-0 col-md-offset-0 col-sm-offset-0 col-xs-offset-0 menuHeight">
+					<img id="logo"  src="../static/img/logo.png">
+				</div>
+				</a>
+				<div class="menuPc">
+
+
+					<a href="/showSignIn">
+						<div class="col-lg-2 col-md-2 col-sm-2 col-xs-12  col-lg-offset-6 col-md-offset-5 col-sm-offset-4   menuHeight">
+							<b ng-init="myText='Hello World!'">LOGOWANIE</b>
+						</div>
+					</a>
+
+					<a href="/showSignUp" style="text-decoration:none">
 						<div class="col-lg-2 col-md-2 col-sm-3 col-xs-12  col-lg-offset-0 col-md-offset-0 col-sm-offset-0   menuHeight" style="background-color:#e03238">
 							<b>UTWÓRZ KONTO</b>
 						</div>
@@ -58,12 +112,6 @@
 				</div>
 
                 <div class="menuMobile" ng-show="open">
-					<a href="/userHome">
-						<div  class="col-lg-1 col-md-1 col-sm-1 col-xs-12  col-lg-offset-5 col-md-offset-4 col-sm-offset-3   menuHeight" >
-							<b>HOME</b>
-						</div>
-					</a>
-
 					<a href="/showSignIn">
 						<div class="col-lg-2 col-md-2 col-sm-2 col-xs-12  col-lg-offset-0 col-md-offset-0 col-sm-offset-0   menuHeight">
 							<b>LOGOWANIE</b>
@@ -79,41 +127,30 @@
 
             </div>
         </nav>
-
+        {% endif %}
     </div>
 
-            <h1>Ranking</h1>
-            <div class="jumbotron">
-                {% for pozycja in ranking %}
-                    <h3>{{pozycja[0]}}  wygrał {{ranking[pozycja]}} meczy</h3>
-                {% endfor %}
-            </div>
-
-
 	<div class="container">
-  <h2>Table</h2>
-  <p>The .table-responsive class creates a responsive table which will scroll horizontally on small devices (under 768px). When viewing on anything larger than 768px wide, there is no difference:</p>
+  <h2>Ranking</h2>
   <div class="table-responsive">
   <table class="table">
     <thead>
       <tr>
         <th>#</th>
-        <th>{{55}}</th>
-        <th>Lastname</th>
-        <th>Age</th>
-        <th>City</th>
-        <th>Country</th>
+        <th>Gracz</th>
+        <th>Wygrane</th>
+        <th>Rozegrane</th>
       </tr>
     </thead>
     <tbody>
-      <tr>
-        <td>1</td>
-        <td>Anna</td>
-        <td>Pitt</td>
-        <td>35</td>
-        <td>{{proba}}</td>
-        <td>USA</td>
-      </tr>
+        {% for pozycja in ranking %}
+          <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+        {% endfor %}
     </tbody>
   </table>
   </div>

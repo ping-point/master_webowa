@@ -29,12 +29,18 @@ def is_power2(n):
 
 @app.route("/")
 def main():
-    return render_template('index.html')
+    if session.get('user'):
+        return redirect('userHome')
+    else:
+        return render_template('index.html')
 
 
 @app.route('/showSignUp')
 def showSignUp():
-    return render_template('signup.html')
+    if session.get('user'):
+        return redirect('userHome')
+    else:
+        return render_template('signup.html')
 
 
 @app.route('/signUp', methods=['POST'])
@@ -68,7 +74,10 @@ def signUp():
 
 @app.route('/showSignIn')
 def showSignin():
-    return render_template('signin.html')
+    if session.get('user'):
+        return redirect('userHome')
+    else:
+        return render_template('signin.html')
 
 
 @app.route('/validateLogin', methods=['POST'])
@@ -187,27 +196,128 @@ def userHome():
         if len(dane):
             return render_template('userHome.html', login=login, mecze=mecze)
         else:
-            return render_template('info.html', info='blad')
+            return render_template('info.html', info='Błąd...')
     else:
-        return render_template('info.html', info='Musisz się zalogować!')
+        return redirect('/showSignUp')
+
+@app.route('/myMatches')
+def myMatches():
+    #jesli uzytkownik poprawnie sie zalogowal
+    if session.get('user'):
+        login = session.get('user') #zmienna zawiera login zalogowanego uzytkownika
+
+        ####### Rozegrane mecze zalogowanego uzytkownika ########
+
+        con = mysql.connect() #lacze z baza danych
+        cursor = con.cursor()
+        cursor.callproc('sp_getMecz', (login,)) #wywoluje procedure SQL, ktora pobiera mecze uzytkownika
+
+        #pobrane z bazy dane zawiera liste meczy zalogowanego uzytkownika
+        #struktura pobranego meczu: {id_meczu, ..., login1, login2}
+        dane = cursor.fetchall()
+
+        mecze = []
+        mecze2 = []
+
+        for i in dane:  #dla kazdego meczu zalogowanego uzytkownika
+            print(i)
+            if i[2] == login:
+                przeciwnik = i[3]   #zmienna przeciwnik zawiera login przeciwnika w danym meczu
+            else:
+                przeciwnik = i[2]
+
+            id_meczu = i[0]     #zmienna zawiera id danego meczu
+
+            #zmienna punkty_meczu zawiera informacje czy uzytkownik zdobyl, czy stracil punkt [[1, 1 ,0, 0, 0,...], ...]
+            przebieg_meczu = []
+
+            #zmienne beda przechowywac dla kazdego setu ilosc zdobytych punktow przez gracza
+            punkty_moje = {}
+            punkty_przeciwnika = {}
+            p_set = []
+            data = i[4]
+            wynik_meczu = [0, 0]    #zmienna przechowuje ilosc wygranych setow przez obu graczy
+            id_turnieju = i[1]
+
+            if data :    #jeżeli mecz się odbył pobieram dane o punktach w tym meczu:
+                #wywoluje w bazie procedure ktora dla danego meczu wyswietli punkty:
+                cursor.callproc('sp_getPunkty', (id_meczu,))
+                #pobrane z bazy dane zawieraja loginy graczy ktorzy zdobyli pojedynczy punkt
+                # { {nr_setu, login1, id_meczu, }, {nr_setu,{...}} }
+                dane2 = cursor.fetchall()
+                for j in dane2: #zliczam punkty dla obu graczy
+                    if j[0] not in punkty_moje: #jesli punkty dla tego setu nie sa liczone
+                        punkty_moje[j[0]] = 0   #punkty dla tego setu ustawiam na 0
+                        punkty_przeciwnika[j[0]] = 0
+                        przebieg_meczu.append(p_set)    #do przebiegu meczu dodaje poprzedni set
+                        p_set = []  #tworze pusty set, ktory bedzie zawieral przebieg gry [0, 1, 1, 0, ...]
+                    if j[1] == login:   #jesli punkt zdobyl gracz1 to dodaje mu punkt w tym secie
+                        punkty_moje[j[0]] += 1
+                        p_set.append(1)
+                    elif j[1] == przeciwnik:
+                        punkty_przeciwnika[j[0]] += 1
+                        p_set.append(0)
+                przebieg_meczu.append(p_set)
+                przebieg_meczu = przebieg_meczu[1:]
+
+                for j in range(len(punkty_moje)):
+                    if punkty_moje[j + 1] > punkty_przeciwnika[j + 1]:
+                        wynik_meczu[0] += 1
+                    elif punkty_moje[j + 1] < punkty_przeciwnika[j + 1]:
+                        wynik_meczu[1] += 1
+
+                #dla danego meczu uzupelniam nastepujace dane:
+                mecze.append({'przeciwnik': przeciwnik,
+                             'data': data,
+                             'punkty_moje':punkty_moje,
+                             'punkty_przeciwnika': punkty_przeciwnika,
+                             'przebieg_meczu': przebieg_meczu,
+                             'wynik_meczu': wynik_meczu,
+                             'id_turnieju': id_turnieju,
+                             })
+            else:
+                mecze2.append({'przeciwnik': przeciwnik,
+                             'data': data,
+                             'punkty_moje':punkty_moje,
+                             'punkty_przeciwnika': punkty_przeciwnika,
+                             'przebieg_meczu': przebieg_meczu,
+                             'wynik_meczu': wynik_meczu,
+                             'id_turnieju': id_turnieju,
+                             })
+
+        #mecze - lista meczy, które się odbyły
+        #mecze2 - lista meczy, które się nie odbyły
+        #łącze mecze i mecze2
+        mecze = mecze + mecze2
+
+        #przekazuje zmienne do wyswietlenia
+        if len(dane):
+            return render_template('myMatches.html', login=login, mecze=mecze)
+        else:
+            return render_template('info.html', info='Błąd...')
+    else:
+        return redirect('/showSignUp')
 
 
 @app.route('/showTournamentForm')
 def showTournamentForm():
+    if session.get('user'):
+        # tworze listę loginów wszystkich użytkowników
+        uzytkownicy = []
+        con = mysql.connect()
+        cursor = con.cursor()
+        cursor.callproc('sp_getUsers', ())
+        dane = cursor.fetchall()
+        con.commit()
+        cursor.close()
+        con.close()
+        for i in dane:
+            uzytkownicy.append(i[0])
 
-    # tworze listę loginów wszystkich użytkowników
-    uzytkownicy = []
-    con = mysql.connect()
-    cursor = con.cursor()
-    cursor.callproc('sp_getUsers', ())
-    dane = cursor.fetchall()
-    con.commit()
-    cursor.close()
-    con.close()
-    for i in dane:
-        uzytkownicy.append(i[0])
+        return render_template('newTournament.html', nadzorca=session.get('user'), uzytkownicy=uzytkownicy)
+    else:
+        return render_template('signin.html')
 
-    return render_template('newTournament.html', nadzorca = session.get('user'), uzytkownicy = uzytkownicy)
 
 @app.route('/newTournament',  methods=['POST'])
 def newTournament():
@@ -262,7 +372,7 @@ def newTournament():
 
         return render_template('info.html', info = info)
     else:
-        return render_template('info.html', info='Musisz się zalogować!')
+        return render_template('signin.html')
 
 
     #pobieram login zalogowanego uzytkownika i wpisuje jako nadzorca
@@ -390,7 +500,7 @@ def myTournaments():
         cursor.close()
         con.close()
         return render_template('myTournaments.html', turnieje = turnieje)
-    return render_template('info.html', info='Musisz się zalogować!')
+    return render_template('signin.html')
 
 @app.route('/rank')
 def rank():
@@ -401,24 +511,10 @@ def rank():
     cursor = con.cursor()
     cursor.callproc('sp_getWinners', )
     dane = cursor.fetchall()
-    ranking = {}
+    print(dane)
 
-    # licze wygrane mecze dla kazdego gracza w bazie:
-    # np. {gracz1 : 5, gracz2 : 15, ...}
-    for i in dane:
-        if i in ranking:
-            ranking[i] = ranking[i] + 1
-        else:
-            ranking[i] = 1
 
-    # wywoluje procedure SQL graczy, ktrorzy nie wygrali zadnego meczu
-    cursor.callproc('sp_getLoosers', )
-    dane = cursor.fetchall()
 
-    """
-    for i in dane:  # dodaje tych graczy takze do rankingu z wynikiem rownym 0
-        ranking[i] = 0
-    """
 
     # sortuje wyniki graczy od najlepszego:
     ranking = OrderedDict(sorted(ranking.items(), key=lambda x: x[1], reverse=True))
@@ -427,14 +523,17 @@ def rank():
     cursor.close()
     con.close()
     if len(dane):
-        return render_template('rank.html', ranking=ranking)
+        return render_template('rank.html', ranking=ranking, login=session.get('user'))
     else:
-        return render_template('info.html', info='blad')
+        return render_template('info.html', info='brak danych')
 
 @app.route('/logout')
 def logout():
-    session.pop('user', None)
-    return redirect('/')
+    if session.get('user'):
+        session.pop('user', None)
+        return redirect('/')
+    else:
+        return redirect('/')
 
 
 if __name__ == "__main__":

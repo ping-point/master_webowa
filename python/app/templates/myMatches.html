@@ -1,6 +1,10 @@
 <!DOCTYPE html>
 <html lang="pl">
 
+
+
+
+
 <head>
 
 	<title>Ping Point - Aplikacja stworzona przez Zespół X</title>
@@ -19,15 +23,54 @@
     <link href="../static/css/style.css" rel="stylesheet">
 
 
-	<script src="../static/js/angular.js" rel="stylesheet"></script>
-	<script src="../static/js/index.js" rel="stylesheet"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+    <script>
+    open = false;
+    openUserMenu = false;
+
+    $(document).ready(function() {
+
+        $("#detailsScore").click(function() {
+
+            if (open == true) {
+                $(".detailsMatch").slideUp();
+                open = false;
+                alert(openRel);
+            } else {
+                $(".detailsMatch").slideDown();
+                open = true;
+
+            }
+        });
+
+        $("#clickOpenMenuUser").click(function() {
+            if (openUserMenu == true) {
+                $(".userMenu").slideUp();
+                openUserMenu = false;
+            } else {
+                $(".userMenu").slideDown();
+               openUserMenu = true;
+
+            }
+        });
+
+
+
+    });
+
+
+
+
+    </script>
 
 
 
 </head>
 
-<body ng-app="myApp" ng-controller="myCtrl">
-<div class="container-fluid" >
+<body >
+
+
 <div class="header" >
         <nav>
             <div class="row">
@@ -91,65 +134,71 @@
 
 
 
-            <h1>Twoje turnieje: </h1>
 
-			{% for turniej in turnieje %}
-				<div class="jumbotron">
-					<p>id turnieju: {{turniej['id']}}</p>
-					<p>nadzorca: {{turniej['nadzorca']}}</p>
-					<p>typ: {{turniej['typ']}}</p>
-					{% if turniej['opis'] %}
-						<p>opis: {{turniej['opis']}}</p>
-					{% endif %}
-					<p>mecze:</p>
+<div class="match" >
+    <div class="itemMatch">
+        <p class="piM">MECZE TOWARZYSKIE</p>
+    </div>
+</div>
 
-					{% for mecz in turniej['mecze'] %}
-						<div class="well">
+<div class="match" >
+    {% for mecz in mecze %}
+        {% if mecz['data'] %}
 
-							<h3>{{mecz['gracz1']}} - {{mecz['gracz2']}}</h3>
-							{% if mecz['data'] %}
-								<p>Data: {{mecz['data']}}</p>
-								<p>{{mecz['wynik_meczu'][0]}} : {{mecz['wynik_meczu'][1]}}</p>
-									<div class="well">
-										{% for i in mecz['przebieg_meczu'] %}
-											<p>set {{loop.index}}</p>
-											{{mecz['punkty_gracz1'][loop.index]}} : {{mecz['punkty_gracz2'][loop.index]}}
 
-											{% for j in i %}
-												{% if j == 0 %}
-													<img id="red2"  src="../static/img/red2.png">
-												{% elif j == 1 %}
-													<img id="blue2"  src="../static/img/blue2.png">
-												{% endif %}
-											{% endfor %}
-											<p></p>
-										{% endfor %}
-									</div>
+                <div class="itemData">
+                    <p class="piD">Data: {{ mecz['data'] }}</p>
+                </div>
 
-							{% else %}
-								<p>Mecz się nie odbył</p>
-							{% endif %}
+                <div class="itemScore">
+                    <div class="piS">
 
-						</div>
-					{% endfor %}
+                        {{login}}
+                        <img src="../static/img/avatar.jpg"  class="imgPlayer">
+                        <b>{{mecz['wynik_meczu'][0]}} : {{mecz['wynik_meczu'][1]}} </b>
+                        <img src="../static/img/avatar.jpg" class="imgPlayer">
+                        {{mecz['przeciwnik']}}
 
-					{% if turniej['typ'] == 'ligowy' %}
-						<p>Tabela wyników</p>
-					{% elif turniej['typ'] == 'pucharowy' %}
-						<p>Drzewo turniejowe</p>
-					{% endif %}
+                        <span type="button" id="detailsScore">relacja</span>
+                    </div>
+                </div>
 
-				</div>
+                <div class="detailsMatch" id="Match">
+                    {% for i in mecz['przebieg_meczu'] %}
+                        <p>set {{loop.index}}
+                            {% if mecz['punkty_moje'][loop.index] > mecz['punkty_przeciwnika'][loop.index] %}
+                                wygrany
+                            {% elif mecz['punkty_moje'][loop.index] < mecz['punkty_przeciwnika'][loop.index] %}
+                                przegrany
+                            {% else %}
+                                remis
+                            {% endif %}
+                        </p>
+                        {{mecz['punkty_moje'][loop.index]}} : {{mecz['punkty_przeciwnika'][loop.index]}}
+                        {% for j in i %}
+                            {% if j == 0 %}
+                                <img id="red2"  src="../static/img/red2.png">
+                            {% elif j == 1 %}
+                                <img id="blue2"  src="../static/img/blue2.png">
+                            {% endif %}
+                        {% endfor %}
+                        <p></p>
+                    {% endfor %}
+                </div>
 
-			{% endfor %}
+        {% endif %}
+    {% endfor %}
+</div>
+
 
 
 
 <footer class="footer">
-        &copy; Zespół 10. Wszelkie prawa zastrzeżone
-    </footer>
+	&copy; Zespół 10. Wszelkie prawa zastrzeżone
+</footer>
 
-</div>
+
+
 </body>
 
 </html>
