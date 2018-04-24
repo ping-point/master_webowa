@@ -139,16 +139,16 @@
         <th>#</th>
         <th>Gracz</th>
         <th>Wygrane</th>
-        <th>Rozegrane</th>
+        <th>Przegrane</th>
       </tr>
     </thead>
     <tbody>
-        {% for pozycja in ranking %}
+        {% for i in ranking %}
           <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>{{loop.index}}</td>
+            <td>{{i}}</td>
+            <td>{{ranking[i][0]}}</td>
+            <td>{{ranking[i][1]}}</td>
           </tr>
         {% endfor %}
     </tbody>
@@ -159,7 +159,7 @@
          <footer class="footer">
             &copy; Zespół 10. Wszelkie prawa zastrzeżone
 
-                    <h3> {{ranking[0]}} meczy</h3>
+                    <h3>  meczy</h3>
 
          </footer>
 

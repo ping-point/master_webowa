@@ -511,13 +511,29 @@ def rank():
     cursor = con.cursor()
     cursor.callproc('sp_getWinners', )
     dane = cursor.fetchall()
-    print(dane)
+    cursor.callproc('sp_getLoosers', )
+    dane2 = cursor.fetchall()
+
+    ranking={}
+    ranking2={}
+    for i in dane2:
+        ranking2[i[0]] = i[1]
+    print(ranking2)
+    for i in dane:
+        ranking[i[0]] = [i[1], ranking2[i[0]]]
+
+    print(ranking)
+
+
+    cursor.callproc('sp_getLoosers', )
+    dane2 = cursor.fetchall()
+    print(dane2)
 
 
 
 
     # sortuje wyniki graczy od najlepszego:
-    ranking = OrderedDict(sorted(ranking.items(), key=lambda x: x[1], reverse=True))
+    #ranking = OrderedDict(sorted(ranking.items(), key=lambda x: x[1], reverse=True))
 
     con.commit()
     cursor.close()
