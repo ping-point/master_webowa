@@ -21,6 +21,41 @@
 
 	<script src="../static/js/angular.js" rel="stylesheet"></script>
 	<script src="../static/js/index.js" rel="stylesheet"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+    <script>
+    open = false;
+    openUserMenu = false;
+
+    $(document).ready(function() {
+
+        $("#detailsScore").click(function() {
+
+            if (open == true) {
+                $(".detailsMatch").slideUp();
+                open = false;
+                alert(openRel);
+            } else {
+                $(".detailsMatch").slideDown();
+                open = true;
+
+            }
+        });
+
+        $("#clickOpenMenuUser").click(function() {
+            if (openUserMenu == true) {
+                $(".userMenu").slideUp();
+                openUserMenu = false;
+            } else {
+                $(".userMenu").slideDown();
+               openUserMenu = true;
+
+            }
+        });
+
+
+    });
+    </script>
 
 
 
@@ -143,12 +178,12 @@
       </tr>
     </thead>
     <tbody>
-        {% for i in ranking %}
+        {% for i in statystyki %}
           <tr>
             <td>{{loop.index}}</td>
             <td>{{i}}</td>
-            <td>{{ranking[i][0]}}</td>
-            <td>{{ranking[i][1]}}</td>
+            <td>{{statystyki[i][0]}}</td>
+            <td>{{statystyki[i][1]}}</td>
           </tr>
         {% endfor %}
     </tbody>

@@ -109,92 +109,27 @@ def userHome():
     if session.get('user'):
         login = session.get('user') #zmienna zawiera login zalogowanego uzytkownika
 
-        ####### Rozegrane mecze zalogowanego uzytkownika ########
-
+        #STATYSTYKI:
         con = mysql.connect() #lacze z baza danych
         cursor = con.cursor()
         cursor.callproc('sp_getMecz', (login,)) #wywoluje procedure SQL, ktora pobiera mecze uzytkownika
-
-        #pobrane z bazy dane zawiera liste meczy zalogowanego uzytkownika
-        #struktura pobranego meczu: {id_meczu, ..., login1, login2}
         dane = cursor.fetchall()
 
-        mecze = []
-        mecze2 = []
-
-        for i in dane:  #dla kazdego meczu zalogowanego uzytkownika
-            if i[2] == login:
-                przeciwnik = i[3]   #zmienna przeciwnik zawiera login przeciwnika w danym meczu
+        rozegrane_mecze = []
+        nierozegrane_mecze = []
+        for i in dane:
+            if i[4]:
+                rozegrane_mecze.append(i)
             else:
-                przeciwnik = i[2]
+                nierozegrane_mecze.append(i)
 
-            id_meczu = i[0]     #zmienna zawiera id danego meczu
+        print(rozegrane_mecze)
+        print(nierozegrane_mecze)
 
-            #zmienna punkty_meczu zawiera informacje czy uzytkownik zdobyl, czy stracil punkt [[1, 1 ,0, 0, 0,...], ...]
-            przebieg_meczu = []
-
-            #zmienne beda przechowywac dla kazdego setu ilosc zdobytych punktow przez gracza
-            punkty_moje = {}
-            punkty_przeciwnika = {}
-            p_set = []
-            data = i[4]
-            wynik_meczu = [0, 0]    #zmienna przechowuje ilosc wygranych setow przez obu graczy
-            id_turnieju = i[1]
-
-            if data:    #jeżeli mecz się odbył pobieram dane o punktach w tym meczu:
-                #wywoluje w bazie procedure ktora dla danego meczu wyswietli punkty:
-                cursor.callproc('sp_getPunkty', (id_meczu,))
-                #pobrane z bazy dane zawieraja loginy graczy ktorzy zdobyli pojedynczy punkt
-                # { {nr_setu, login1, id_meczu, }, {nr_setu,{...}} }
-                dane2 = cursor.fetchall()
-                for j in dane2: #zliczam punkty dla obu graczy
-                    if j[0] not in punkty_moje: #jesli punkty dla tego setu nie sa liczone
-                        punkty_moje[j[0]] = 0   #punkty dla tego setu ustawiam na 0
-                        punkty_przeciwnika[j[0]] = 0
-                        przebieg_meczu.append(p_set)    #do przebiegu meczu dodaje poprzedni set
-                        p_set = []  #tworze pusty set, ktory bedzie zawieral przebieg gry [0, 1, 1, 0, ...]
-                    if j[1] == login:   #jesli punkt zdobyl gracz1 to dodaje mu punkt w tym secie
-                        punkty_moje[j[0]] += 1
-                        p_set.append(1)
-                    elif j[1] == przeciwnik:
-                        punkty_przeciwnika[j[0]] += 1
-                        p_set.append(0)
-                przebieg_meczu.append(p_set)
-                przebieg_meczu = przebieg_meczu[1:]
-
-                for j in range(len(punkty_moje)):
-                    if punkty_moje[j + 1] > punkty_przeciwnika[j + 1]:
-                        wynik_meczu[0] += 1
-                    elif punkty_moje[j + 1] < punkty_przeciwnika[j + 1]:
-                        wynik_meczu[1] += 1
-
-                #dla danego meczu uzupelniam nastepujace dane:
-                mecze.append({'przeciwnik': przeciwnik,
-                             'data': data,
-                             'punkty_moje':punkty_moje,
-                             'punkty_przeciwnika': punkty_przeciwnika,
-                             'przebieg_meczu': przebieg_meczu,
-                             'wynik_meczu': wynik_meczu,
-                             'id_turnieju': id_turnieju,
-                             })
-            else:
-                mecze2.append({'przeciwnik': przeciwnik,
-                             'data': data,
-                             'punkty_moje':punkty_moje,
-                             'punkty_przeciwnika': punkty_przeciwnika,
-                             'przebieg_meczu': przebieg_meczu,
-                             'wynik_meczu': wynik_meczu,
-                             'id_turnieju': id_turnieju,
-                             })
-
-        #mecze - lista meczy, które się odbyły
-        #mecze2 - lista meczy, które się nie odbyły
-        #łącze mecze i mecze2
-        mecze = mecze + mecze2
 
         #przekazuje zmienne do wyswietlenia
         if len(dane):
-            return render_template('userHome.html', login=login, mecze=mecze)
+            return render_template('userHome.html', login=login)
         else:
             return render_template('info.html', info='Błąd...')
     else:
@@ -513,33 +448,28 @@ def rank():
     dane = cursor.fetchall()
     cursor.callproc('sp_getLoosers', )
     dane2 = cursor.fetchall()
-
-    ranking={}
-    ranking2={}
-    for i in dane2:
-        ranking2[i[0]] = i[1]
-    print(ranking2)
-    for i in dane:
-        ranking[i[0]] = [i[1], ranking2[i[0]]]
-
-    print(ranking)
-
-
-    cursor.callproc('sp_getLoosers', )
-    dane2 = cursor.fetchall()
-    print(dane2)
-
-
-
-
-    # sortuje wyniki graczy od najlepszego:
-    #ranking = OrderedDict(sorted(ranking.items(), key=lambda x: x[1], reverse=True))
-
     con.commit()
     cursor.close()
     con.close()
+
+    statystyki={}
+    tmp={}
+    for i in dane2:
+        tmp[i[0]] = i[1]
+    for i in dane:
+        statystyki[i[0]] = [i[1], tmp[i[0]]]
+
+    for i in statystyki.copy():    #wyrzucam ze statystyk graczy, którzy nie rozegrali, żadnego meczu:
+        if (statystyki[i][0] + statystyki[i][1]) == 0:
+            statystyki.pop(i)
+
+
+    # sortuje wyniki graczy od najlepszego według wartości: (wygrane_mecze / rozegrane_mecze)
+    statystyki = OrderedDict(sorted(statystyki.items(), key=lambda x: (x[1][0]) / (x[1][0]+x[1][1]), reverse=True))
+
+
     if len(dane):
-        return render_template('rank.html', ranking=ranking, login=session.get('user'))
+        return render_template('rank.html', statystyki=statystyki, login=session.get('user'))
     else:
         return render_template('info.html', info='brak danych')
 

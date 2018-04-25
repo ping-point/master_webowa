@@ -21,6 +21,46 @@
 
 	<script src="../static/js/angular.js" rel="stylesheet"></script>
 	<script src="../static/js/index.js" rel="stylesheet"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+    <script>
+    open = false;
+    openUserMenu = false;
+
+    $(document).ready(function() {
+
+        $("#detailsScore").click(function() {
+
+            if (open == true) {
+                $(".detailsMatch").slideUp();
+                open = false;
+                alert(openRel);
+            } else {
+                $(".detailsMatch").slideDown();
+                open = true;
+
+            }
+        });
+
+        $("#clickOpenMenuUser").click(function() {
+            if (openUserMenu == true) {
+                $(".userMenu").slideUp();
+                openUserMenu = false;
+            } else {
+                $(".userMenu").slideDown();
+               openUserMenu = true;
+
+            }
+        });
+
+
+
+    });
+
+
+
+
+    </script>
 
 
 
@@ -29,116 +69,76 @@
 <body ng-app="myApp" ng-controller="myCtrl">
 
 <div class="container-fluid" >
-    <div class="header" >
-        <nav>
-            <div class="row">
-				<a ng-click="menu()">
-                <div class="col-lg-2 col-md-3 col-sm-3 col-xs-12 col-lg-offset-0 col-md-offset-0 col-sm-offset-0 col-xs-offset-0 menuHeight">
-					<img id="logo"  src="../static/img/logo.png">
-				</div>
-				</a>
-				<div class="menuPc">
-					<a href="/userHome">
-						<div  class="col-lg-1 col-md-1 col-sm-1 col-xs-12  col-lg-offset-5 col-md-offset-4 col-sm-offset-3   menuHeight" >
-							<b>HOME</b>
-						</div>
+	<div class="header" >
+			<nav>
+				<div class="row">
+					<a ng-click="menu()">
+					<div class="col-lg-2 col-md-3 col-sm-3 col-xs-12 col-lg-offset-0 col-md-offset-0 col-sm-offset-0 col-xs-offset-0 menuHeight">
+						<img id="logo"  src="../static/img/logo.png">
+					</div>
 					</a>
+					<div class="menuPc">
+						<a href="/rank">
+							<div  class="col-lg-1 col-md-1 col-sm-1 col-xs-12  col-lg-offset-5 col-md-offset-4 col-sm-offset-3   menuHeight" >
+								<b>RANKING</b>
+							</div>
+						</a>
 
-					<a href="/showSignIn">
-						<div class="col-lg-2 col-md-2 col-sm-2 col-xs-12  col-lg-offset-0 col-md-offset-0 col-sm-offset-0   menuHeight">
-							<b>LOGOWANIE</b>
+						<a href="/showTournamentForm">
+							<div class="col-lg-2 col-md-2 col-sm-2 col-xs-12  col-lg-offset-0 col-md-offset-0 col-sm-offset-0   menuHeight">
+								<b>STWÓRZ TURNIEJ</b>
+							</div>
+						</a>
+
+
+						<div  id="clickOpenMenuUser"  class="col-lg-2 col-md-2 col-sm-3 col-xs-12  col-lg-offset-0 col-md-offset-0 col-sm-offset-0   menuHeight" >
+							<img style="cursor:pointer;" src="../static/img/avatar.jpg"  class="imgPlayer">
+
+							<div class="userMenu ">
+								<p style="border-bottom: 1px solid #02647d;margin: 0px; padding:0px;"><b>{{login}}</b></p>
+								<a href="/logout"><b>WYLOGUJ</b></a>
+							</div>
 						</div>
-					</a>
 
-					<a href="/showSignUp">
-						<div class="col-lg-2 col-md-2 col-sm-3 col-xs-12  col-lg-offset-0 col-md-offset-0 col-sm-offset-0   menuHeight" style="background-color:#e03238">
-							<b>UTWÓRZ KONTO</b>
-						</div>
-					</a>
-				</div>
-
-                <div class="menuMobile" ng-show="open">
-					<a href="/userHome">
-						<div  class="col-lg-1 col-md-1 col-sm-1 col-xs-12  col-lg-offset-5 col-md-offset-4 col-sm-offset-3   menuHeight" >
-							<b>HOME</b>
-						</div>
-					</a>
-
-					<a href="/showSignIn">
-						<div class="col-lg-2 col-md-2 col-sm-2 col-xs-12  col-lg-offset-0 col-md-offset-0 col-sm-offset-0   menuHeight">
-							<b>LOGOWANIE</b>
-						</div>
-					</a>
-
-					<a href="/showSignUp">
-						<div class="col-lg-2 col-md-2 col-sm-3 col-xs-12  col-lg-offset-0 col-md-offset-0 col-sm-offset-0   menuHeight" style="background-color:#e03238">
-							<b>UTWÓRZ KONTO</b>
-						</div>
-					</a>
-				</div>
-
-            </div>
-        </nav>
-
-    </div>
-
-
-
-            <h1>Witaj {{login}}! </h1>
-
-            {% for mecz in mecze %}
-            <div class="jumbotron">
-                <h2>Mecz przeciwko: {{ mecz['przeciwnik'] }}</h2>
-				{% if mecz['id_turnieju'] %}
-				<p>id turnieju: {{mecz['id_turnieju']}}</p>
-				{% endif %}
-					<p>Data: {{ mecz['data'] }}</p>
-					<p>{% if mecz['wynik_meczu'][0] > mecz['wynik_meczu'][1]%}
-							Wygrana:
-						{% elif mecz['wynik_meczu'][0] < mecz['wynik_meczu'][1]%}
-							Przegrana:
-						{% else %}
-							Remis:
-						{% endif %}
-						 {{mecz['wynik_meczu'][0]}} : {{mecz['wynik_meczu'][1]}}</p>
-					<p>{% for i in mecz['wyniki_setow'] %}
-						{{ loop.index }}
-						{% endfor %}
-					</p>
-
-					<div class="well">
-					{% for i in mecz['przebieg_meczu'] %}
-						<p>set {{loop.index}}
-							{% if mecz['punkty_moje'][loop.index] > mecz['punkty_przeciwnika'][loop.index] %}
-								wygrany
-							{% elif mecz['punkty_moje'][loop.index] < mecz['punkty_przeciwnika'][loop.index] %}
-								przegrany
-							{% else %}
-								remis
-							{% endif %}
-							</p>
-							{{mecz['punkty_moje'][loop.index]}} : {{mecz['punkty_przeciwnika'][loop.index]}}
-							{% for j in i %}
-								{% if j == 0 %}
-									<img id="red2"  src="../static/img/red2.png">
-								{% elif j == 1 %}
-									<img id="blue2"  src="../static/img/blue2.png">
-								{% endif %}
-							{% endfor %}
-						<p></p>
-					{% endfor %}
 					</div>
 
-            </div>
-                {% endfor %}
+					<!-- do poprawy!!! -->
+
+
+					<div class="menuMobile" ng-show="open">
+						<a href="/userHome">
+							<div  class="col-lg-1 col-md-1 col-sm-1 col-xs-12  col-lg-offset-5 col-md-offset-4 col-sm-offset-3   menuHeight" >
+								<b>RANKING</b>
+							</div>
+						</a>
+
+						<a href="/showSignIn">
+							<div class="col-lg-2 col-md-2 col-sm-2 col-xs-12  col-lg-offset-0 col-md-offset-0 col-sm-offset-0   menuHeight">
+								<b>STWÓRZ TURNIEJ</b>
+							</div>
+						</a>
+
+						<a href="/showSignUp">
+							<div  class="col-lg-2 col-md-2 col-sm-3 col-xs-12  col-lg-offset-0 col-md-offset-0 col-sm-offset-0   menuHeight" style="background-color:#e03238">
+								<b> {{login}}</b>
+							</div>
+						</a>
+					</div>
+
+				</div>
+			</nav>
+
+	</div>
+</div>
+<h1>Witaj {{login}}! </h1>
+
 
 
 
 <footer class="footer">
         &copy; Zespół 10. Wszelkie prawa zastrzeżone
-    </footer>
+</footer>
 
-    </div>
 </body>
 
 </html>
