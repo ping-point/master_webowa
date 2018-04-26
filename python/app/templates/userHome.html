@@ -131,6 +131,69 @@
 	</div>
 </div>
 <h1>Witaj {{login}}! </h1>
+<div>
+	<h3>Rozegranych meczy: {{statystyki['rozegranych']}}</h3>
+	<h3>Wygranych meczy: {{statystyki['wygranych']}}</h3>
+
+	<h3>Ostatnio rozegrane mecze:</h3>
+	<div class="match" >
+		{% for mecz in zdarzenia['rozegrane_mecze'] %}
+
+					<div class="itemData">
+						<p class="piD">Data: {{ mecz['data'] }}</p>
+						{% if mecz['id_turnieju'] %}
+						<p class="piD">id turnieju: {{mecz['id_turnieju']}}</p>
+						{% endif %}
+					</div>
+
+					<div class="itemScore">
+						<div class="piS">
+
+							{{mecz['gracz1']}}
+							<img src="../static/img/avatar.jpg"  class="imgPlayer">
+							<b>{{mecz['wynik_meczu'][0]}} : {{mecz['wynik_meczu'][1]}} </b>
+							<img src="../static/img/avatar.jpg" class="imgPlayer">
+							{{mecz['gracz2']}}
+
+							<span type="button" id="detailsScore">sety</span>
+						</div>
+					</div>
+
+					<div class="detailsMatch" id="Match">
+						{% for i in mecz['przebieg_meczu'] %}
+							<p>
+								{% if mecz['punkty_gracz1'][loop.index] > mecz['punkty_gracz2'][loop.index] %}
+									<b style="color:teal">wygrany &nbsp; {{mecz['punkty_gracz1'][loop.index]}} : {{mecz['punkty_gracz2'][loop.index]}}</b>
+								{% elif mecz['punkty_gracz1'][loop.index] < mecz['punkty_gracz2'][loop.index] %}
+									<b style="color:tomato">przegrany &nbsp; {{mecz['punkty_gracz1'][loop.index]}} : {{mecz['punkty_gracz2'][loop.index]}}</b>
+								{% else %}
+									<b>remis &nbsp; {{mecz['punkty_gracz1'][loop.index]}} : {{mecz['punkty_gracz2'][loop.index]}}</b>
+								{% endif %}
+							</p>
+
+							{% for j in i %}
+								{% if j == 0 %}
+									<img id="red2"  src="../static/img/red2.png">
+								{% elif j == 1 %}
+									<img id="blue2"  src="../static/img/blue2.png">
+								{% endif %}
+							{% endfor %}
+							<p></p>
+						{% endfor %}
+					</div>
+		{% endfor %}
+	</div>
+
+	<h3>Zaplanowane mecze turniejowe:</h3>
+		<div class="match">
+		{% for mecz in zdarzenia['nierozegrane_mecze'] %}
+			<div class="itemData">
+				<p>Mecz przeciwko: {{mecz['przeciwnik']}}</p>
+				<p>Id turnieju: {{mecz['id_turnieju']}}</p>
+			</div>
+		{% endfor %}
+		</div>
+
 
 
 

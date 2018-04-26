@@ -165,16 +165,15 @@
 
                 <div class="detailsMatch" id="Match">
                     {% for i in mecz['przebieg_meczu'] %}
-                        <p>set {{loop.index}}
+                        <p>
                             {% if mecz['punkty_moje'][loop.index] > mecz['punkty_przeciwnika'][loop.index] %}
-                                wygrany
-                            {% elif mecz['punkty_moje'][loop.index] < mecz['punkty_przeciwnika'][loop.index] %}
-                                przegrany
-                            {% else %}
-                                remis
-                            {% endif %}
+								<b style="color:teal">wygrany &nbsp; {{mecz['punkty_moje'][loop.index]}} : {{mecz['punkty_przeciwnika'][loop.index]}}</b>
+							{% elif mecz['punkty_moje'][loop.index] < mecz['punkty_przeciwnika'][loop.index] %}
+								<b style="color:tomato">przegrany &nbsp; {{mecz['punkty_moje'][loop.index]}} : {{mecz['punkty_przeciwnika'][loop.index]}}</b>
+							{% else %}
+								<b>remis &nbsp; {{mecz['punkty_moje'][loop.index]}} : {{mecz['punkty_przeciwnika'][loop.index]}}</b>
+							{% endif %}
                         </p>
-                        {{mecz['punkty_moje'][loop.index]}} : {{mecz['punkty_przeciwnika'][loop.index]}}
                         {% for j in i %}
                             {% if j == 0 %}
                                 <img id="red2"  src="../static/img/red2.png">
