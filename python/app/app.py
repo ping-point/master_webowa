@@ -25,61 +25,71 @@ def is_power2(n):
     else:
         return False
 
-def getMatchDetails(id_meczu):
+def getMatchDetails(id_meczu, login):
+
     con = mysql.connect()  # lacze z baza danych
     cursor = con.cursor()
     cursor.callproc('sp_getMecz2', (id_meczu,))  # wywoluje procedure SQL, ktora pobiera mecz
-
     dane = cursor.fetchall()
     con.commit()
-    print(dane)
 
+    data = dane[0][4]
+
+    if dane[0][2] == login:
+        przeciwnik = dane[0][3]  # zmienna przeciwnik zawiera login przeciwnika w danym meczu
+    else:
+        przeciwnik = dane[0][2]
+
+    # zmienna punkty_meczu zawiera informacje czy uzytkownik zdobyl, czy stracil punkt [[1, 1 ,0, 0, 0,...], ...]
     przebieg_meczu = []
     # zmienne beda przechowywac dla kazdego setu ilosc zdobytych punktow przez gracza
-    punkty_gracz1 = {}
-    punkty_gracz2 = {}
+    punkty_moje = {}
+    punkty_przeciwnika = {}
     p_set = []
-    data = dane[0][4]
-    gracz1 = dane[0][2]
-    gracz2 = dane[0][3]
     wynik_meczu = [0, 0]  # zmienna przechowuje ilosc wygranych setow przez obu graczy
+    id_turnieju = dane[0][1]
 
-    cursor.callproc('sp_getPunkty', (dane[0][0],))  # pobieram informacje o punktach danego meczu
-    dane4 = cursor.fetchall()
-    con.commit()
-    for j in dane4:  # zliczam punkty dla obu graczy
-        if j[0] not in punkty_gracz1:  # jesli punkty dla tego setu nie sa liczone
-            punkty_gracz1[j[0]] = 0  # punkty dla tego setu ustawiam na 0
-            punkty_gracz2[j[0]] = 0
-            przebieg_meczu.append(p_set)  # do przebiegu meczu dodaje poprzedni set
-            p_set = []  # tworze pusty set, ktory bedzie zawieral przebieg gry [0, 1, 1, 0, ...]
-        if j[1] == dane[0][2]:  # jesli punkt zdobyl gracz1 to dodaje mu punkt w tym secie
-            punkty_gracz1[j[0]] += 1
-            p_set.append(1)
-        elif j[1] == dane[0][3]:
-            punkty_gracz2[j[0]] += 1
-            p_set.append(0)
-    przebieg_meczu.append(p_set)
-    przebieg_meczu = przebieg_meczu[1:]
 
-    for j in range(len(punkty_gracz1)):
-        if punkty_gracz1[j + 1] > punkty_gracz2[j + 1]:
-            wynik_meczu[0] += 1
-        elif punkty_gracz1[j + 1] < punkty_gracz2[j + 1]:
-            wynik_meczu[1] += 1
+    if data:  # jeżeli mecz się odbył pobieram dane o punktach w tym meczu:
+        # wywoluje w bazie procedure ktora dla danego meczu wyswietli punkty:
+        cursor.callproc('sp_getPunkty', (id_meczu,))
+        # pobrane z bazy dane zawieraja loginy graczy ktorzy zdobyli pojedynczy punkt
+        # { {nr_setu, login1, id_meczu, }, {nr_setu,{...}} }
+        dane2 = cursor.fetchall()
+        con.commit()
+        for j in dane2:  # zliczam punkty dla obu graczy
+            if j[0] not in punkty_moje:  # jesli punkty dla tego setu nie sa liczone
+                punkty_moje[j[0]] = 0  # punkty dla tego setu ustawiam na 0
+                punkty_przeciwnika[j[0]] = 0
+                przebieg_meczu.append(p_set)  # do przebiegu meczu dodaje poprzedni set
+                p_set = []  # tworze pusty set, ktory bedzie zawieral przebieg gry [0, 1, 1, 0, ...]
+            if j[1] == login:  # jesli punkt zdobyl gracz1 to dodaje mu punkt w tym secie
+                punkty_moje[j[0]] += 1
+                p_set.append(1)
+            elif j[1] == przeciwnik:
+                punkty_przeciwnika[j[0]] += 1
+                p_set.append(0)
+        przebieg_meczu.append(p_set)
+        przebieg_meczu = przebieg_meczu[1:]
+
+        for j in range(len(punkty_moje)):
+            if punkty_moje[j + 1] > punkty_przeciwnika[j + 1]:
+                wynik_meczu[0] += 1
+            elif punkty_moje[j + 1] < punkty_przeciwnika[j + 1]:
+                wynik_meczu[1] += 1
 
     cursor.close()
     con.close()
-    return ({
-        'gracz1': gracz1,
-        'gracz2': gracz2,
-        'data': data,
-        'id_turnieju': dane[0][1],
-        'punkty_gracz1': punkty_gracz1,
-        'punkty_gracz2': punkty_gracz2,
-        'przebieg_meczu': przebieg_meczu,
-        'wynik_meczu': wynik_meczu,
-    })
+    # dla danego meczu uzupelniam nastepujace dane:
+    return({'przeciwnik': przeciwnik,
+                  'data': data,
+                  'punkty_moje': punkty_moje,
+                  'punkty_przeciwnika': punkty_przeciwnika,
+                  'przebieg_meczu': przebieg_meczu,
+                  'wynik_meczu': wynik_meczu,
+                  'id_turnieju': id_turnieju,
+                  })
+
 
 def getUserMatches(login):
     ####### Rozegrane mecze zalogowanego uzytkownika ########
@@ -353,10 +363,10 @@ def userHome():
             'nierozegranych' : len(nierozegrane_mecze),
         }
 
-        #wydobywam szczegóły o ostatnich trzecb rozegranych meczach
+        #wydobywam szczegóły o ostatnich trzech rozegranych meczach
         mecze=[]
         for i in rozegrane_mecze[:3]:
-            mecze.append(getMatchDetails(i[0])) #wydobywam szczegóły ostatnich trzech meczy i zapisuje do mecze=[]
+            mecze.append(getMatchDetails(i[0], login)) #wydobywam szczegóły ostatnich trzech meczy i zapisuje do mecze=[]
 
         mecze2=[]
         for i in nierozegrane_mecze:
