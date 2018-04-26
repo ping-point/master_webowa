@@ -284,17 +284,16 @@ def signUp():
         cursor.callproc('sp_createUser', (p_login, p_email, p_haslo))
         data = cursor.fetchall()
         print(data)
+        conn.commit()
+        cursor.close()
+        conn.close()
 
         if len(data) is 0:
-            conn.commit()
-            cursor.close()
-            conn.close()
             return redirect('/showSignIn')
         else:
-            return redirect('/showSignIn')
+            return render_template('info.html', info='Nie udało się założyć konta')
     else:
-        return json.dumps({'html': '<span>Enter the required fields</span>'})
-
+        return json.dumps({'html': '<span>Wypełnij pola</span>'})
 
 @app.route('/showSignIn')
 def showSignin():
@@ -302,7 +301,6 @@ def showSignin():
         return redirect('userHome')
     else:
         return render_template('signin.html')
-
 
 @app.route('/validateLogin', methods=['POST'])
 def validateLogin():
@@ -391,7 +389,7 @@ def userHome():
         if len(statystyki):
             return render_template('userHome.html', login=login, statystyki=statystyki, zdarzenia=zdarzenia)
         else:
-            return render_template('info.html', info='Brak danych')
+            return render_template('info.html', info='Brak danych', login=login)
     else:
         return redirect('/showSignUp')
 
@@ -406,7 +404,7 @@ def myMatches():
         if len(mecze):
             return render_template('myMatches.html', login=login, mecze=mecze)
         else:
-            return render_template('info.html', info='Brak meczy')
+            return render_template('info.html', info='Brak meczy', login=login)
     else:
         return redirect('/showSignUp')
 
@@ -430,7 +428,6 @@ def showTournamentForm():
     else:
         return render_template('signin.html')
 
-
 @app.route('/newTournament',  methods=['POST'])
 def newTournament():
     if session.get('user'):
@@ -441,48 +438,48 @@ def newTournament():
         p_typ = request.form['inputTyp']
         p_opis = request.form['inputOpis']
         p_login = session.get('user')
-        info = 'Nie utworzono turnieju!'
 
-        #Tworze turniej w bazie danych
-        con = mysql.connect()
-        cursor = con.cursor()
-        cursor.callproc('sp_newTurniej', (p_punkty, p_sety, p_typ, p_opis, p_login))  #
-        id_turnieju = cursor.fetchall()
-        con.commit()
-
-        liczba_uczestnikow = len(uczestnicy)
-        pary = []  # zmienna bedzie zawierac pary graczy ktorzy beda rozgrywac mecz
-        if p_typ == 'ligowy':   #LIGOWY
-            #tworze pary uczestnikow ktorzy beda razem grac ze soba mecze "kazdy z kazdym" LIGOWY
-            for i in range(liczba_uczestnikow - 1):
-                for j in range(liczba_uczestnikow - 1 - i):
-                    para = []
-                    para.append(uczestnicy[i])
-                    para.append(uczestnicy[j+i+1])
-                    pary.append(para)
-            random.shuffle(pary)
-            info = 'Utworzono Turniej ligowy'
-        elif p_typ == 'pucharowy':  #PUCHAROWY
-            if is_power2(liczba_uczestnikow):
-                for i in range(int(liczba_uczestnikow / 2)):
-                    para = []
-                    para.append(uczestnicy[i])
-                    para.append(uczestnicy[liczba_uczestnikow - i - 1])
-                    pary.append(para)
-                info = 'Utworzono Turniej pucharowy'
-            else:
-                info = 'Zla liczba uczestnikow!'
-
-        #wywoluje procedure SQL w bazie, ktora tworzy pojedyncze mecze dla turnieju:
-        for i in pary:
-            cursor.callproc('sp_newMecz', (id_turnieju, i[0], i[1]))
+        if p_punkty and p_sety and p_typ and p_login:
+            #Tworze turniej w bazie danych
+            con = mysql.connect()
+            cursor = con.cursor()
+            cursor.callproc('sp_newTurniej', (p_punkty, p_sety, p_typ, p_opis, p_login))  #
+            id_turnieju = cursor.fetchall()
             con.commit()
-        cursor.close()
-        con.close()
 
+            liczba_uczestnikow = len(uczestnicy)
+            pary = []  # zmienna bedzie zawierac pary graczy ktorzy beda rozgrywac mecz
+            if p_typ == 'ligowy':   #LIGOWY
+                #tworze pary uczestnikow ktorzy beda razem grac ze soba mecze "kazdy z kazdym" LIGOWY
+                for i in range(liczba_uczestnikow - 1):
+                    for j in range(liczba_uczestnikow - 1 - i):
+                        para = []
+                        para.append(uczestnicy[i])
+                        para.append(uczestnicy[j+i+1])
+                        pary.append(para)
+                random.shuffle(pary)
+                info = 'Utworzono Turniej ligowy'
+            elif p_typ == 'pucharowy':  #PUCHAROWY
+                if is_power2(liczba_uczestnikow):
+                    for i in range(int(liczba_uczestnikow / 2)):
+                        para = []
+                        para.append(uczestnicy[i])
+                        para.append(uczestnicy[liczba_uczestnikow - i - 1])
+                        pary.append(para)
+                    info = 'Utworzono Turniej pucharowy'
+                else:
+                    info = 'Zla liczba uczestnikow!'
 
+            #wywoluje procedure SQL w bazie, ktora tworzy pojedyncze mecze dla turnieju:
+            for i in pary:
+                cursor.callproc('sp_newMecz', (id_turnieju, i[0], i[1]))
+                con.commit()
+            cursor.close()
+            con.close()
+        else:
+            info = 'Nie utworzono turnieju!'
 
-        return render_template('info.html', info = info)
+        return render_template('info.html', info = info, login=session.get('user'))
     else:
         return render_template('signin.html')
 
@@ -563,7 +560,7 @@ def rank():
     if len(statystyki):
         return render_template('rank.html', statystyki=statystyki, login=session.get('user'))
     else:
-        return render_template('info.html', info='brak danych')
+        return render_template('info.html', info='brak danych', login=session.get('user'))
 
 @app.route('/logout')
 def logout():
