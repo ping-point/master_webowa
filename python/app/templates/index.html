@@ -28,62 +28,76 @@
 
 <body >
 
-<div class="container-fluid" >
-    <div class="header" >
-        <nav>
-            <div class="row">
-				<a ng-click="menu()" href="#">
-                <div class="col-lg-2 col-md-3 col-sm-3 col-xs-12 col-lg-offset-0 col-md-offset-0 col-sm-offset-0 col-xs-offset-0 menuHeight">
-					<img id="logo"  src="../static/img/logo.png">
-				</div>
-				</a>
-				<div class="menuPc">
+    <div class="container-fluid" >
+        <div class="header" >
+
+            <!-- MENU GŁÓWNEJ STRONY RESPONSYWNE (col)-->
+            <nav>
+                <div class="row">
+                    <a ng-click="menu()" href="#">
+                    <div class="col-lg-2 col-md-3 col-sm-3 col-xs-12 col-lg-offset-0 col-md-offset-0 col-sm-offset-0 col-xs-offset-0 menuHeight">
+                        <img id="logo"  src="../static/img/logo.png">
+                    </div>
+                    </a>
+                    <div class="menuPc">
+
+                        <a href="/rank">
+                            <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12  col-lg-offset-4 col-md-offset-3 col-sm-offset-2   menuHeight">
+                                <b ng-init="myText='Hello World!'">RANKING</b>
+                            </div>
+                        </a>
+
+                        <a href="/showSignIn">
+                            <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12  col-lg-offset-0 col-md-offset-0 col-sm-offset-0   menuHeight">
+                                <b ng-init="myText='Hello World!'">LOGOWANIE</b>
+                            </div>
+                        </a>
+
+                        <a href="/showSignUp" style="text-decoration:none">
+                            <div class="col-lg-2 col-md-2 col-sm-3 col-xs-12  col-lg-offset-0 col-md-offset-0 col-sm-offset-0   menuHeight" style="background-color:#e03238">
+                                <b>UTWÓRZ KONTO</b>
+                            </div>
+                        </a>
+                    </div>
+
+                    <div class="menuMobile">
 
 
-					<a href="/showSignIn">
-						<div class="col-lg-2 col-md-2 col-sm-2 col-xs-12  col-lg-offset-6 col-md-offset-5 col-sm-offset-4   menuHeight">
-							<b ng-init="myText='Hello World!'">LOGOWANIE</b>
-						</div>
-					</a>
+                        <a href="/rank">
+                            <div class=" col-xs-12   menuHeight">
+                                <b>RANKING</b>
+                            </div>
+                        </a>
 
-					<a href="/showSignUp" style="text-decoration:none">
-						<div class="col-lg-2 col-md-2 col-sm-3 col-xs-12  col-lg-offset-0 col-md-offset-0 col-sm-offset-0   menuHeight" style="background-color:#e03238">
-							<b>UTWÓRZ KONTO</b>
-						</div>
-					</a>
-				</div>
 
-                <div class="menuMobile" ng-show="open">
-					<a href="/showSignIn">
-						<div class="col-lg-2 col-md-2 col-sm-2 col-xs-12  col-lg-offset-0 col-md-offset-0 col-sm-offset-0   menuHeight">
-							<b>LOGOWANIE</b>
-						</div>
-					</a>
+                        <a href="/showSignIn">
+                            <div class=" col-xs-12   menuHeight">
+                                <b>LOGOWANIE</b>
+                            </div>
+                        </a>
 
-					<a href="/showSignUp">
-						<div class="col-lg-2 col-md-2 col-sm-3 col-xs-12  col-lg-offset-0 col-md-offset-0 col-sm-offset-0   menuHeight" style="background-color:#e03238">
-							<b>UTWÓRZ KONTO</b>
-						</div>
-					</a>
-				</div>
+                        <a href="/showSignUp">
+                            <div class="col-xs-12 menuHeight" style="background-color:#e03238">
+                                <b>UTWÓRZ KONTO</b>
+                            </div>
+                        </a>
+                    </div>
 
-            </div>
-        </nav>
+                </div>
+            </nav>
 
+        </div>
+        <div class="singup" >
+            <p id="napis1" >Dołącz do aplikacji Ping-Point by w przyjemny i łatwy sposób <br/>rozgrywac mecze ze swoimi znajomymi.</p>
+                <p  id="buttonSingIn" >
+                    <a class="btn btn-lg btn-success" href="showSignUp" role="button">UTWÓRZ KONTO</a>
+                </p>
+                <br/>
+
+        </div>
+
+        <footer class="footer">&copy; Zespół 10. Wszelkie prawa zastrzeżone</footer>
     </div>
-    <div class="singup" >
-        <p id="napis1" >Dołącz do aplikacji Ping-Point by w przyjemny i łatwy sposób <br/>rozgrywac mecze ze swoimi znajomymi.</p>
-			<p  id="buttonSingIn" >
-				<a class="btn btn-lg btn-success" href="showSignUp" role="button">UTWÓRZ KONTO</a>
-			</p>
-			<br />
-
-    </div>
-
-	<footer class="footer">&copy; Zespół 10. Wszelkie prawa zastrzeżone</footer>
-
-	<script src="../static/js/index.js" rel="stylesheet"></script>
-</div>
 
 </body>
 
