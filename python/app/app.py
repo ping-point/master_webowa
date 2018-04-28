@@ -289,7 +289,7 @@ def signUp():
         conn.close()
 
         if len(data) is 0:
-            return redirect('/showSignIn')
+            return render_template('signin.html', info2='Konto zostało utworzone. Możesz teraz się zalogować.')
         else:
             return render_template('info.html', info='Nie udało się założyć konta')
     else:
@@ -320,9 +320,9 @@ def validateLogin():
             con.close()
             return redirect('/userHome')
         else:
-            return render_template('info.html', info="Podano złe dane logowania!")
+            return render_template('signin.html', info="Podano złe dane logowania.")
     else:
-        return render_template('info.html', info="Podano złe dane logowania!")
+        return render_template('signin.html', info="Podano złe dane logowania.")
 
 @app.route('/userHome')
 def userHome():
@@ -404,7 +404,7 @@ def myMatches():
         if len(mecze):
             return render_template('myMatches.html', login=login, mecze=mecze)
         else:
-            return render_template('info.html', info='Brak meczy', login=login)
+            return render_template('info.html', info='Nie rozegrałeś jeszcze żadnego meczu.', login=login)
     else:
         return redirect('/showSignUp')
 

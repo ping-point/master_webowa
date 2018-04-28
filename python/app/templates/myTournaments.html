@@ -125,6 +125,7 @@
         </nav>
 
 </div>
+	{% if turnieje %}
 
 	<h1>Twoje turnieje: </h1>
 	{% for turniej in turnieje %}
@@ -188,6 +189,9 @@
 
 	{% endfor %}
 
+	{% else %}
+	<h3>Nie brałeś jeszcze udziału w żadnym turnieju.</h3>
+	{% endif %}
 
 
 <footer class="footer">

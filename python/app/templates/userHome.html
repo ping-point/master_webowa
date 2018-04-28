@@ -153,13 +153,14 @@
 			</nav>
 
 	</div>
-</div>
+
 <h1>Witaj {{login}}! </h1>
 <div>
 	<h3>Rozegranych meczy: {{statystyki['rozegranych']}}</h3>
 	<h3>Wygranych meczy: {{statystyki['wygranych']}}</h3>
 	<h3>Zaplanowanych meczy turniejowych: {{statystyki['nierozegranych']}}</h3>
 
+	{% if zdarzenia['rozegrane_mecze'] %}
 	<h3>Ostatnio rozegrane mecze:</h3>
 	<div class="match" >
 		{% for mecz in zdarzenia['rozegrane_mecze'] %}
@@ -207,7 +208,10 @@
                 	</div>
 		{% endfor %}
 	</div>
-
+	{% else %}
+	<h3>Nie rozegrałeś jeszcze żadnych meczy</h3>
+	{% endif %}
+	{% if zdarzenia['nierozegrane_mecze'] %}
 	<h3>Zaplanowane mecze turniejowe:</h3>
 		<div class="match">
 		{% for mecz in zdarzenia['nierozegrane_mecze'] %}
@@ -217,11 +221,12 @@
 			</div>
 		{% endfor %}
 		</div>
+	{% endif %}
 
 
 
 
-
+</div>
 <footer class="footer">
         &copy; Zespół 10. Wszelkie prawa zastrzeżone
 </footer>

@@ -44,6 +44,9 @@
             }
         });
 
+
+
+
         $("#clickOpenMenuUser").click(function() {
             if (openUserMenu == true) {
                 $(".userMenu").slideUp();
@@ -159,11 +162,11 @@
                         <img src="../static/img/avatar.jpg" class="imgPlayer">
                         {{mecz['przeciwnik']}}
 
-                        <span type="button" id="detailsScore">relacja</span>
+                        <span type="button" id="detailsScore" itemid="{{loop.index}}">relacja</span>
                     </div>
                 </div>
 
-                <div class="detailsMatch" id="Match">
+                <div class="detailsMatch{{loop.index}}]" id="Match">
                     {% for i in mecz['przebieg_meczu'] %}
                         <p>
                             {% if mecz['punkty_moje'][loop.index] > mecz['punkty_przeciwnika'][loop.index] %}
