@@ -510,12 +510,34 @@ def myTournaments():
             nadzorca = dane3[0][5]
             typ = dane3[0][3]
             opis = dane3[0][4]
+            mecze = getTournamentMatches(id)
+
+
+            #mecze muszą być posortowane wg kolejnosci (id)
+            rundy = []
+            if typ == 'pucharowy':
+                runda = []
+                gracze = set()
+                for j in range(len(mecze)):
+                    if ((mecze[j]['gracz1'] or mecze[j]['gracz2']) in gracze):
+                        gracze = set()
+                        gracze.add((mecze[j]['gracz1'], mecze[j]['gracz2']))
+                        runda = [mecze[j]]
+                        rundy.append(runda)
+                    else:
+                        gracze.add(mecze[j]['gracz1'])
+                        gracze.add(mecze[j]['gracz2'])
+                        runda.append(mecze[j])
+                    if j == len(mecze) - 1:
+                        rundy.append(runda)
+
             turnieje.append({  # zapisuję dane turnieju do listy turniejów 'turnieje = []'
                 'id': id,
                 'nadzorca': nadzorca,
                 'typ': typ,
                 'opis': opis,
-                'mecze': getTournamentMatches(id),
+                'mecze': mecze,
+                'rundy' : rundy,
             })
 
         cursor.close()
