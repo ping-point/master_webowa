@@ -233,6 +233,8 @@ def getTournamentMatches(id_turnieju):
                 'punkty_gracz2': punkty_gracz2,
                 'przebieg_meczu': przebieg_meczu,
                 'wynik_meczu': wynik_meczu,
+                'id': k[0],
+
             })
         else:
             mecze2.append({
@@ -243,6 +245,7 @@ def getTournamentMatches(id_turnieju):
                 'punkty_gracz2': punkty_gracz2,
                 'przebieg_meczu': przebieg_meczu,
                 'wynik_meczu': wynik_meczu,
+                'id': k[0],
             })
     mecze = mecze + mecze2
     cursor.close()
@@ -489,6 +492,48 @@ def newTournament():
 
     #(Pobieram loginy uzytkownikow, tworze puste mecze do rozegrania dla stworzonego turnieju)
 
+@app.route('/showTournament/<int:id>', methods=['GET'])
+def showTournament(id):
+    con = mysql.connect()  # lacze z baza danych
+    cursor = con.cursor()
+    cursor.callproc('sp_getTurniej', (id,))  # pobieram turniej o danym id
+    dane3 = cursor.fetchall()  # dane o turnieju
+    id = dane3[0][0]
+    nadzorca = dane3[0][5]
+    typ = dane3[0][3]
+    opis = dane3[0][4]
+    mecze = getTournamentMatches(id)
+
+    rundy = []
+    if typ == 'pucharowy':
+        # mecze muszą być posortowane wg kolejnosci (id)
+        mecze = sorted(mecze, key=lambda x: x['id'])
+        runda = []
+        gracze = set()
+        for j in range(len(mecze)):
+            if ((mecze[j]['gracz1'] or mecze[j]['gracz2']) in gracze):
+                gracze = set()
+                gracze.add((mecze[j]['gracz1'], mecze[j]['gracz2']))
+                runda = [mecze[j]]
+                rundy.append(runda)
+            else:
+                gracze.add(mecze[j]['gracz1'])
+                gracze.add(mecze[j]['gracz2'])
+                runda.append(mecze[j])
+            if j == len(mecze) - 1:
+                rundy.append(runda)
+
+    turniej={  # zapisuję dane turnieju do listy turniejów 'turnieje = []'
+        'id': id,
+        'nadzorca': nadzorca,
+        'typ': typ,
+        'opis': opis,
+        'mecze': mecze,
+        'rundy': rundy,
+    }
+
+    return render_template('tournament.html',turniej=turniej, login=session.get('user'))
+
 
 @app.route('/myTournaments')
 def myTournaments():
@@ -513,9 +558,10 @@ def myTournaments():
             mecze = getTournamentMatches(id)
 
 
-            #mecze muszą być posortowane wg kolejnosci (id)
             rundy = []
             if typ == 'pucharowy':
+                # mecze muszą być posortowane wg kolejnosci (id)
+                mecze = sorted(mecze, key=lambda x: x['id'])
                 runda = []
                 gracze = set()
                 for j in range(len(mecze)):
@@ -531,6 +577,7 @@ def myTournaments():
                     if j == len(mecze) - 1:
                         rundy.append(runda)
 
+
             turnieje.append({  # zapisuję dane turnieju do listy turniejów 'turnieje = []'
                 'id': id,
                 'nadzorca': nadzorca,
@@ -542,7 +589,7 @@ def myTournaments():
 
         cursor.close()
         con.close()
-        return render_template('myTournaments.html', turnieje = turnieje)
+        return render_template('myTournaments.html', turnieje = turnieje, login=session.get('user'))
     return render_template('signin.html')
 
 @app.route('/rank')

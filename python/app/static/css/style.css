@@ -405,6 +405,11 @@ li.game{
   li.game.winner{
     font-weight:bold;
   }
+
+  li.game.bottom{
+    font-color:tomato;
+  }
+
   li.game span{
     float:right;
     margin-right:5px;
