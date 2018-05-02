@@ -1,10 +1,10 @@
-Aby aplikacja ³¹czy³a siê z baz¹ uruchom Putty i po³¹cz siê z wydzia³em, stwórz tunel ssh:
+Aby aplikacja Å‚Å¡czyÅ‚a siÄ™ z bazÅ¡ uruchom Putty i poÅ‚Å¡cz siÄ™ z wydziaÅ‚em, stwÃ³rz tunel ssh:
 	host name: 158.75.112.120 port 22
 	connection->ssh->tunnels
 		source port: 5432
 		destination: labsql.mat.umk.pl:3306
 
-Otworz projekt i uruchom plik app.py
+Otworz projekt i uruchom plik app.py (PYTHON 3.6)
 Wyswietl aplikacje w przegladarce: 127.0.0.1:5000
 
 utworzeni testowi uzytkownicy:
