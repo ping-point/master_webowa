@@ -564,18 +564,25 @@ def myTournaments():
                 mecze = sorted(mecze, key=lambda x: x['id'])
                 runda = []
                 gracze = set()
-                for j in range(len(mecze)):
+                for mecz in mecze:
+                    gracze.add(mecz['gracz1'])
+                    gracze.add(mecz['gracz2'])
+                ilosc_graczy = len(gracze)
+                gracze = set()
+                for j in range(ilosc_graczy - 1):
                     if ((mecze[j]['gracz1'] or mecze[j]['gracz2']) in gracze):
                         gracze = set()
                         gracze.add((mecze[j]['gracz1'], mecze[j]['gracz2']))
-                        runda = [mecze[j]]
                         rundy.append(runda)
+                        runda = [mecze[j]]
                     else:
                         gracze.add(mecze[j]['gracz1'])
                         gracze.add(mecze[j]['gracz2'])
                         runda.append(mecze[j])
-                    if j == len(mecze) - 1:
+                    if j == ilosc_graczy - 2:
                         rundy.append(runda)
+
+
 
 
             turnieje.append({  # zapisuję dane turnieju do listy turniejów 'turnieje = []'

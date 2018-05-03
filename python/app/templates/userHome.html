@@ -168,7 +168,7 @@
 					<div class="itemData">
 						<p class="piD">Data: {{ mecz['data'] }}</p>
 						{% if mecz['id_turnieju'] %}
-						<p class="piD"><a href="/showTournament/{{mecz['id_turnieju']}}">id turnieju: {{mecz['id_turnieju']}}</a></p>
+						<a href="/showTournament/{{mecz['id_turnieju']}}"><p style="border-bottom: 1px solid #02647d;color:gray"> id turnieju: {{mecz['id_turnieju']}}</p></a>
 						{% endif %}
 					</div>
 
@@ -217,7 +217,8 @@
 		{% for mecz in zdarzenia['nierozegrane_mecze'] %}
 			<div class="itemData">
 				<p>Mecz przeciwko: {{mecz['przeciwnik']}}</p>
-				<p><a href="/showTournament/{{mecz['id_turnieju']}}">Id turnieju: {{mecz['id_turnieju']}}</a></p>
+				<a href="/showTournament/{{mecz['id_turnieju']}}"><p style="border-bottom: 1px solid #02647d;color:gray"> id turnieju: {{mecz['id_turnieju']}}</p></a>
+                </p>
 			</div>
 		{% endfor %}
 		</div>
