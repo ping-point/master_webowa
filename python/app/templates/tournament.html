@@ -210,6 +210,14 @@
 						{% endif %}
 					{% endfor %}
 			</div>
+			<div>
+				{% for gracz in turniej['ranking'] %}
+				{% if loop.index < 4 %}
+				<p>{{loop.index}}. {{gracz}}</p>
+				{% endif %}
+				{% endfor %}
+			</div>
+
 			{% if turniej['typ']=='pucharowy' %}
 				<main id="tournament">
 					{% for runda in turniej['rundy'] %}

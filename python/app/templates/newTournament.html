@@ -36,7 +36,7 @@
 		  <div class="singFrame">
 			  <div style="text-align:center"> <img id="logoSingIn"   src="../static/img/logoSing.png">
 			  <h1>Konfiguracja Turnieju</h1>
-          <form class="form-signin" action="/newTournament" method="post">
+          <form class="form-signin" action="{{ url_for('newTournament') }}" method="POST">
             <label for="inputPunkty" class="sr-only">Punkty</label>
             <input type="number" name="inputPunkty" id="inputPunkty" class="form-control" placeholder="Punkty" required autofocus>
 
@@ -47,30 +47,21 @@
                 <input type="name" name="inputTyp" id="inputTyp" class="form-control" placeholder="Typ" required>
             -->
               <!-- https://stackoverflow.com/questions/17139501/using-post-to-get-select-option-value-from-html -->
-              <select class="form-control"  >
+              <select class="form-control" name="inputTyp" id="inputTyp" >
                   <option value="" disabled selected>Wybierz typ turnieju</option>
-                  <option value="pucharowy">pucharowy</option>
-                  <option value="ligowy">ligowy</option>
+                  <option value='pucharowy'>pucharowy</option>
+                  <option value='ligowy'>ligowy</option>
               </select>
 
             <label for="inputOpis" class="sr-only">Opis</label>
             <input type="name" name="inputOpis" id="inputOpis" class="form-control" placeholder="Opis" required>
 
-			<select class="multiSelect" multiple="multiple" name="favorite_fruits" id="fruit_select">
-
-                <option>Banana</option>
-                <option>Blueberry</option>
-                <option>Cherry</option>
-                <option>Coconut</option>
-                <option>Grapefruit</option>
-                <option>Kiwi</option>
-                <option>Lemon</option>
-                <option>Lime</option>
-                <option>Mango</option>
-                <option>Orange</option>
-                <option>Papaya</option>
-
+			<select class="multiSelect" multiple="multiple" name="inputGracze" id="inputGracze">
+                {% for gracz in uzytkownicy %}
+                <option value="{{gracz}}">{{gracz}}</option>
+                {% endfor %}
             </select>
+
 
             <button id="btnTrn" class="btn btn-lg btn-primary btn-block" type="submit">Utwórz</button>
           </form>
@@ -79,7 +70,7 @@
       </div>
 
         <script>
-            var select = document.getElementById('fruit_select');
+            var select = document.getElementById('inputGracze');
             multi( select );
         </script>
   </body>
