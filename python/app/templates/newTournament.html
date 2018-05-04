@@ -21,7 +21,9 @@
 
 	<script src="../static/js/angular.js" rel="stylesheet"></script>
 	<script src="../static/js/index.js" rel="stylesheet"></script>
-
+    <!-- SELECT -->
+    <link rel="stylesheet" type="text/css" href="../static/dist/multi.min.css">
+        <script src="../static/dist/multi.min.js"></script>
 
 
 </head>
@@ -54,13 +56,21 @@
             <label for="inputOpis" class="sr-only">Opis</label>
             <input type="name" name="inputOpis" id="inputOpis" class="form-control" placeholder="Opis" required>
 
-            <input list="users" name="user">
-                <datalist id="users">
-                    {% for user in uzytkownicy%}
-                    <option>{{user}}</option>
-                    {% endfor %}
-                </datalist>
-            <input type="submit">
+			<select class="multiSelect" multiple="multiple" name="favorite_fruits" id="fruit_select">
+
+                <option>Banana</option>
+                <option>Blueberry</option>
+                <option>Cherry</option>
+                <option>Coconut</option>
+                <option>Grapefruit</option>
+                <option>Kiwi</option>
+                <option>Lemon</option>
+                <option>Lime</option>
+                <option>Mango</option>
+                <option>Orange</option>
+                <option>Papaya</option>
+
+            </select>
 
             <button id="btnTrn" class="btn btn-lg btn-primary btn-block" type="submit">Utwórz</button>
           </form>
@@ -68,6 +78,9 @@
 		  </div>
       </div>
 
-
+        <script>
+            var select = document.getElementById('fruit_select');
+            multi( select );
+        </script>
   </body>
 </html>

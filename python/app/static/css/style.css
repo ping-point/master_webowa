@@ -152,13 +152,13 @@ a:hover {
 
 .singFrame {
     width:              50%;
-    height:             auto;
+
     margin-left:        auto;
     margin-right:       auto;
     position:absolute;
-    top:20%;
+    top:16%;
     left:25%;
-    padding: 15px 0 8%;
+    padding: 15px 0 4%;
     background: #f6f6f6;
     border: 1px solid silver;
     font: 16px calibri;
@@ -169,6 +169,9 @@ a:hover {
 
 }
 
+.item {
+    color: #000;
+}
 
 
 
