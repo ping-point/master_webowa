@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+
+	<title>Ping Point - Aplikacja stworzona przez Zespół X</title>
+	<meta name="Keywords" content="programowanie,zespół 10,ping-pong,ping-point,liczenie punktów ping pong" />
+	<meta name="description" content="Ping-Point - Innowacyjna aplikacja liczącą w czasie rzeczywistym punkty podczas grania w Ping-Ponga" />
+	<meta name='viewport' content='width=device-width, initial-scale=1, maximum-scale=1'>
+    <meta charset='utf-8'>
+
+	<!-- IKONKA STRONY -->
+	<link rel="icon" type="image/png" href="../static/img/favicon-32x32.png" sizes="32x32" />
+	<!-- BOOTSTRAP -->
+	<link href="../static/css/bootstrap.css" rel="stylesheet">
+    <link href="http://getbootstrap.com/examples/jumbotron-narrow/jumbotron-narrow.css" rel="stylesheet">
+
+    <!-- GŁÓWNY ARKUSZ STYLI -->
+    <link href="../static/css/style.css" rel="stylesheet">
+
+
+	<script src="../static/js/angular.js" rel="stylesheet"></script>
+	<script src="../static/js/index.js" rel="stylesheet"></script>
+
+
+
+</head>
+
+  <body id="backgroundSing">
+
+
+
+      <div class="backgroundSing">
+		  <div class="singFrame">
+			  <div style="text-align:center"> <img id="logoSingIn"   src="../static/img/logoSing.png">
+			  <h1>Logowanie</h1>
+			  <form class="form-signin" action="/validateLogin" method="post">
+				  <label for="inputName" class="sr-only">Login</label>
+				  <input type="name" name="inputName" id="inputName" class="form-control" placeholder="Login" required autofocus>
+				  <label for="inputPassword" class="sr-only">Haslo</label>
+				  <input type="password" name="inputPassword" id="inputPassword" class="form-control" placeholder="Password" required>
+				  <button id="btnSignIn" class="btn btn-lg btn-primary btn-block" type="submit">Zaloguj</button>
+			  </form>
+				  <p style="color:tomato">{{info}}</p>
+				  <p style="color:green">{{info2}}</p>
+			  </div>
+		  </div>
+      </div>
+
+
+  </body>
+</html>

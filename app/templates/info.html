@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+
+	<title>Ping Point - Aplikacja stworzona przez Zespół X</title>
+	<meta name="Keywords" content="programowanie,zespół 10,ping-pong,ping-point,liczenie punktów ping pong" />
+	<meta name="description" content="Ping-Point - Innowacyjna aplikacja liczącą w czasie rzeczywistym punkty podczas grania w Ping-Ponga" />
+	<meta name='viewport' content='width=device-width, initial-scale=1, maximum-scale=1'>
+    <meta charset='utf-8'>
+
+	<!-- IKONKA STRONY -->
+	<link rel="icon" type="image/png" href="../static/img/favicon-32x32.png" sizes="32x32" />
+	<!-- BOOTSTRAP -->
+	<link href="../static/css/bootstrap.css" rel="stylesheet">
+    <link href="http://getbootstrap.com/examples/jumbotron-narrow/jumbotron-narrow.css" rel="stylesheet">
+
+    <!-- GŁÓWNY ARKUSZ STYLI -->
+    <link href="../static/css/style.css" rel="stylesheet">
+
+
+	<script src="../static/js/angular.js" rel="stylesheet"></script>
+	<script src="../static/js/index.js" rel="stylesheet"></script>
+
+	<script>
+    open = false;
+    openUserMenu = false;
+
+    $(document).ready(function() {
+
+        $("#detailsScore").click(function() {
+
+            if (open == true) {
+                $(".detailsMatch").slideUp();
+                open = false;
+                alert(openRel);
+            } else {
+                $(".detailsMatch").slideDown();
+                open = true;
+
+            }
+        });
+
+        $("#clickOpenMenuUser").click(function() {
+            if (openUserMenu == true) {
+                $(".userMenu").slideUp();
+                openUserMenu = false;
+            } else {
+                $(".userMenu").slideDown();
+               openUserMenu = true;
+
+            }
+        });
+
+
+    });
+    </script>
+
+
+</head>
+
+<body ng-app="myApp" ng-controller="myCtrl">
+
+<div class="container-fluid" >
+	    <div class="header" >
+        {% if login %}
+            <nav>
+                <div class="row">
+                    <a ng-click="menu()">
+                        <div class="col-lg-2 col-md-3 col-sm-3 col-xs-12 col-lg-offset-0 col-md-offset-0 col-sm-offset-0 col-xs-offset-0 menuHeight">
+                            <img id="logo"  src="../static/img/logo.png">
+                        </div>
+                    </a>
+                    <div class="menuPc">
+                        <a href="/rank">
+                            <div  class="col-lg-1 col-md-1 col-sm-1 col-xs-12  col-lg-offset-5 col-md-offset-4 col-sm-offset-3   menuHeight" >
+                                <b>RANKING</b>
+                            </div>
+                        </a>
+
+                        <a href="/showTournamentForm">
+                            <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12  col-lg-offset-0 col-md-offset-0 col-sm-offset-0   menuHeight">
+                                <b>STWÓRZ TURNIEJ</b>
+                            </div>
+                        </a>
+
+
+                        <div  id="clickOpenMenuUser"  class="col-lg-2 col-md-2 col-sm-3 col-xs-12  col-lg-offset-0 col-md-offset-0 col-sm-offset-0   menuHeight" >
+                            <img style="cursor:pointer;" src="../static/img/avatar.jpg"  class="imgPlayer">
+
+                            <div class="userMenu ">
+                                <p style="border-bottom: 1px solid #02647d;margin: 0px; padding:0px;"><b>{{login}}</b></p>
+                                <a href="/logout"><b>WYLOGUJ</b></a>
+                            </div>
+                        </div>
+                    </div>
+
+                <!-- do poprawy!!! -->
+
+
+                <div class="menuMobile" ng-show="open">
+					<a href="/userHome">
+						<div  class="col-lg-1 col-md-1 col-sm-1 col-xs-12  col-lg-offset-5 col-md-offset-4 col-sm-offset-3   menuHeight" >
+							<b>RANKING</b>
+						</div>
+					</a>
+
+					<a href="/showSignIn">
+						<div class="col-lg-2 col-md-2 col-sm-2 col-xs-12  col-lg-offset-0 col-md-offset-0 col-sm-offset-0   menuHeight">
+							<b>STWÓRZ TURNIEJ</b>
+						</div>
+					</a>
+
+					<a href="/showSignUp">
+						<div  class="col-lg-2 col-md-2 col-sm-3 col-xs-12  col-lg-offset-0 col-md-offset-0 col-sm-offset-0   menuHeight" style="background-color:#e03238">
+							<b> {{login}}</b>
+						</div>
+					</a>
+				</div>
+
+            </div>
+        </nav>
+        {% else %}
+            <nav>
+            <div class="row">
+				<a ng-click="menu()" href="#">
+                <div class="col-lg-2 col-md-3 col-sm-3 col-xs-12 col-lg-offset-0 col-md-offset-0 col-sm-offset-0 col-xs-offset-0 menuHeight">
+					<img id="logo"  src="../static/img/logo.png">
+				</div>
+				</a>
+				<div class="menuPc">
+
+
+					<a href="/showSignIn">
+						<div class="col-lg-2 col-md-2 col-sm-2 col-xs-12  col-lg-offset-6 col-md-offset-5 col-sm-offset-4   menuHeight">
+							<b ng-init="myText='Hello World!'">LOGOWANIE</b>
+						</div>
+					</a>
+
+					<a href="/showSignUp" style="text-decoration:none">
+						<div class="col-lg-2 col-md-2 col-sm-3 col-xs-12  col-lg-offset-0 col-md-offset-0 col-sm-offset-0   menuHeight" style="background-color:#e03238">
+							<b>UTWÓRZ KONTO</b>
+						</div>
+					</a>
+				</div>
+
+                <div class="menuMobile" ng-show="open">
+					<a href="/showSignIn">
+						<div class="col-lg-2 col-md-2 col-sm-2 col-xs-12  col-lg-offset-0 col-md-offset-0 col-sm-offset-0   menuHeight">
+							<b>LOGOWANIE</b>
+						</div>
+					</a>
+
+					<a href="/showSignUp">
+						<div class="col-lg-2 col-md-2 col-sm-3 col-xs-12  col-lg-offset-0 col-md-offset-0 col-sm-offset-0   menuHeight" style="background-color:#e03238">
+							<b>UTWÓRZ KONTO</b>
+						</div>
+					</a>
+				</div>
+
+            </div>
+        </nav>
+        {% endif %}
+    	</div>
+
+        <div class="jumbotron">
+            <h3>{{info}}</h3>
+        </div>
+
+
+
+     <footer class="footer">
+        &copy; Zespół 10. Wszelkie prawa zastrzeżone
+     </footer>
+
+</div>
+</body>
+
+</html>

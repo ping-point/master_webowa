@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+
+	<title>Ping Point - Aplikacja stworzona przez Zespół X</title>
+	<meta name="Keywords" content="programowanie,zespół 10,ping-pong,ping-point,liczenie punktów ping pong" />
+	<meta name="description" content="Ping-Point - Innowacyjna aplikacja liczącą w czasie rzeczywistym punkty podczas grania w Ping-Ponga" />
+	<meta name='viewport' content='width=device-width, initial-scale=1, maximum-scale=1'>
+    <meta charset='utf-8'>
+
+	<!-- IKONKA STRONY -->
+	<link rel="icon" type="image/png" href="../static/img/favicon-32x32.png" sizes="32x32" />
+	<!-- BOOTSTRAP -->
+	<link href="../static/css/bootstrap.css" rel="stylesheet">
+    <link href="http://getbootstrap.com/examples/jumbotron-narrow/jumbotron-narrow.css" rel="stylesheet">
+
+    <!-- GŁÓWNY ARKUSZ STYLI -->
+    <link href="../static/css/style.css" rel="stylesheet">
+
+
+	<script src="../static/js/angular.js" rel="stylesheet"></script>
+
+
+
+
+</head>
+
+<body >
+
+    <div class="container-fluid" >
+        <div class="header" >
+
+            <!-- MENU GŁÓWNEJ STRONY RESPONSYWNE (col)-->
+            <nav>
+                <div class="row">
+                    <a ng-click="menu()" href="#">
+                    <div class="col-lg-2 col-md-3 col-sm-3 col-xs-12 col-lg-offset-0 col-md-offset-0 col-sm-offset-0 col-xs-offset-0 menuHeight">
+                        <img id="logo"  src="../static/img/logo.png">
+                    </div>
+                    </a>
+                    <div class="menuPc">
+
+                        <a href="/rank">
+                            <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12  col-lg-offset-4 col-md-offset-3 col-sm-offset-2   menuHeight">
+                                <b ng-init="myText='Hello World!'">RANKING</b>
+                            </div>
+                        </a>
+
+                        <a href="/showSignIn">
+                            <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12  col-lg-offset-0 col-md-offset-0 col-sm-offset-0   menuHeight">
+                                <b ng-init="myText='Hello World!'">LOGOWANIE</b>
+                            </div>
+                        </a>
+
+                        <a href="/showSignUp" style="text-decoration:none">
+                            <div class="col-lg-2 col-md-2 col-sm-3 col-xs-12  col-lg-offset-0 col-md-offset-0 col-sm-offset-0   menuHeight" style="background-color:#e03238">
+                                <b>UTWÓRZ KONTO</b>
+                            </div>
+                        </a>
+                    </div>
+
+                    <div class="menuMobile">
+
+
+                        <a href="/rank">
+                            <div class=" col-xs-12   menuHeight">
+                                <b>RANKING</b>
+                            </div>
+                        </a>
+
+
+                        <a href="/showSignIn">
+                            <div class=" col-xs-12   menuHeight">
+                                <b>LOGOWANIE</b>
+                            </div>
+                        </a>
+
+                        <a href="/showSignUp">
+                            <div class="col-xs-12 menuHeight" style="background-color:#e03238">
+                                <b>UTWÓRZ KONTO</b>
+                            </div>
+                        </a>
+                    </div>
+
+                </div>
+            </nav>
+
+        </div>
+        <div class="singup" >
+            <p id="napis1" >Dołącz do aplikacji Ping-Point by w przyjemny i łatwy sposób <br/>rozgrywac mecze ze swoimi znajomymi.</p>
+                <p  id="buttonSingIn" >
+                    <a class="btn btn-lg btn-success" href="showSignUp" role="button">UTWÓRZ KONTO</a>
+                </p>
+                <br/>
+
+        </div>
+
+        <footer class="footer">&copy; Zespół 10. Wszelkie prawa zastrzeżone</footer>
+    </div>
+
+</body>
+
+</html>
