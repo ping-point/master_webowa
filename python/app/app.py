@@ -699,6 +699,28 @@ def myTournaments():
         return render_template('myTournaments.html', turnieje = turnieje, login=session.get('user'))
     return render_template('signin.html')
 
+@app.route('/deleteTournament/<int:id>', methods=['GET'])
+def deleteTournament(id):
+    con = mysql.connect()
+    cursor = con.cursor()
+    cursor.callproc('sp_getTurniej', (id,))
+    dane = cursor.fetchall()
+    print(dane)
+
+
+    if session.get('user') == dane[0][5]:
+        cursor.callproc('sp_deleteTurniej',(id,))
+        dane = cursor.fetchall()
+        con.commit()
+        cursor.close()
+        con.close()
+        return redirect('/myTournaments')
+    else:
+        con.commit()
+        cursor.close()
+        con.close()
+        return redirect('/myTournaments')
+
 @app.route('/rank')
 def rank():
     ##################### RANKING #######################
