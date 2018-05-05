@@ -162,6 +162,9 @@
 			{% if turniej['opis'] %}
 				<p>opis: {{turniej['opis']}}</p>
 			{% endif %}
+			{% if login == turniej['nadzorca'] %}
+			<a href="/deleteTournament/{{turniej['id']}}"><p style="color:red;"> usuń turniej</p></a>
+			{% endif %}
 
 			<p>mecze:</p>
 			<div class="match">

@@ -517,30 +517,28 @@ def showTournament(id):
         mecze = sorted(mecze, key=lambda x: x['id'])
         runda = []
         gracze = set()
-        for j in range(ilosc_graczy - 1):
-            if ((mecze[j]['gracz1'] or mecze[j]['gracz2']) in gracze):
+        for mecz in mecze[:ilosc_graczy - 1]:
+            if ((mecz['gracz1'] or mecz['gracz2']) in gracze):
                 gracze = set()
-                gracze.add((mecze[j]['gracz1'], mecze[j]['gracz2']))
+                gracze.add((mecz['gracz1'], mecz['gracz2']))
                 rundy.append(runda)
-                runda = [mecze[j]]
+                runda = [mecz]
             else:
-                gracze.add(mecze[j]['gracz1'])
-                gracze.add(mecze[j]['gracz2'])
-                runda.append(mecze[j])
-            if j == ilosc_graczy - 2:
-                rundy.append(runda)
-
+                gracze.add(mecz['gracz1'])
+                gracze.add(mecz['gracz2'])
+                runda.append(mecz)
             # ranking dla pucharowego:
             if zakonczony == True:
-                if mecze[j]['gracz1'] not in ranking:
-                    ranking[mecze[j]['gracz1']] = mecze[j]['wynik_meczu'][0]
+                if mecz['gracz1'] not in ranking:
+                    ranking[mecz['gracz1']] = mecz['wynik_meczu'][0]
                 else:
-                    ranking[mecze[j]['gracz1']] += mecze[j]['wynik_meczu'][0]
+                    ranking[mecz['gracz1']] += mecz['wynik_meczu'][0]
 
-                if mecze[j]['gracz2'] not in ranking:
-                    ranking[mecze[j]['gracz2']] = mecze[j]['wynik_meczu'][1]
+                if mecz['gracz2'] not in ranking:
+                    ranking[mecz['gracz2']] = mecz['wynik_meczu'][1]
                 else:
-                    ranking[mecze[j]['gracz2']] += mecze[j]['wynik_meczu'][1]
+                    ranking[mecz['gracz2']] += mecz['wynik_meczu'][1]
+        rundy.append(runda)
 
         # jeśli odbywały się jakieś dodatkowe mecze (dogrywki o trzecie miejsce) to uwzgledniam kto wygrał dogrywkę
         if (zakonczony == True) and (len(mecze) > (ilosc_graczy - 1)):
@@ -549,6 +547,7 @@ def showTournament(id):
                     ranking.pop(m['gracz2'])
                 else:
                     ranking.pop(m['gracz1'])
+
 
     elif typ == 'ligowy':
         print('tabela wynikow')
@@ -625,30 +624,28 @@ def myTournaments():
                 mecze = sorted(mecze, key=lambda x: x['id'])
                 runda = []
                 gracze = set()
-                for j in range(ilosc_graczy - 1):
-                    if ((mecze[j]['gracz1'] or mecze[j]['gracz2']) in gracze):
+                for mecz in mecze[:ilosc_graczy-1]:
+                    if ((mecz['gracz1'] or mecz['gracz2']) in gracze):
                         gracze = set()
-                        gracze.add((mecze[j]['gracz1'], mecze[j]['gracz2']))
+                        gracze.add((mecz['gracz1'], mecz['gracz2']))
                         rundy.append(runda)
-                        runda = [mecze[j]]
+                        runda = [mecz]
                     else:
-                        gracze.add(mecze[j]['gracz1'])
-                        gracze.add(mecze[j]['gracz2'])
-                        runda.append(mecze[j])
-                    if j == ilosc_graczy - 2:
-                        rundy.append(runda)
-
+                        gracze.add(mecz['gracz1'])
+                        gracze.add(mecz['gracz2'])
+                        runda.append(mecz)
                     # ranking dla pucharowego:
                     if zakonczony == True:
-                        if mecze[j]['gracz1'] not in ranking:
-                            ranking[mecze[j]['gracz1']] = mecze[j]['wynik_meczu'][0]
+                        if mecz['gracz1'] not in ranking:
+                            ranking[mecz['gracz1']] = mecz['wynik_meczu'][0]
                         else:
-                            ranking[mecze[j]['gracz1']] += mecze[j]['wynik_meczu'][0]
+                            ranking[mecz['gracz1']] += mecz['wynik_meczu'][0]
 
-                        if mecze[j]['gracz2'] not in ranking:
-                            ranking[mecze[j]['gracz2']] = mecze[j]['wynik_meczu'][1]
+                        if mecz['gracz2'] not in ranking:
+                            ranking[mecz['gracz2']] = mecz['wynik_meczu'][1]
                         else:
-                            ranking[mecze[j]['gracz2']] += mecze[j]['wynik_meczu'][1]
+                            ranking[mecz['gracz2']] += mecz['wynik_meczu'][1]
+                rundy.append(runda)
 
                 # jeśli odbywały się jakieś dodatkowe mecze (dogrywki o trzecie miejsce) to uwzgledniam kto wygrał dogrywkę
                 if (zakonczony == True) and (len(mecze) > (ilosc_graczy - 1)):
@@ -657,6 +654,8 @@ def myTournaments():
                             ranking.pop(m['gracz2'])
                         else:
                             ranking.pop(m['gracz1'])
+
+
 
             elif typ == 'ligowy':
                 print('tabela wynikow')
