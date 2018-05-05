@@ -399,7 +399,7 @@ def signUp():
         if len(data) is 0:
             return render_template('signin.html', info2='Konto zostało utworzone. Możesz teraz się zalogować.')
         else:
-            return render_template('info.html', info='Nie udało się założyć konta')
+            return render_template('signup.html', info='Nie udało się założyć konta.')
     else:
         return json.dumps({'html': '<span>Wypełnij pola</span>'})
 
@@ -508,11 +508,8 @@ def myMatches():
         login = session.get('user') #zmienna zawiera login zalogowanego uzytkownika
         mecze = getUserMatches(login)
 
-        #przekazuje zmienne do wyswietlenia
-        if len(mecze):
-            return render_template('myMatches.html', login=login, mecze=mecze)
-        else:
-            return render_template('info.html', info='Nie rozegrałeś jeszcze żadnego meczu.', login=login)
+
+        return render_template('myMatches.html', login=login, mecze=mecze)
     else:
         return redirect('/showSignUp')
 
@@ -546,6 +543,8 @@ def newTournament():
             p_typ = request.form.get('inputTyp')
             p_opis = request.form['inputOpis']
             p_login = session.get('user')
+            error = 0
+            info = ''
 
         if p_punkty and p_sety and p_typ and p_login:
             #Tworze turniej w bazie danych
@@ -586,8 +585,9 @@ def newTournament():
             con.close()
         else:
             info = 'Nie utworzono turnieju!'
+            error = 1
 
-        return render_template('info.html', info = info, login=session.get('user'))
+        return render_template('newTournament.html', info = info, error=error, login=session.get('user'))
     else:
 
         return render_template('signin.html')

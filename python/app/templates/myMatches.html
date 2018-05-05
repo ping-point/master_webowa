@@ -109,7 +109,7 @@
 	<img src="../static/img/mecz.jpg" class="subjectPicture" style="margin-bottom:0px;">
 
 
-
+{% if mecze %}
 	{% for mecz in mecze %}
 	<div class="matchItem">
 
@@ -163,6 +163,9 @@
 
 	</div>
 	{% endfor %}
+	{% else %}
+	<h3>Nie brałeś udziału w żadnym meczu.</p>
+	{% endif %}
 
 </div>
 

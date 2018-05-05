@@ -65,6 +65,12 @@
 
             <button id="btnTrn" class="btn btn-lg btn-primary btn-block" type="submit">Utwórz</button>
           </form>
+                  {% if error == 1 %}
+                  <p style="color:red;">{{info}}</p>
+                  {% else %}
+                  <p style="color:teal;">{{info}}</p>
+                  {% endif %}
+
 			  </div>
 		  </div>
       </div>
