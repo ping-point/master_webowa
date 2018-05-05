@@ -235,6 +235,18 @@
 						</ul>
 					{% endfor %}
 				</main>
+			{% elif turniej['typ'] == 'ligowy' %}
+				<table>
+				{% for wiersz in turniej['tabela'] %}
+					<tr>
+							{% for k in wiersz %}
+							<td>
+								{{k}}
+							</td>
+							{% endfor %}
+					</tr>
+				{% endfor %}
+				</table>
 			{% endif %}
 
 		</div>

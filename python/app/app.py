@@ -503,6 +503,8 @@ def showTournament(id):
     gracze = set()
     ranking={}
     rundy = []
+    tabela = []
+    wiersz = ['']
 
     for mecz in mecze:
         # sprawdzam czy turniej się zakończył:
@@ -548,9 +550,9 @@ def showTournament(id):
                 else:
                     ranking.pop(m['gracz1'])
 
+        ranking = OrderedDict(sorted(ranking.items(), key=lambda x: x[1], reverse=True))
 
     elif typ == 'ligowy':
-        print('tabela wynikow')
         # ranking dla ligowego:
         if zakonczony == True:
             for mecz in mecze:
@@ -571,8 +573,31 @@ def showTournament(id):
                         ranking.pop(m['gracz2'])
                     else:
                         ranking.pop(m['gracz1'])
-    print(ranking)
-    ranking = OrderedDict(sorted(ranking.items(), key=lambda x: x[1], reverse=True))
+
+        ranking = OrderedDict(sorted(ranking.items(), key=lambda x: x[1], reverse=True))
+
+        ### tabela wyników
+        for gracz in ranking:
+            wiersz.append(gracz)
+        tabela.append(wiersz)
+        wiersz = []
+        for gracz1 in ranking:
+            wiersz.append(gracz1)
+            for gracz2 in ranking:
+                if gracz1 == gracz2:
+                    wynik = '0:0'
+                    wiersz.append(wynik)
+                else:
+                    for mecz in mecze:
+                        if mecz['gracz1'] == gracz1 and mecz['gracz2'] == gracz2:
+                            wynik = str(mecz['wynik_meczu'][0]) + ':' + str(mecz['wynik_meczu'][1])
+                            wiersz.append(wynik)
+                        elif mecz['gracz1'] == gracz2 and mecz['gracz2'] == gracz1:
+                            wynik = str(mecz['wynik_meczu'][1]) + ':' + str(mecz['wynik_meczu'][0])
+                            wiersz.append(wynik)
+            tabela.append(wiersz)
+            wiersz = []
+
     turniej={  # zapisuję dane turnieju do listy turniejów 'turnieje = []'
         'id': id,
         'nadzorca': nadzorca,
@@ -581,6 +606,7 @@ def showTournament(id):
         'mecze': mecze,
         'rundy': rundy,
         'ranking' : ranking,
+        'tabela' : tabela,
     }
 
     return render_template('tournament.html',turniej=turniej, login=session.get('user'))
@@ -611,12 +637,15 @@ def myTournaments():
             gracze = set()
             rundy = []
             zakonczony = True
+            tabela = []
+
             for mecz in mecze:
                 #sprawdzam czy turniej się zakończył:
                 if mecz['data'] == None:
                     zakonczony = False
                 gracze.add(mecz['gracz1'])
                 gracze.add(mecz['gracz2'])
+
             ilosc_graczy = len(gracze)
 
             if typ == 'pucharowy':
@@ -655,11 +684,9 @@ def myTournaments():
                         else:
                             ranking.pop(m['gracz1'])
 
-
+                ranking = OrderedDict(sorted(ranking.items(), key=lambda x: x[1], reverse=True))
 
             elif typ == 'ligowy':
-                print('tabela wynikow')
-
                 # ranking dla ligowego:
                 if zakonczony == True:
                     for mecz in mecze:
@@ -667,12 +694,10 @@ def myTournaments():
                             ranking[mecz['gracz1']] = mecz['wynik_meczu'][0]
                         else:
                             ranking[mecz['gracz1']] += mecz['wynik_meczu'][0]
-
                         if mecz['gracz2'] not in ranking:
                             ranking[mecz['gracz2']] = mecz['wynik_meczu'][1]
                         else:
                             ranking[mecz['gracz2']] += mecz['wynik_meczu'][1]
-
                     # jeśli odbywały się jakieś dodatkowe mecze (dogrywki o trzecie miejsce) to uwzgledniam kto wygrał dogrywkę
                     if (len(mecze) > ((ilosc_graczy * (ilosc_graczy - 1)) / 2)):
                         for m in mecze[((ilosc_graczy * (ilosc_graczy - 1)) / 2):]:
@@ -680,8 +705,33 @@ def myTournaments():
                                 ranking.pop(m['gracz2'])
                             else:
                                 ranking.pop(m['gracz1'])
-                    ranking = OrderedDict(sorted(ranking.items(), key=lambda x: x[1], reverse=True))
+                ranking = OrderedDict(sorted(ranking.items(), key=lambda x: x[1], reverse=True))
 
+                ### tabela wyników
+                wiersz = ['']
+
+                for gracz in ranking:
+                    wiersz.append(gracz)
+
+                tabela.append(wiersz)
+                wiersz = []
+
+                for gracz1 in ranking:
+                    wiersz.append(gracz1)
+                    for gracz2 in ranking:
+                        if gracz1 == gracz2:
+                            wynik = '0:0'
+                            wiersz.append(wynik)
+                        else:
+                            for mecz in mecze:
+                                if mecz['gracz1'] == gracz1 and mecz['gracz2'] == gracz2:
+                                    wynik = str(mecz['wynik_meczu'][0]) + ':' + str(mecz['wynik_meczu'][1])
+                                    wiersz.append(wynik)
+                                elif mecz['gracz1'] == gracz2 and mecz['gracz2'] == gracz1:
+                                    wynik = str(mecz['wynik_meczu'][1]) + ':' + str(mecz['wynik_meczu'][0])
+                                    wiersz.append(wynik)
+                    tabela.append(wiersz)
+                    wiersz = []
 
             turnieje.append({  # zapisuję dane turnieju do listy turniejów 'turnieje = []'
                 'id': id,
@@ -691,6 +741,7 @@ def myTournaments():
                 'mecze': mecze,
                 'rundy' : rundy,
                 'ranking' : ranking,
+                'tabela' : tabela,
             })
 
         cursor.close()
