@@ -141,128 +141,146 @@
 	</div>
 
 </div>
+
+
+<div class="container">
+	<img src="../static/img/turnieje.jpg" class="subjectPicture" style="margin-bottom:0px;">
 	{% if turnieje %}
 
-	<h1>Twoje turnieje: </h1>
+
 	{% for turniej in turnieje %}
-		<div class="jumbotron">
+	<div class="matchItem">
 
-			<p>id turnieju: {{turniej['id']}}</p>
-			<p>nadzorca: {{turniej['nadzorca']}}</p>
-			<p>typ: {{turniej['typ']}}</p>
-			{% if turniej['opis'] %}
-				<p>opis: {{turniej['opis']}}</p>
-			{% endif %}
-			{% if login == turniej['nadzorca'] %}
-			<a href="/deleteTournament/{{turniej['id']}}"><p style="color:red;"> usuń turniej</p></a>
-			{% endif %}
+		<p>id turnieju: {{turniej['id']}}</p>
+		<p>nadzorca: {{turniej['nadzorca']}}</p>
+		<p>typ: {{turniej['typ']}}</p>
+		{% if turniej['opis'] %}
+			<p>opis: {{turniej['opis']}}</p>
+		{% endif %}
+		{% if login == turniej['nadzorca'] %}
+		<a href="/deleteTournament/{{turniej['id']}}"><p style="color:red;"> usuń turniej</p></a>
+		{% endif %}
 
-			<p>mecze:</p>
-			<div class="match">
-					{% for mecz in turniej['mecze'] %}
-						{% if mecz['data'] %}
-							<div class="itemData">
-								<p class="piD">Data: {{mecz['data']}}</p>
+		<p>mecze:</p>
+		<div class="matchTournament">
+				{% for mecz in turniej['mecze'] %}
+					{% if mecz['data'] %}
+						<div class="itemData">
+							<p class="piD">Data: {{mecz['data']}}</p>
+						</div>
+
+						<div class="itemScore">
+							<div class="piS">
+								{{mecz['gracz1']}}
+								<img src="../static/img/avatar.jpg"  class="imgPlayer">
+								<b>{{mecz['wynik_meczu'][0]}} : {{mecz['wynik_meczu'][1]}} </b>
+								<img src="../static/img/avatar.jpg" class="imgPlayer">
+								{{mecz['gracz2']}}
+								<span type="button" class="detailsScore" onclick="detailsList('{{loop.index}}')">sety</span>
 							</div>
+						</div>
 
-							<div class="itemScore">
-								<div class="piS">
-									{{mecz['gracz1']}}
-									<img src="../static/img/avatar.jpg"  class="imgPlayer">
-									<b>{{mecz['wynik_meczu'][0]}} : {{mecz['wynik_meczu'][1]}} </b>
-									<img src="../static/img/avatar.jpg" class="imgPlayer">
-									{{mecz['gracz2']}}
-									<span type="button" id="detailsScore">sety</span>
-								</div>
-							</div>
-
-							<div class="detailsMatch" id="Match">
-								{% for i in mecz['przebieg_meczu'] %}
-									<p>
-										{% if mecz['punkty_gracz1'][loop.index] > mecz['punkty_gracz2'][loop.index] %}
-											<b style="color:teal">{{mecz['gracz1']}} wygrał &nbsp; {{mecz['punkty_gracz1'][loop.index]}} : {{mecz['punkty_gracz2'][loop.index]}}</b>
-										{% elif mecz['punkty_gracz1'][loop.index] < mecz['punkty_gracz2'][loop.index] %}
-											<b style="color:tomato">{{mecz['gracz2']}} wygrał &nbsp; {{mecz['punkty_gracz2'][loop.index]}} : {{mecz['punkty_gracz1'][loop.index]}}</b>
-										{% else %}
-											<b>remis &nbsp; {{mecz['punkty_gracz1'][loop.index]}} : {{mecz['punkty_gracz2'][loop.index]}}</b>
-										{% endif %}
-									</p>
-									{% for j in i %}
-										{% if j == 0 %}
-											<img id="red2"  src="../static/img/red2.png">
-										{% elif j == 1 %}
-											<img id="blue2"  src="../static/img/blue2.png">
-										{% endif %}
-									{% endfor %}
-									<p></p>
+						<div class="detailsMatch"  id="detailsMatch{{loop.index}}">
+							{% for i in mecz['przebieg_meczu'] %}
+								<p>
+									{% if mecz['punkty_gracz1'][loop.index] > mecz['punkty_gracz2'][loop.index] %}
+										<b style="color:teal">{{mecz['gracz1']}} wygrał &nbsp; {{mecz['punkty_gracz1'][loop.index]}} : {{mecz['punkty_gracz2'][loop.index]}}</b>
+									{% elif mecz['punkty_gracz1'][loop.index] < mecz['punkty_gracz2'][loop.index] %}
+										<b style="color:tomato">{{mecz['gracz2']}} wygrał &nbsp; {{mecz['punkty_gracz2'][loop.index]}} : {{mecz['punkty_gracz1'][loop.index]}}</b>
+									{% else %}
+										<b>remis &nbsp; {{mecz['punkty_gracz1'][loop.index]}} : {{mecz['punkty_gracz2'][loop.index]}}</b>
+									{% endif %}
+								</p>
+								{% for j in i %}
+									{% if j == 0 %}
+										<img id="red2"  src="../static/img/red2.png">
+									{% elif j == 1 %}
+										<img id="blue2"  src="../static/img/blue2.png">
+									{% endif %}
 								{% endfor %}
-							</div>
-						{% else %}
-							<div class="itemData">
-								<p class="piD"><b>{{mecz['gracz1']}} - {{mecz['gracz2']}}</b>: &nbsp; mecz się nie odbył</p>
-							</div>
-						{% endif %}
-					{% endfor %}
-			</div>
-
-			<div>
-				{% for gracz in turniej['ranking'] %}
-				<p>{{loop.index}}. {{gracz}}</p>
-				{% endfor %}
-			</div>
-
-			{% if turniej['typ']=='pucharowy' %}
-				<main id="tournament">
-					{% for runda in turniej['rundy'] %}
-						<ul class="round round-{{loop.index}}">
-							{% for mecz in runda %}
-							<li class="spacer">&nbsp;</li>
-							{% if mecz['wynik_meczu'][0] > mecz['wynik_meczu'][1]%}
-							<li class="game game-top winner">{{mecz['gracz1']}}<span>{{mecz['wynik_meczu'][0]}}</span></li>
-							<li class="game game-spacer">&nbsp;</li>
-							<li class="game game-bottom ">{{mecz['gracz2']}}<span>{{mecz['wynik_meczu'][1]}}</span></li>
-							{% elif mecz['wynik_meczu'][0] < mecz['wynik_meczu'][1]%}
-							<li class="game game-top winner">{{mecz['gracz2']}}<span>{{mecz['wynik_meczu'][1]}}</span></li>
-							<li class="game game-spacer">&nbsp;</li>
-							<li class="game game-bottom ">{{mecz['gracz1']}}<span>{{mecz['wynik_meczu'][0]}}</span></li>
-							{% else %}
-							<li class="game game-bottom">{{mecz['gracz1']}}<span>{{mecz['wynik_meczu'][0]}}</span></li>
-							<li class="game game-spacer">&nbsp;</li>
-							<li class="game game-bottom ">{{mecz['gracz2']}}<span>{{mecz['wynik_meczu'][1]}}</span></li>
-							{% endif %}
-							<li class="spacer">&nbsp;</li>
+								<p></p>
 							{% endfor %}
-						</ul>
-					{% endfor %}
-				</main>
-			{% elif turniej['typ'] == 'ligowy' %}
-				<table>
-				{% for wiersz in turniej['tabela'] %}
-					<tr>
-							{% for k in wiersz %}
-							<td>
-								{{k}}
-							</td>
-							{% endfor %}
-					</tr>
+						</div>
+					{% else %}
+						<div class="itemData">
+							<p class="piD"><b>{{mecz['gracz1']}} - {{mecz['gracz2']}}</b>: &nbsp; mecz się nie odbył</p>
+						</div>
+					{% endif %}
 				{% endfor %}
-				</table>
-			{% endif %}
-
 		</div>
 
+		<div>
+			{% for gracz in turniej['ranking'] %}
+			<p>{{loop.index}}. {{gracz}}</p>
+			{% endfor %}
+		</div>
+
+		{% if turniej['typ']=='pucharowy' %}
+			<main id="tournament">
+				{% for runda in turniej['rundy'] %}
+					<ul class="round round-{{loop.index}}">
+						{% for mecz in runda %}
+						<li class="spacer">&nbsp;</li>
+						{% if mecz['wynik_meczu'][0] > mecz['wynik_meczu'][1]%}
+						<li class="game game-top winner">{{mecz['gracz1']}}<span>{{mecz['wynik_meczu'][0]}}</span></li>
+						<li class="game game-spacer">&nbsp;</li>
+						<li class="game game-bottom ">{{mecz['gracz2']}}<span>{{mecz['wynik_meczu'][1]}}</span></li>
+						{% elif mecz['wynik_meczu'][0] < mecz['wynik_meczu'][1]%}
+						<li class="game game-top winner">{{mecz['gracz2']}}<span>{{mecz['wynik_meczu'][1]}}</span></li>
+						<li class="game game-spacer">&nbsp;</li>
+						<li class="game game-bottom ">{{mecz['gracz1']}}<span>{{mecz['wynik_meczu'][0]}}</span></li>
+						{% else %}
+						<li class="game game-bottom">{{mecz['gracz1']}}<span>{{mecz['wynik_meczu'][0]}}</span></li>
+						<li class="game game-spacer">&nbsp;</li>
+						<li class="game game-bottom ">{{mecz['gracz2']}}<span>{{mecz['wynik_meczu'][1]}}</span></li>
+						{% endif %}
+						<li class="spacer">&nbsp;</li>
+						{% endfor %}
+					</ul>
+				{% endfor %}
+			</main>
+		{% elif turniej['typ'] == 'ligowy' %}
+			<table>
+			{% for wiersz in turniej['tabela'] %}
+				<tr>
+						{% for k in wiersz %}
+						<td>
+							{{k}}
+						</td>
+						{% endfor %}
+				</tr>
+			{% endfor %}
+			</table>
+		{% endif %}
+
+	</div>
 	{% endfor %}
 
 	{% else %}
 	<h3>Nie brałeś jeszcze udziału w żadnym turnieju.</h3>
+
 	{% endif %}
 
+</div>
 
 <footer class="footer">
         &copy; Zespół 10. Wszelkie prawa zastrzeżone
-    </footer>
+</footer>
+<script>
 
-</div>
+function detailsList(index) {
+
+		if (open == true) {
+			$("#detailsMatch" + index).slideUp();
+			open = false;
+
+		} else {
+			$("#detailsMatch" + index).slideDown();
+			open = true;
+		}
+}
+</script>
+
 </body>
 
 </html>

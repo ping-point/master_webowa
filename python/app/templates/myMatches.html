@@ -24,55 +24,15 @@
 
 
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
     <script>
-    open = false;
+	open = false;
     openUserMenu = false;
-
     $(document).ready(function() {
 
 
-        $("#detailsScore1").click(function() {
-			console.log(1);
 
-            if (open == true) {
-                $("#detailsMatch1").slideUp();
-                open = false;
 
-            } else {
-                $("#detailsMatch1").slideDown();
-                open = true;
-
-            }
-        });
-
-	   $("#detailsScore2").click(function() {
-			console.log(1);
-
-            if (open == true) {
-                $("#detailsMatch2").slideUp();
-                open = false;
-
-            } else {
-                $("#detailsMatch2").slideDown();
-                open = true;
-
-            }
-        });
-
-		$("#detailsScore3").click(function() {
-			console.log(1);
-
-            if (open == true) {
-                $("#detailsMatch3").slideUp();
-                open = false;
-
-            } else {
-                $("#detailsMatch3").slideDown();
-                open = true;
-
-            }
-        });
 
 
 
@@ -169,7 +129,7 @@
 					<img src="../static/img/avatar.jpg" class="imgPlayer">
 					{{mecz['przeciwnik']}}
 
-					<span type="button" class="detailsScore" id="detailsScore{{loop.index}}" itemid="{{loop.index}}">relacja</span>
+					<span type="button" class="detailsScore"  onclick="detailsList('{{loop.index}}')" itemid="{{loop.index}}">relacja</span>
 				</div>
 			</div>
 
@@ -206,6 +166,22 @@
 <footer class="footer" style="margin-top:30px;">
 	&copy; Zespół 10. Wszelkie prawa zastrzeżone
 </footer>
+<script>
+
+function detailsList(index) {
+
+		if (open == true) {
+			$("#detailsMatch" + index).slideUp();
+			open = false;
+
+		} else {
+			$("#detailsMatch" + index).slideDown();
+			open = true;
+		}
+}
+</script>
+
+
 
 </body>
 
