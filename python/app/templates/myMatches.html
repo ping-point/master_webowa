@@ -118,6 +118,9 @@
 
 			<div class="itemData">
 				<p class="piD">Data: {{ mecz['data'] }}</p>
+				{% if mecz['id_turnieju'] %}
+				<a href="/showTournament/{{mecz['id_turnieju']}}"><p style="border-bottom: 1px solid #02647d;color:gray"> id turnieju: {{mecz['id_turnieju']}}</p></a>
+				{% endif %}
 			</div>
 
 			<div class="itemScore">

@@ -211,7 +211,9 @@
 
 		<div>
 			{% for gracz in turniej['ranking'] %}
-			<p>{{loop.index}}. {{gracz}}</p>
+			{% if loop.index < 4 %}
+			<p style="color:teal;"><b>{{loop.index}}. {{gracz}}</b></p>
+			{% endif %}
 			{% endfor %}
 		</div>
 
