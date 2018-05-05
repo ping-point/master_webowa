@@ -26,11 +26,8 @@
     <script>
     open = false;
     openUserMenu = false;
-
     $(document).ready(function() {
-
         $("#detailsScore").click(function() {
-
             if (open == true) {
                 $(".detailsMatch").slideUp();
                 open = false;
@@ -38,10 +35,8 @@
             } else {
                 $(".detailsMatch").slideDown();
                 open = true;
-
             }
         });
-
         $("#clickOpenMenuUser").click(function() {
             if (openUserMenu == true) {
                 $(".userMenu").slideUp();
@@ -49,12 +44,8 @@
             } else {
                 $(".userMenu").slideDown();
                openUserMenu = true;
-
             }
         });
-
-
-
     });
 	</script>
 

@@ -31,19 +31,48 @@
 
     $(document).ready(function() {
 
-        $("#detailsScore").click(function() {
+
+        $("#detailsScore1").click(function() {
+			console.log(1);
 
             if (open == true) {
-                $(".detailsMatch").slideUp();
+                $("#detailsMatch1").slideUp();
                 open = false;
-                alert(openRel);
+
             } else {
-                $(".detailsMatch").slideDown();
+                $("#detailsMatch1").slideDown();
                 open = true;
 
             }
         });
 
+	   $("#detailsScore2").click(function() {
+			console.log(1);
+
+            if (open == true) {
+                $("#detailsMatch2").slideUp();
+                open = false;
+
+            } else {
+                $("#detailsMatch2").slideDown();
+                open = true;
+
+            }
+        });
+
+		$("#detailsScore3").click(function() {
+			console.log(1);
+
+            if (open == true) {
+                $("#detailsMatch3").slideUp();
+                open = false;
+
+            } else {
+                $("#detailsMatch3").slideDown();
+                open = true;
+
+            }
+        });
 
 
 
@@ -73,154 +102,110 @@
 
 <body >
 <div class="header" >
-			<nav>
-				<div class="row">
-					<a ng-click="menu()">
-					<div class="col-lg-2 col-md-3 col-sm-3 col-xs-12 col-lg-offset-0 col-md-offset-0 col-sm-offset-0 col-xs-offset-0 menuHeight">
-						<img id="logo"  src="../static/img/logo.png">
-					</div>
-					</a>
-					<div class="menuPc">
-
-						<a href="/rank">
-							<div  class="col-lg-2 col-md-2 col-sm-2 col-xs-12  col-lg-offset-4 col-md-offset-3 col-sm-offset-2   menuHeight" >
-								<b>RANKING OGÓLNY</b>
-							</div>
-						</a>
-
-						<a href="/showTournamentForm">
-							<div class="col-lg-2 col-md-2 col-sm-2 col-xs-12  col-lg-offset-0 col-md-offset-0 col-sm-offset-0   menuHeight">
-								<b>STWÓRZ TURNIEJ</b>
-							</div>
-						</a>
-
-
-						<div  id="clickOpenMenuUser"  class="col-lg-2 col-md-2 col-sm-3 col-xs-12  col-lg-offset-0 col-md-offset-0 col-sm-offset-0   menuHeight" >
-							<b style="color:#fff;padding:5px;">{{login}}</b>
-                            <img style="cursor:pointer;" src="../static/img/avatar.jpg"  class="imgPlayer">
-
-							<div class="userMenu ">
-								<a href="/myTournaments">
-                                    <p style="border-bottom: 1px solid #02647d;color:#000"><b>TURNIEJE</b></p>
-                                </a>
-
-                                <a href="/myMatches">
-                                    <p style="border-bottom: 1px solid #02647d;color:#000"><b>MECZE</b></p>
-                                </a>
-
-								<a style="color:#000"href="/logout">
-                                    <b>WYLOGUJ</b>
-                                </a>
-							</div>
-						</div>
-
-					</div>
-
-
-
-
-					<div class="menuMobile" >
-						<a href="/rank">
-							<div  class="col-xs-12 menuHeight" >
-								<b>RANKING OGÓLNY</b>
-							</div>
-						</a>
-
-						<a href="/showTournamentForm">
-							<div class="col-xs-12  menuHeight">
-								<b>STWÓRZ TURNIEJ</b>
-							</div>
-						</a>
-                        <!-- DO POPRAWY  (ZROBIC MENU  UZYTKOWNIKA NA CALA SZEROKOSC MOBILNIE USERMENU NEW TOURNAMENT-->
-						<div  id="clickOpenMenuUser"  class="col-lg-2 col-md-2 col-sm-3 col-xs-12  col-lg-offset-0 col-md-offset-0 col-sm-offset-0   menuHeight" >
-							<b style="color:#fff;padding:5px;">{{login}}</b>
-                            <img style="cursor:pointer;" src="../static/img/avatar.jpg"  class="imgPlayer">
-
-							<div class="userMenu ">
-								<a href="/myTournaments">
-                                    <p style="border-bottom: 1px solid #02647d;color:#000"><b>TURNIEJE</b></p>
-                                </a>
-
-                                <a href="/myMatches">
-                                    <p style="border-bottom: 1px solid #02647d;color:#000"><b>MECZE</b></p>
-                                </a>
-
-								<a style="color:#000"href="/logout">
-                                    <b>WYLOGUJ</b>
-                                </a>
-							</div>
-						</div>
-					</div>
-
+	<nav>
+		<div class="row">
+			<a href="/">
+			<div class="col-lg-2 col-md-3 col-sm-3 col-xs-12 col-lg-offset-0 col-md-offset-0 col-sm-offset-0 col-xs-offset-0 menuHeight">
+				<img id="logo"  src="../static/img/logo.png">
+			</div>
+			</a>
+			<a href="/rank">
+				<div  class="col-lg-2 col-md-2 col-sm-2 col-xs-12  col-lg-offset-4 col-md-offset-3 col-sm-offset-2   menuHeight" >
+					<b>RANKING OGÓLNY</b>
 				</div>
-			</nav>
+			</a>
+
+			<a href="/showTournamentForm">
+				<div class="col-lg-2 col-md-2 col-sm-2 col-xs-12  col-lg-offset-0 col-md-offset-0 col-sm-offset-0   menuHeight">
+					<b>STWÓRZ TURNIEJ</b>
+				</div>
+			</a>
+
+
+			<div  id="clickOpenMenuUser"  class="col-lg-2 col-md-2 col-sm-3 col-xs-12  col-lg-offset-0 col-md-offset-0 col-sm-offset-0   menuHeight" >
+				<b style="color:#fff;padding:5px;">{{login}}</b>
+				<img style="cursor:pointer;" src="../static/img/avatar.jpg"  class="imgPlayer">
+
+				<div class="userMenu ">
+					<a href="/myTournaments">
+						<p style="border-bottom: 1px solid #02647d;color:#000"><b>TURNIEJE</b></p>
+					</a>
+
+					<a href="/myMatches">
+						<p style="border-bottom: 1px solid #02647d;color:#000"><b>MECZE</b></p>
+					</a>
+
+					<a style="color:#000"href="/logout">
+						<b>WYLOGUJ</b>
+					</a>
+				</div>
+			</div>
+
+		</div>
+	</nav>
+</div>
+
+<div class="container">
+	<img src="../static/img/mecz.jpg" class="subjectPicture" style="margin-bottom:0px;">
+
+
+
+	{% for mecz in mecze %}
+	<div class="matchItem">
+
+		{% if mecz['data'] %}
+		<div class="match" >
+
+			<div class="itemData">
+				<p class="piD">Data: {{ mecz['data'] }}</p>
+			</div>
+
+			<div class="itemScore">
+				<div class="piS">
+
+					{{login}}
+					<img src="../static/img/avatar.jpg"  class="imgPlayer">
+					<b>{{mecz['wynik_meczu'][0]}} : {{mecz['wynik_meczu'][1]}} </b>
+					<img src="../static/img/avatar.jpg" class="imgPlayer">
+					{{mecz['przeciwnik']}}
+
+					<span type="button" class="detailsScore" id="detailsScore{{loop.index}}" itemid="{{loop.index}}">relacja</span>
+				</div>
+			</div>
+
+			<div class="detailsMatch" id="detailsMatch{{loop.index}}">
+				{% for i in mecz['przebieg_meczu'] %}
+					<p>
+						{% if mecz['punkty_moje'][loop.index] > mecz['punkty_przeciwnika'][loop.index] %}
+							<b style="color:teal">wygrany &nbsp; {{mecz['punkty_moje'][loop.index]}} : {{mecz['punkty_przeciwnika'][loop.index]}}</b>
+						{% elif mecz['punkty_moje'][loop.index] < mecz['punkty_przeciwnika'][loop.index] %}
+							<b style="color:tomato">przegrany &nbsp; {{mecz['punkty_moje'][loop.index]}} : {{mecz['punkty_przeciwnika'][loop.index]}}</b>
+						{% else %}
+							<b>remis &nbsp; {{mecz['punkty_moje'][loop.index]}} : {{mecz['punkty_przeciwnika'][loop.index]}}</b>
+						{% endif %}
+					</p>
+					{% for j in i %}
+						{% if j == 0 %}
+							<img id="red2"  src="../static/img/red2.png">
+						{% elif j == 1 %}
+							<img id="blue2"  src="../static/img/blue2.png">
+						{% endif %}
+					{% endfor %}
+					<p></p>
+				{% endfor %}
+			</div>
+
+		</div>
+		{% endif %}
 
 	</div>
+	{% endfor %}
 
-
-
-<div class="match" >
-    <div class="itemMatch">
-        <p class="piM">MECZE TOWARZYSKIE</p>
-    </div>
 </div>
 
-<div class="match" >
-    {% for mecz in mecze %}
-        {% if mecz['data'] %}
-
-
-                <div class="itemData">
-                    <p class="piD">Data: {{ mecz['data'] }}</p>
-                </div>
-
-                <div class="itemScore">
-                    <div class="piS">
-
-                        {{login}}
-                        <img src="../static/img/avatar.jpg"  class="imgPlayer">
-                        <b>{{mecz['wynik_meczu'][0]}} : {{mecz['wynik_meczu'][1]}} </b>
-                        <img src="../static/img/avatar.jpg" class="imgPlayer">
-                        {{mecz['przeciwnik']}}
-
-                        <span type="button" id="detailsScore" itemid="{{loop.index}}">relacja</span>
-                    </div>
-                </div>
-
-                <div class="detailsMatch{{loop.index}}]" id="Match">
-                    {% for i in mecz['przebieg_meczu'] %}
-                        <p>
-                            {% if mecz['punkty_moje'][loop.index] > mecz['punkty_przeciwnika'][loop.index] %}
-								<b style="color:teal">wygrany &nbsp; {{mecz['punkty_moje'][loop.index]}} : {{mecz['punkty_przeciwnika'][loop.index]}}</b>
-							{% elif mecz['punkty_moje'][loop.index] < mecz['punkty_przeciwnika'][loop.index] %}
-								<b style="color:tomato">przegrany &nbsp; {{mecz['punkty_moje'][loop.index]}} : {{mecz['punkty_przeciwnika'][loop.index]}}</b>
-							{% else %}
-								<b>remis &nbsp; {{mecz['punkty_moje'][loop.index]}} : {{mecz['punkty_przeciwnika'][loop.index]}}</b>
-							{% endif %}
-                        </p>
-                        {% for j in i %}
-                            {% if j == 0 %}
-                                <img id="red2"  src="../static/img/red2.png">
-                            {% elif j == 1 %}
-                                <img id="blue2"  src="../static/img/blue2.png">
-                            {% endif %}
-                        {% endfor %}
-                        <p></p>
-                    {% endfor %}
-                </div>
-
-        {% endif %}
-    {% endfor %}
-</div>
-
-
-
-
-<footer class="footer">
+<footer class="footer" style="margin-top:30px;">
 	&copy; Zespół 10. Wszelkie prawa zastrzeżone
 </footer>
-
-
 
 </body>
 

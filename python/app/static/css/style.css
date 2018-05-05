@@ -38,6 +38,7 @@
 
 body {
     font-family:  Arial, Helvetica, sans-serif;
+    height:100%;
 }
 
 
@@ -156,9 +157,9 @@ a:hover {
     margin-left:        auto;
     margin-right:       auto;
     position:absolute;
-    top:16%;
+    top:5%;
     left:25%;
-    padding: 15px 0 4%;
+    padding: 15px 0 0%;
     background: #f6f6f6;
     border: 1px solid silver;
     font: 16px calibri;
@@ -169,13 +170,32 @@ a:hover {
 
 }
 
+#leftSingFrame {
+    top: 25%;
+}
+
+
 .item {
     color: #000;
 }
 
 
-
-
+.subjectPicture {
+    width:100%;
+    margin-top:30px;
+    margin-bottom: 30px;
+    margin-left : auto;
+    margin-right : auto;
+}
+.matchItem {
+    width : 48%;
+    margin-left:1%;
+    margin-top:30px;
+    text-align:center;
+    position: relative;
+    float:left;
+    border: 5px solid #02647d;
+}
 
             /* USER HOME */
 
@@ -194,11 +214,12 @@ a:hover {
     border: 1px solid #02647d;
     border-radius: 5px;
     font-size: 1.5vh;
+    background-color:#fff;
 }
 
 .match {
-    margin-left: 5%;
-    width: 40%;
+
+    width: 100%;
     height: auto;
     padding: 0px 0px 0px; 8px;
     background: #f6f6f6;
@@ -280,7 +301,7 @@ a:hover {
 	margin-top:0%;
 }
 
-#detailsScore {
+.detailsScore {
     position:relative;
     float:right;
     height:auto;
@@ -301,6 +322,9 @@ a:hover {
 
 }
 
+
+
+
             /* ////// USER-HOME \\\\\\\ */
 
 
@@ -316,8 +340,8 @@ a:hover {
 @media only screen and (max-width: 1350px) and (min-width: 1150px){
 	#napis1 {
 		padding-top: 46vw;
+	}
 
-	}	
 }
 
 @media only screen and (max-width: 1150px) and (min-width: 767px){
@@ -328,6 +352,19 @@ a:hover {
 }
 
 @media only screen and (max-width: 767px) and (min-width: 100px){
+    .singFrame {
+        width:100%;
+        left: 0%;
+    }
+
+    #leftSingFrame {
+        top: 15%;
+    }
+
+    .matchItem {
+	    width: 100%;
+	}
+
     h1 {
         font-size:22px;
     }
