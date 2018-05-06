@@ -195,8 +195,28 @@ a:hover {
     position: relative;
     float:left;
     border: 5px solid #02647d;
+    border-radius: 15px;
+}
+.matchItemTournament {
+    width : 100%;
+    margin-top:-10px;
+    text-align:center;
+    position: relative;
+    float:left;
+    border: 3px solid #02647d;
+
 }
 
+.tour {
+    width:100%;
+    height: auto;
+    background-color: #02647d;
+    color: #fff;
+    margin-bottom:10px;
+}
+.typ {
+    font-size: 3.7vh;
+}
             /* USER HOME */
 
 
@@ -245,6 +265,7 @@ a:hover {
     -webkit-box-shadow: 0 0 2px silver;
     -moz-box-shadow: 0 0 2px silver;
     box-shadow: 0 0 2px silver;
+    border-radius: 15px;
 }
 
 .itemMatch {
@@ -269,6 +290,7 @@ a:hover {
     background-color: #cccccc;
     height:auto;
     text-align: left;
+    border-radius: 15px 15px 0px 0px;
 }
 
 .piD {
@@ -317,6 +339,15 @@ a:hover {
 	margin-top:0%;
 }
 
+.imgPuchar {
+
+    vertical-align: middle;
+    width: 5vh;
+    height: auto;
+
+	padding-top:10%;
+}
+
 .detailsScore {
     position:relative;
     float:right;
@@ -338,7 +369,17 @@ a:hover {
 
 }
 
+.glyphicon.glyphicon-menu-down {
+    cursor: pointer;
+    font-size: 2.7vh;
+    padding-top: 15%;
+}
 
+.glyphicon.glyphicon-menu-right {
+    cursor: pointer;
+    font-size: 2.7vh;
+    padding-top: 15%;
+}
 
 
             /* ////// USER-HOME \\\\\\\ */
@@ -383,6 +424,10 @@ a:hover {
 
     .matchItem {
 	    width: 100%;
+	}
+	.matchItemTournament {
+	   width: 100%;
+
 	}
 
     h1 {

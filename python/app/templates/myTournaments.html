@@ -1,6 +1,10 @@
 <!DOCTYPE html>
 <html lang="pl">
 
+
+
+
+
 <head>
 
 	<title>Ping Point - Aplikacja stworzona przez Zespół X</title>
@@ -14,29 +18,25 @@
 	<!-- BOOTSTRAP -->
 	<link href="../static/css/bootstrap.css" rel="stylesheet">
     <link href="http://getbootstrap.com/examples/jumbotron-narrow/jumbotron-narrow.css" rel="stylesheet">
-
+	 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <!-- GŁÓWNY ARKUSZ STYLI -->
     <link href="../static/css/style.css" rel="stylesheet">
 
 
-	<script src="../static/js/angular.js" rel="stylesheet"></script>
-	<script src="../static/js/index.js" rel="stylesheet"></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
     <script>
-    open = false;
+	open = false;
+	openDetails = false;
     openUserMenu = false;
     $(document).ready(function() {
-        $("#detailsScore").click(function() {
-            if (open == true) {
-                $(".detailsMatch").slideUp();
-                open = false;
-                alert(openRel);
-            } else {
-                $(".detailsMatch").slideDown();
-                open = true;
-            }
-        });
+
+
+
+
+
+
+
         $("#clickOpenMenuUser").click(function() {
             if (openUserMenu == true) {
                 $(".userMenu").slideUp();
@@ -44,128 +44,113 @@
             } else {
                 $(".userMenu").slideDown();
                openUserMenu = true;
+
             }
         });
+
+
+
     });
-	</script>
+
+
+
+
+    </script>
 
 
 
 </head>
 
-<body ng-app="myApp" ng-controller="myCtrl">
-<div class="container-fluid" >
-	<div class="header" >
-			<nav>
-				<div class="row">
-					<a ng-click="menu()">
-					<div class="col-lg-2 col-md-3 col-sm-3 col-xs-12 col-lg-offset-0 col-md-offset-0 col-sm-offset-0 col-xs-offset-0 menuHeight">
-						<img id="logo"  src="../static/img/logo.png">
-					</div>
-					</a>
-					<div class="menuPc">
-
-						<a href="/rank">
-							<div  class="col-lg-2 col-md-2 col-sm-2 col-xs-12  col-lg-offset-4 col-md-offset-3 col-sm-offset-2   menuHeight" >
-								<b>RANKING OGÓLNY</b>
-							</div>
-						</a>
-
-						<a href="/showTournamentForm">
-							<div class="col-lg-2 col-md-2 col-sm-2 col-xs-12  col-lg-offset-0 col-md-offset-0 col-sm-offset-0   menuHeight">
-								<b>STWÓRZ TURNIEJ</b>
-							</div>
-						</a>
-
-
-						<div  id="clickOpenMenuUser"  class="col-lg-2 col-md-2 col-sm-3 col-xs-12  col-lg-offset-0 col-md-offset-0 col-sm-offset-0   menuHeight" >
-							<b style="color:#fff;padding:5px;">{{login}}</b>
-                            <img style="cursor:pointer;" src="../static/img/avatar.jpg"  class="imgPlayer">
-
-							<div class="userMenu ">
-								<a href="/myTournaments">
-                                    <p style="border-bottom: 1px solid #02647d;color:#000"><b>TURNIEJE</b></p>
-                                </a>
-
-                                <a href="/myMatches">
-                                    <p style="border-bottom: 1px solid #02647d;color:#000"><b>MECZE</b></p>
-                                </a>
-
-								<a style="color:#000"href="/logout">
-                                    <b>WYLOGUJ</b>
-                                </a>
-							</div>
-						</div>
-
-					</div>
-
-
-
-
-					<div class="menuMobile" >
-						<a href="/rank">
-							<div  class="col-xs-12 menuHeight" >
-								<b>RANKING OGÓLNY</b>
-							</div>
-						</a>
-
-						<a href="/showTournamentForm">
-							<div class="col-xs-12  menuHeight">
-								<b>STWÓRZ TURNIEJ</b>
-							</div>
-						</a>
-                        <!-- DO POPRAWY  (ZROBIC MENU  UZYTKOWNIKA NA CALA SZEROKOSC MOBILNIE USERMENU NEW TOURNAMENT-->
-						<div  id="clickOpenMenuUser"  class="col-lg-2 col-md-2 col-sm-3 col-xs-12  col-lg-offset-0 col-md-offset-0 col-sm-offset-0   menuHeight" >
-							<b style="color:#fff;padding:5px;">{{login}}</b>
-                            <img style="cursor:pointer;" src="../static/img/avatar.jpg"  class="imgPlayer">
-
-							<div class="userMenu ">
-								<a href="/myTournaments">
-                                    <p style="border-bottom: 1px solid #02647d;color:#000"><b>TURNIEJE</b></p>
-                                </a>
-
-                                <a href="/myMatches">
-                                    <p style="border-bottom: 1px solid #02647d;color:#000"><b>MECZE</b></p>
-                                </a>
-
-								<a style="color:#000"href="/logout">
-                                    <b>WYLOGUJ</b>
-                                </a>
-							</div>
-						</div>
-					</div>
-
+<body >
+<div class="header" >
+	<nav>
+		<div class="row">
+			<a href="/">
+			<div class="col-lg-2 col-md-3 col-sm-3 col-xs-12 col-lg-offset-0 col-md-offset-0 col-sm-offset-0 col-xs-offset-0 menuHeight">
+				<img id="logo"  src="../static/img/logo.png">
+			</div>
+			</a>
+			<a href="/rank">
+				<div  class="col-lg-2 col-md-2 col-sm-2 col-xs-12  col-lg-offset-4 col-md-offset-3 col-sm-offset-2   menuHeight" >
+					<b>RANKING OGÓLNY</b>
 				</div>
-			</nav>
+			</a>
 
-	</div>
+			<a href="/showTournamentForm">
+				<div class="col-lg-2 col-md-2 col-sm-2 col-xs-12  col-lg-offset-0 col-md-offset-0 col-sm-offset-0   menuHeight">
+					<b>STWÓRZ TURNIEJ</b>
+				</div>
+			</a>
 
+
+			<div  id="clickOpenMenuUser"  class="col-lg-2 col-md-2 col-sm-3 col-xs-12  col-lg-offset-0 col-md-offset-0 col-sm-offset-0   menuHeight" >
+				<b style="color:#fff;padding:5px;">{{login}}</b>
+				<img style="cursor:pointer;" src="../static/img/avatar.jpg"  class="imgPlayer">
+
+				<div class="userMenu ">
+					<a href="/myTournaments">
+						<p style="border-bottom: 1px solid #02647d;color:#000"><b>TURNIEJE</b></p>
+					</a>
+
+					<a href="/myMatches">
+						<p style="border-bottom: 1px solid #02647d;color:#000"><b>MECZE</b></p>
+					</a>
+
+					<a style="color:#000"href="/logout">
+						<b>WYLOGUJ</b>
+					</a>
+				</div>
+			</div>
+
+		</div>
+	</nav>
 </div>
 
-
 <div class="container">
-	<img src="../static/img/turnieje.jpg" class="subjectPicture" style="margin-bottom:0px;">
+	<img src="../static/img/turnieje.jpg" class="subjectPicture" >
 	{% if turnieje %}
 
 
 	{% for turniej in turnieje %}
-	<div class="matchItem">
+	<div class="tour">
+		<div class="row">
 
-		<p>id turnieju: {{turniej['id']}}</p>
-		<p>nadzorca: {{turniej['nadzorca']}}</p>
-		<p>typ: {{turniej['typ']}}</p>
-		{% if turniej['opis'] %}
-			<p>opis: {{turniej['opis']}}</p>
+				<div  class="col-lg-2 col-md-2 col-sm-3 col-xs-12  col-lg-offset-0 col-md-offset-0 col-sm-offset-0">
+					<span class="glyphicon glyphicon-menu-down" onclick="openTour('{{loop.index}}')"></span>
+				</div>
+			<div  class="col-lg-2 col-md-2 col-sm-3 col-xs-12  col-lg-offset-0 col-md-offset-0 col-sm-offset-0">
+				{% if turniej['typ'] == 'ligowy' %}
+				<img src="../static/img/liga.png"  class="imgPuchar">
+				{% elif turniej['typ'] == 'pucharowy' %}
+				<img src="../static/img/puchar.png"  class="imgPuchar">
+				{% endif %}
+			</div>
+
+			<div  class="col-lg-4 col-md-2 col-sm-3 col-xs-12  col-lg-offset-0 col-md-offset-0 col-sm-offset-0">
+				<span class="typ">{{turniej['typ']}}</span>
+					{% if turniej['opis'] %}
+			<p>{{turniej['opis']}}</p>
+			</div>
+			<div  class="col-lg-1 col-md-2 col-sm-3 col-xs-12  col-lg-offset-2 col-md-offset-0 col-sm-offset-0">
+				<span class="typ">#{{turniej['id']}}</span>
+				<p>{{turniej['nadzorca']}}</p>
+			</div>
+		</div>
+
+
+
+
+
 		{% endif %}
 		{% if login == turniej['nadzorca'] %}
 		<a href="/deleteTournament/{{turniej['id']}}"><p style="color:red;"> usuń turniej</p></a>
 		{% endif %}
-
-		<p>mecze:</p>
+	</div>
+	<div class="matchItemTournament" id="detailsTour{{loop.index}}" style="display:none">
 		<div class="matchTournament">
 				{% for mecz in turniej['mecze'] %}
 					{% if mecz['data'] %}
-						<div class="itemData">
+						<div class="itemData" style="border-radius:0px">
 							<p class="piD">Data: {{mecz['data']}}</p>
 						</div>
 
@@ -202,7 +187,7 @@
 							{% endfor %}
 						</div>
 					{% else %}
-						<div class="itemData">
+						<div class="itemData" style="border-radius:0px">
 							<p class="piD"><b>{{mecz['gracz1']}} - {{mecz['gracz2']}}</b>: &nbsp; mecz się nie odbył</p>
 						</div>
 					{% endif %}
@@ -270,17 +255,30 @@
 </footer>
 <script>
 
-function detailsList(index) {
+function openTour(index) {
 
 		if (open == true) {
-			$("#detailsMatch" + index).slideUp();
+			$("#detailsTour" + index).slideUp();
 			open = false;
 
 		} else {
-			$("#detailsMatch" + index).slideDown();
+			$("#detailsTour" + index).slideDown();
 			open = true;
 		}
 }
+
+function detailsList(index) {
+
+		if (openDetails  == true) {
+			$("#detailsMatch" + index).slideUp();
+			openDetails  = false;
+
+		} else {
+			$("#detailsMatch" + index).slideDown();
+			openDetails  = true;
+		}
+}
+
 </script>
 
 </body>
