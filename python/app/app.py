@@ -363,6 +363,10 @@ def getTournamentDetails(id_turnieju):
 
 @app.route("/")
 def main():
+    """
+    Metoda odpowiedzialna za wyświetlanie strony domowej zalogowanego użytkownika, zaś dla niezalogowanego,
+    wyświetlona zostaje strona do logowania bądź rejestracji.
+    """
     if session.get('user'):
         return redirect('userHome')
     else:
@@ -370,6 +374,11 @@ def main():
 
 @app.route('/showSignUp')
 def showSignUp():
+    """
+    Metoda wyświetla stroną z formularzem do zalogowania się. W przypadku zalogowanego użytkownika, zwróci jego stronę
+    domową.
+
+    """
     if session.get('user'):
         return redirect('userHome')
     else:
@@ -377,7 +386,12 @@ def showSignUp():
 
 @app.route('/signUp', methods=['POST'])
 def signUp():
-    # czytam wartosci z formularza rejestracji uzytkownika
+    """
+    Metoda odpowiedzialna za pobranie danych o rejestracji z formularza, walidację danych i wyświetlenie informacji
+    o utworzeniu bądź nieutworzeniu konta.
+
+    """
+    # czytanie wartosci z formularza rejestracji uzytkownika
     p_login = request.form['inputName']
     p_email = request.form['inputEmail']
     p_haslo = request.form['inputPassword']
@@ -388,23 +402,26 @@ def signUp():
         # Jesli wszystko ok, lacze sie z baza danych:
         conn = mysql.connect()
         cursor = conn.cursor()
-        # hashed_password = generate_password_hash(p_haslo)
         cursor.callproc('sp_createUser', (p_login, p_email, p_haslo))
         data = cursor.fetchall()
-        print(data)
-        conn.commit()
+        conn.commit() # zamknięcie połączenia
         cursor.close()
         conn.close()
 
-        if len(data) is 0:
+        if len(data) is 0: # po pomyślnej rejestracji wyświetla stronę logowania.
             return render_template('signin.html', info2='Konto zostało utworzone. Możesz teraz się zalogować.')
-        else:
+        else: # w przeciwnym razie wyświetla się pod formularzem rejestracji informacja o niepowodzeniu.
             return render_template('signup.html', info='Nie udało się założyć konta.')
     else:
         return json.dumps({'html': '<span>Wypełnij pola</span>'})
 
 @app.route('/showSignIn')
 def showSignin():
+    """
+    Metoda odpowiada za wyświetlenie strony z formularzem do logowania, w przypadku gdy użytkownik jest już zalogowany,
+    wyświetla jego stronę domową.
+    """
+
     if session.get('user'):
         return redirect('userHome')
     else:
@@ -412,176 +429,208 @@ def showSignin():
 
 @app.route('/validateLogin', methods=['POST'])
 def validateLogin():
+    """
+    Metoda wykonywana po wypełnieniu formularza logowania, przeprowadza walidację danych i w zależności od poprawności
+    danych wyświetla stronę domową użytkownika lub informację o nieudanym zalogowaniu się.
+    """
+
+    # Pobieranie danych z formularza strony signin.html
     p_login = request.form['inputName']
     p_haslo = request.form['inputPassword']
 
-    con = mysql.connect()
+    con = mysql.connect() # połączenie z bazą danych
     cursor = con.cursor()
-    cursor.callproc('sp_validateLogin', (p_login,))
-    data = cursor.fetchall()
-    con.commit()
+    cursor.callproc('sp_validateLogin', (p_login,)) # uruchomienie w bazie procedury walidacji danych logowania
+    data = cursor.fetchall() # pobranie informacji z wywołąnej procedury
+    con.commit() # zamknięcie połączenia z bazą danych
+    cursor.close()
+    con.close()
 
     if len(data) > 0:
         if str(data[0][2]) == p_haslo:
+            # zalogowanie użytkownika oraz wyświetlenie jego strony domowej.
             session['user'] = data[0][0]
-            cursor.close()
-            con.close()
             return redirect('/userHome')
         else:
+            # wyświetlenie ponownie formularza logowania z informacją o niepowodzeniu.
             return render_template('signin.html', info="Podano złe dane logowania.")
     else:
         return render_template('signin.html', info="Podano złe dane logowania.")
 
 @app.route('/userHome')
 def userHome():
+    """
+    Metoda wyświetla stronę domową zalogowanego użytkownika. Strona userHome.html zawiera podstawowe statystyki
+    gracza, ostatnio rozegrane mecze oraz listę zaplanowanych meczy.
+    """
     #jesli uzytkownik poprawnie sie zalogowal
     if session.get('user'):
         login = session.get('user') #zmienna zawiera login zalogowanego uzytkownika
 
-        #STATYSTYKI:
-        con = mysql.connect() #lacze z baza danych
+        #STATYSTYKI
+        con = mysql.connect() # łączenie z baza danych
         cursor = con.cursor()
         cursor.callproc('sp_getMecz', (login,)) #wywoluje procedure SQL, ktora pobiera mecze uzytkownika
         dane = cursor.fetchall()
         con.commit()
 
-        rozegrane_mecze = []
+        rozegrane_mecze = [] # zmienne pomocnicze, listy zawierające dane o meczach użytkownika
         nierozegrane_mecze = []
-
-        for i in dane:
-            if i[4]:
+        for i in dane: # przeglądanie wszystkich meczy zalogowanego gracza
+            if i[4]: # jeżeli mecz się odbył dodaję go do listy rozegranych meczy
                 rozegrane_mecze.append(i)
-            else:
+            else: # w przeciwnym wypadku kiedy data meczu wynosi None to dodaje mecz do listy nierozegranych.
                 nierozegrane_mecze.append(i)
-        rozegrane_mecze = sorted(rozegrane_mecze, key=lambda x: x[4], reverse=True)
+        rozegrane_mecze = sorted(rozegrane_mecze, key=lambda x: x[4], reverse=True) # sortuję rozegrane według daty
 
+        # wywołuję procedurę sql która zwraca ilość wygranych meczy i zapisuję tą informację do zmiennej 'wygranych'
         cursor.callproc('sp_getWinners',)
         dane=cursor.fetchall()
+        con.commit() # zamykam połączenie z bazą danych
+        cursor.close()
+        con.close()
         for i in dane:
             if i[0] == login:
                 wygranych = i[1]
 
-
-
+        # zapisuję statystyki gracza do słownika
         statystyki={
             'rozegranych' : len(rozegrane_mecze),
             'wygranych' : wygranych,
             'nierozegranych' : len(nierozegrane_mecze),
         }
 
-        #wydobywam szczegóły o ostatnich trzech rozegranych meczach
+        # wydobywam szczegóły o ostatnich trzech rozegranych meczach i zapisuję te informacje do listy 'mecze'
         mecze=[]
         for i in rozegrane_mecze[:3]:
-            mecze.append(getMatchDetails(i[0], login)) #wydobywam szczegóły ostatnich trzech meczy i zapisuje do mecze=[]
+            mecze.append(getMatchDetails(i[0], login))
 
+        # zapisuję do listy 'mecze2' informacje o nierozegranych meczach turniejowych.
         mecze2=[]
         for i in nierozegrane_mecze:
-            if i[2] == login:
+            if i[2] == login: # uwzględniam przeciwika i zapisuję jego login.
                 przeciwnik = i[3]
             else:
                 przeciwnik = i[2]
 
-            mecze2.append({
+            mecze2.append({ # słownik zawiera dla każdego nierozegranego meczu id_turnieju oraz login przeciwnika
                 'przeciwnik' : przeciwnik,
                 'id_turnieju' : i[1],
             })
 
-        zdarzenia={
+        zdarzenia={ # słownik który zawiera wszystkie zebrane informacje o meczach
             'rozegrane_mecze' : mecze,
             'nierozegrane_mecze' : mecze2,
         }
 
-        cursor.close()
-        con.close()
-        #przekazuje zmienne do wyswietlenia
+        # przekazuje zmienne do wyswietlenia na stronie domowej użytkownika
         if len(statystyki):
             return render_template('userHome.html', login=login, statystyki=statystyki, zdarzenia=zdarzenia)
         else:
             return render_template('info.html', info='Brak danych', login=login)
     else:
-        return redirect('/showSignUp')
+        return redirect('/showSignUp') # jeżeli użytkownik się nie zalogował następuje przekierowanie
 
 @app.route('/myMatches')
 def myMatches():
+    """
+    Metoda ta wyświetla wszystkie rozegrane mecze zalogowanego gracza w raz ze szczegółowymi informacjami.
+    Korzysta z funkcji getUserMatches().
+    """
+
     #jesli uzytkownik poprawnie sie zalogowal
     if session.get('user'):
-        login = session.get('user') #zmienna zawiera login zalogowanego uzytkownika
-        mecze = getUserMatches(login)
+        login = session.get('user') # zmienna zawiera login zalogowanego uzytkownika
+        mecze = getUserMatches(login) # pobieram dane o meczach
 
-
+        # przekazuję dane o meczach i wyświetlam w stronie myMatches.html
         return render_template('myMatches.html', login=login, mecze=mecze)
     else:
         return redirect('/showSignUp')
 
 @app.route('/showTournamentForm')
 def showTournamentForm():
-    if session.get('user'):
+    """
+    Metoda odpowiedzialna jest za zgromadzenie listy użytkowników zarejestrowanych w systemie i przekazanie tej listy
+    do formularza tworzenia nowego turnieju. Korzysta z procedury bazodanowej 'sp_getUsers'
+    """
+
+    if session.get('user'): # jeżeli użytkownik poprawnie się zalogował
         # tworze listę loginów wszystkich użytkowników
-        uzytkownicy = []
-        con = mysql.connect()
+        uzytkownicy = [] # zmienna będzie listą wszystkich użytkowników w systemie
+        con = mysql.connect() # łącze z bazą danych
         cursor = con.cursor()
-        cursor.callproc('sp_getUsers', ())
+        cursor.callproc('sp_getUsers', ()) # wywołuję procedurę aby pobrać listę użytkowników
         dane = cursor.fetchall()
-        con.commit()
+        con.commit() # zamykam połaczenie z bazą
         cursor.close()
         con.close()
-        for i in dane:
+
+        for i in dane: # dodaję użytkowników do listy
             uzytkownicy.append(i[0])
 
+        # wyświetlam formularz do utworzenia nowego turnieju
         return render_template('newTournament.html', nadzorca=session.get('user'), uzytkownicy=uzytkownicy)
     else:
         return render_template('signin.html')
 
 @app.route('/newTournament',  methods=['POST', 'GET'])
 def newTournament():
-    if session.get('user'):
-        #pobieram z formularza: do_ilu_punkty, do_ilu_sety, typ, opis
-        if request.method=='POST':
-            p_uczestnicy = request.form.getlist('inputGracze')
-            p_punkty = request.form['inputPunkty']
-            p_sety = request.form['inputSety']
-            p_typ = request.form.get('inputTyp')
-            p_opis = request.form['inputOpis']
-            p_login = session.get('user')
+    """
+    Metoda pobiera z formularza nowego turnieju dane o turnieju oraz tworzy turniej w bazie oraz tworzy mecze.
 
-        if p_punkty and p_sety and p_typ and p_login:
-            #Tworze turniej w bazie danych
+    """
+    if session.get('user'): # jeżeli użytkownik poprawnie się zalogował
+        #pobieram z formularza: do_ilu_punkty, do_ilu_sety, typ, opis
+        p_uczestnicy = request.form.getlist('inputGracze')
+        p_punkty = request.form['inputPunkty']
+        p_sety = request.form['inputSety']
+        p_typ = request.form.get('inputTyp')
+        p_opis = request.form['inputOpis']
+        p_login = session.get('user')
+
+        if p_punkty and p_sety and p_typ and p_login: # sprawdzam czy pola były wypełnione
+            #Tworze turniej w bazie danych z pomocą procedury SQL
             con = mysql.connect()
             cursor = con.cursor()
             cursor.callproc('sp_newTurniej', (p_punkty, p_sety, p_typ, p_opis, p_login))  #
-            id_turnieju = cursor.fetchall()
+            id_turnieju = cursor.fetchall() # pobieram id nowo utworzonego turnieju
             con.commit()
 
-            liczba_uczestnikow = len(p_uczestnicy)
+            liczba_uczestnikow = len(p_uczestnicy) # zapisuję ilość uczestników turnieju
             pary = []  # zmienna bedzie zawierac pary graczy ktorzy beda rozgrywac mecz
-            if p_typ == 'ligowy':   #LIGOWY
-                #tworze pary uczestnikow ktorzy beda razem grac ze soba mecze "kazdy z kazdym" LIGOWY
+            if p_typ == 'ligowy': # w zależności od typu tunieju
+                #tworze pary uczestnikow ktorzy beda razem grac ze soba mecze "kazdy z kazdym" - LIGOWY
                 for i in range(liczba_uczestnikow - 1):
                     for j in range(liczba_uczestnikow - 1 - i):
                         para = []
                         para.append(p_uczestnicy[i])
                         para.append(p_uczestnicy[j+i+1])
                         pary.append(para)
-                random.shuffle(pary)
-                info = 'Utworzono Turniej ligowy'
+                random.shuffle(pary) # losowa kolejność na liscie meczy
+                info = 'Utworzono Turniej ligowy' # zapisuję do zmiennej informacje o utworzeniu turnieju
+
             elif p_typ == 'pucharowy':  #PUCHAROWY
-                if is_power2(liczba_uczestnikow):
-                    for i in range(int(liczba_uczestnikow / 2)):
+                if is_power2(liczba_uczestnikow): # sprawdzam czy liczba użytkowników jest odpowiednia
+                    for i in range(int(liczba_uczestnikow / 2)): # tworzę pary użytkowników grających mecze
                         para = []
                         para.append(p_uczestnicy[i])
                         para.append(p_uczestnicy[liczba_uczestnikow - i - 1])
                         pary.append(para)
-                    info = 'Utworzono Turniej pucharowy'
+                    info = 'Utworzono Turniej pucharowy' # zapisuję do zmiennej informację o utworzeniu meczu
                 else:
+                    # liczba graczy w turnieju pucharowym musi być 2^n
                     info = 'Zla liczba uczestnikow. W turnieju pucharowym liczba uczestników musi wynosić 2^n'
-
+                    
             #wywoluje procedure SQL w bazie, ktora tworzy pojedyncze mecze dla turnieju:
-            for i in pary:
+
+            for i in pary: # tworzę w bazie mecze dla turnieju
                 cursor.callproc('sp_newMecz', (id_turnieju, i[0], i[1]))
                 con.commit()
         else:
             info = 'Nie utworzono turnieju!'
-            
+
+        # po pomyślnym utworzeniu turnieju pobieram informacje o turniejach zalogowanego użytkownika
         cursor.callproc('sp_getTurniejeIdGracza', (p_login,))
         dane = cursor.fetchall()
         turnieje = []
@@ -590,6 +639,7 @@ def newTournament():
         con.commit()
         cursor.close()
         con.close()
+        # wyświetlam stronę z turniejami użytkownika wraz z informacją o utworzeniu nowego turnieju
         return render_template('myTournaments.html', info=info, turnieje=turnieje, login=session.get('user'))
     else:
 
@@ -597,47 +647,59 @@ def newTournament():
 
 @app.route('/showTournament/<int:id>', methods=['GET'])
 def showTournament(id):
+    """
+    Metoda pobiera id turnieju i wyświetla stronę z informacjami o tym turnieju. Korzysta z funkcji getTournamentDetails
+    """
 
-    turniej = getTournamentDetails(id)
+    turniej = getTournamentDetails(id) # pobieram dane o turnieju
 
+    # przekazuję dane do strony tournament.html i wyświetlam.
     return render_template('tournament.html',turniej=turniej, login=session.get('user'))
 
 @app.route('/myTournaments')
 def myTournaments():
-    if session.get('user'):
+    """
+    Metoda odpowiada za pobranie danych o wszystkich turniejach zalogowanego gracza i wyświetleniu ich.
+    Korzysta z funkcji getTournamentDetails() oraz procedury w bazie danych: 'sp_getTurniejeIdGracza'
+    """
+    if session.get('user'): # jeżeli gracz jest zalogowany:
         login = session.get('user') #zmienna zawiera login zalogowanego uzytkownika
-
-        ####### Rozegrane mecze zalogowanego uzytkownika ########
 
         con = mysql.connect() #lacze z baza danych
         cursor = con.cursor()
         cursor.callproc('sp_getTurniejeIdGracza', (login,))
-        dane=cursor.fetchall()
+        dane=cursor.fetchall() # pobieram z bazy danych id turniejów w któ©ych brał udział
         con.commit()
         cursor.close()
-        con.close()
+        con.close() # zmaykam połączenie z bazą danych.
 
-        turnieje = [] #zmienna bedzie zawierac
-        for i in dane:  #znajduje mecze, które naleza do turnieju i zapisuje id turniejow do zmiennej moje_turnieje
+        turnieje = [] #zmienna bedzie zawierac listę turnieji
+        for i in dane:  #zapisuję dane o turniejach do listy turnieje[]
             turnieje.append(getTournamentDetails(i))
 
+        # przekazuję do wyświetlenia informacje o wszystkich meczech gracza
         return render_template('myTournaments.html', turnieje = turnieje, login=session.get('user'))
     return render_template('signin.html')
 
 @app.route('/deleteTournament/<int:id>', methods=['GET'])
 def deleteTournament(id):
-    con = mysql.connect()
+    """
+    Metoda pobiera id turnieju i usuwa go z bazy danych.
+    Korzysta z procedury w bazie danych: 'sp_getTurniej'
+    """
+
+    con = mysql.connect() # łącze się z bazą danych
     cursor = con.cursor()
-    cursor.callproc('sp_getTurniej', (id,))
+    cursor.callproc('sp_getTurniej', (id,)) # pobieram dane o podanym turnieju
     dane = cursor.fetchall()
 
-    if session.get('user') == dane[0][5]:
-        cursor.callproc('sp_deleteTurniej',(id,))
+    if session.get('user') == dane[0][5]: # sprawdzam czy zalogowany gracz jest nadzorcą tego turnieju
+        cursor.callproc('sp_deleteTurniej',(id,)) # usuwanie turnieju z bazy wraz z jego meczami
         dane = cursor.fetchall()
         con.commit()
         cursor.close()
         con.close()
-        return redirect('/myTournaments')
+        return redirect('/myTournaments') # wyświetlenie strony z turniejami użytkownika
     else:
         con.commit()
         cursor.close()
@@ -646,23 +708,24 @@ def deleteTournament(id):
 
 @app.route('/rank')
 def rank():
-    ##################### RANKING #######################
+    """
+    Metoda pobiera informacje o liczbie wygranych oraz przegranych meczy.
+    Tworzy listę użytkowników wraz z tym informacjami oraz sortuje według: ilość_wygranych / ilość przegranych
+    Korzysta z procedur w bazie danych: 'sp_getWinners' oraz 'sp_getLoosers'.
+    """
 
-    # wywoluje procedure w bazie ktora wypisuje loginy graczy ktorzy wygrali mecz
+    # łącze z bazą danych wywoluje procedury ktore wypisują informację o wygranych, przegranych meczach
     con = mysql.connect()
     cursor = con.cursor()
-
     cursor.callproc('sp_getWinners', )
     dane = cursor.fetchall()
-
     cursor.callproc('sp_getLoosers', )
     dane2 = cursor.fetchall()
-
-    con.commit()
+    con.commit() # zamykam połączenie z bazą
     cursor.close()
     con.close()
 
-    statystyki={}
+    statystyki={} # słownik będzie zawierać dla każdego gracza jego statystyki
     tmp={}
     for i in dane2:
         tmp[i[0]] = i[1]
@@ -678,13 +741,16 @@ def rank():
     statystyki = OrderedDict(sorted(statystyki.items(), key=lambda x: (x[1][0]) / (x[1][0]+x[1][1]), reverse=True))
 
 
-    if len(statystyki):
+    if len(statystyki): # przekazanie danych do wyświetlenia rankingu
         return render_template('rank.html', statystyki=statystyki, login=session.get('user'))
     else:
         return render_template('info.html', info='brak danych', login=session.get('user'))
 
 @app.route('/logout')
 def logout():
+    """
+    Metoda służąca do wylogowania się użytkownika.
+    """
     if session.get('user'):
         session.pop('user', None)
         return redirect('/')
