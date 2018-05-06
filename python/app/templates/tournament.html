@@ -26,21 +26,11 @@
     <script>
     open = false;
     openUserMenu = false;
+    openDetails = false;
 
     $(document).ready(function() {
 
-        $("#detailsScore").click(function() {
 
-            if (open == true) {
-                $(".detailsMatch").slideUp();
-                open = false;
-                alert(openRel);
-            } else {
-                $(".detailsMatch").slideDown();
-                open = true;
-
-            }
-        });
 
         $("#clickOpenMenuUser").click(function() {
             if (openUserMenu == true) {
@@ -66,200 +56,181 @@
 
 </head>
 
-<body ng-app="myApp" ng-controller="myCtrl">
+<body>
 
-<div class="container-fluid" >
-    <div class="header" >
-			<nav>
-				<div class="row">
-					<a ng-click="menu()">
-					<div class="col-lg-2 col-md-3 col-sm-3 col-xs-12 col-lg-offset-0 col-md-offset-0 col-sm-offset-0 col-xs-offset-0 menuHeight">
-						<img id="logo"  src="../static/img/logo.png">
-					</div>
-					</a>
-					<div class="menuPc">
-
-						<a href="/rank">
-							<div  class="col-lg-2 col-md-2 col-sm-2 col-xs-12  col-lg-offset-4 col-md-offset-3 col-sm-offset-2   menuHeight" >
-								<b>RANKING OGÓLNY</b>
-							</div>
-						</a>
-
-						<a href="/showTournamentForm">
-							<div class="col-lg-2 col-md-2 col-sm-2 col-xs-12  col-lg-offset-0 col-md-offset-0 col-sm-offset-0   menuHeight">
-								<b>STWÓRZ TURNIEJ</b>
-							</div>
-						</a>
-
-
-						<div  id="clickOpenMenuUser"  class="col-lg-2 col-md-2 col-sm-3 col-xs-12  col-lg-offset-0 col-md-offset-0 col-sm-offset-0   menuHeight" >
-							<b style="color:#fff;padding:5px;">{{login}}</b>
-                            <img style="cursor:pointer;" src="../static/img/avatar.jpg"  class="imgPlayer">
-
-							<div class="userMenu ">
-								<a href="/myTournaments">
-                                    <p style="border-bottom: 1px solid #02647d;color:#000"><b>TURNIEJE</b></p>
-                                </a>
-
-                                <a href="/myMatches">
-                                    <p style="border-bottom: 1px solid #02647d;color:#000"><b>MECZE</b></p>
-                                </a>
-
-								<a style="color:#000"href="/logout">
-                                    <b>WYLOGUJ</b>
-                                </a>
-							</div>
-						</div>
-
-					</div>
-
-
-
-
-					<div class="menuMobile" >
-						<a href="/rank">
-							<div  class="col-xs-12 menuHeight" >
-								<b>RANKING OGÓLNY</b>
-							</div>
-						</a>
-
-						<a href="/showTournamentForm">
-							<div class="col-xs-12  menuHeight">
-								<b>STWÓRZ TURNIEJ</b>
-							</div>
-						</a>
-                        <!-- DO POPRAWY  (ZROBIC MENU  UZYTKOWNIKA NA CALA SZEROKOSC MOBILNIE USERMENU NEW TOURNAMENT-->
-						<div  id="clickOpenMenuUser"  class="col-lg-2 col-md-2 col-sm-3 col-xs-12  col-lg-offset-0 col-md-offset-0 col-sm-offset-0   menuHeight" >
-							<b style="color:#fff;padding:5px;">{{login}}</b>
-                            <img style="cursor:pointer;" src="../static/img/avatar.jpg"  class="imgPlayer">
-
-							<div class="userMenu ">
-								<a href="/myTournaments">
-                                    <p style="border-bottom: 1px solid #02647d;color:#000"><b>TURNIEJE</b></p>
-                                </a>
-
-                                <a href="/myMatches">
-                                    <p style="border-bottom: 1px solid #02647d;color:#000"><b>MECZE</b></p>
-                                </a>
-
-								<a style="color:#000"href="/logout">
-                                    <b>WYLOGUJ</b>
-                                </a>
-							</div>
-						</div>
-					</div>
-
+<div class="header" >
+	<nav>
+		<div class="row">
+			<a href="/">
+			<div class="col-lg-2 col-md-3 col-sm-3 col-xs-12 col-lg-offset-0 col-md-offset-0 col-sm-offset-0 col-xs-offset-0 menuHeight">
+				<img id="logo"  src="../static/img/logo.png">
+			</div>
+			</a>
+			<a href="/rank">
+				<div  class="col-lg-2 col-md-2 col-sm-2 col-xs-12  col-lg-offset-4 col-md-offset-3 col-sm-offset-2   menuHeight" >
+					<b>RANKING OGÓLNY</b>
 				</div>
-			</nav>
+			</a>
 
-	</div>
+			<a href="/showTournamentForm">
+				<div class="col-lg-2 col-md-2 col-sm-2 col-xs-12  col-lg-offset-0 col-md-offset-0 col-sm-offset-0   menuHeight">
+					<b>STWÓRZ TURNIEJ</b>
+				</div>
+			</a>
 
-		<div class="jumbotron">
-			<h3 style="color:teal;">{{info}}</h3>
-			<p>id turnieju: {{turniej['id']}}</p>
-			<p>nadzorca: {{turniej['nadzorca']}}</p>
-			<p>typ: {{turniej['typ']}}</p>
-			{% if turniej['opis'] %}
-				<p>opis: {{turniej['opis']}}</p>
-			{% endif %}
-			{% if login == turniej['nadzorca'] %}
-			<a href="/deleteTournament/{{turniej['id']}}"><p style="color:red;"> usuń turniej</p></a>
-			{% endif %}
 
-			<p>mecze:</p>
-			<div class="match">
-					{% for mecz in turniej['mecze'] %}
-						{% if mecz['data'] %}
-							<div class="itemData">
-								<p class="piD">Data: {{mecz['data']}}</p>
-							</div>
+			<div  id="clickOpenMenuUser"  class="col-lg-2 col-md-2 col-sm-3 col-xs-12  col-lg-offset-0 col-md-offset-0 col-sm-offset-0   menuHeight" >
+				<b style="color:#fff;padding:5px;">{{login}}</b>
+				<img style="cursor:pointer;" src="../static/img/avatar.jpg"  class="imgPlayer">
 
-							<div class="itemScore">
-								<div class="piS">
-									{{mecz['gracz1']}}
-									<img src="../static/img/avatar.jpg"  class="imgPlayer">
-									<b>{{mecz['wynik_meczu'][0]}} : {{mecz['wynik_meczu'][1]}} </b>
-									<img src="../static/img/avatar.jpg" class="imgPlayer">
-									{{mecz['gracz2']}}
-									<span type="button" id="detailsScore">sety</span>
-								</div>
-							</div>
+				<div class="userMenu ">
+					<a href="/myTournaments">
+						<p style="border-bottom: 1px solid #02647d;color:#000"><b>TURNIEJE</b></p>
+					</a>
 
-							<div class="detailsMatch" id="Match">
-								{% for i in mecz['przebieg_meczu'] %}
-									<p>
-										{% if mecz['punkty_gracz1'][loop.index] > mecz['punkty_gracz2'][loop.index] %}
-											<b style="color:teal">{{mecz['gracz1']}} wygrał &nbsp; {{mecz['punkty_gracz1'][loop.index]}} : {{mecz['punkty_gracz2'][loop.index]}}</b>
-										{% elif mecz['punkty_gracz1'][loop.index] < mecz['punkty_gracz2'][loop.index] %}
-											<b style="color:tomato">{{mecz['gracz2']}} wygrał &nbsp; {{mecz['punkty_gracz2'][loop.index]}} : {{mecz['punkty_gracz1'][loop.index]}}</b>
-										{% else %}
-											<b>remis &nbsp; {{mecz['punkty_gracz1'][loop.index]}} : {{mecz['punkty_gracz2'][loop.index]}}</b>
-										{% endif %}
-									</p>
-									{% for j in i %}
-										{% if j == 0 %}
-											<img id="red2"  src="../static/img/red2.png">
-										{% elif j == 1 %}
-											<img id="blue2"  src="../static/img/blue2.png">
-										{% endif %}
-									{% endfor %}
-									<p></p>
-								{% endfor %}
-							</div>
-						{% else %}
-							<div class="itemData">
-								<p class="piD"><b>{{mecz['gracz1']}} - {{mecz['gracz2']}}</b>: &nbsp; mecz się nie odbył</p>
-							</div>
-						{% endif %}
-					{% endfor %}
+					<a href="/myMatches">
+						<p style="border-bottom: 1px solid #02647d;color:#000"><b>MECZE</b></p>
+					</a>
+
+					<a style="color:#000"href="/logout">
+						<b>WYLOGUJ</b>
+					</a>
+				</div>
 			</div>
-			<div>
-				{% for gracz in turniej['ranking'] %}
-				{% if loop.index < 4 %}
-				<p>{{loop.index}}. {{gracz}}</p>
-				{% endif %}
-				{% endfor %}
-			</div>
-
-			{% if turniej['typ']=='pucharowy' %}
-				<main id="tournament">
-					{% for runda in turniej['rundy'] %}
-						<ul class="round round-{{loop.index}}">
-							{% for mecz in runda %}
-							<li class="spacer">&nbsp;</li>
-							{% if mecz['wynik_meczu'][0] > mecz['wynik_meczu'][1]%}
-							<li class="game game-top winner">{{mecz['gracz1']}}<span>{{mecz['wynik_meczu'][0]}}</span></li>
-							<li class="game game-spacer">&nbsp;</li>
-							<li class="game game-bottom ">{{mecz['gracz2']}}<span>{{mecz['wynik_meczu'][1]}}</span></li>
-							{% elif mecz['wynik_meczu'][0] < mecz['wynik_meczu'][1]%}
-							<li class="game game-top winner">{{mecz['gracz2']}}<span>{{mecz['wynik_meczu'][1]}}</span></li>
-							<li class="game game-spacer">&nbsp;</li>
-							<li class="game game-bottom ">{{mecz['gracz1']}}<span>{{mecz['wynik_meczu'][0]}}</span></li>
-							{% else %}
-							<li class="game game-bottom">{{mecz['gracz1']}}<span>{{mecz['wynik_meczu'][0]}}</span></li>
-							<li class="game game-spacer">&nbsp;</li>
-							<li class="game game-bottom ">{{mecz['gracz2']}}<span>{{mecz['wynik_meczu'][1]}}</span></li>
-							{% endif %}
-							<li class="spacer">&nbsp;</li>
-							{% endfor %}
-						</ul>
-					{% endfor %}
-				</main>
-			{% elif turniej['typ'] == 'ligowy' %}
-				<table>
-				{% for wiersz in turniej['tabela'] %}
-					<tr>
-							{% for k in wiersz %}
-							<td>
-								{{k}}
-							</td>
-							{% endfor %}
-					</tr>
-				{% endfor %}
-				</table>
-			{% endif %}
 
 		</div>
+	</nav>
+</div>
+
+		<div class="container">
+			<img src="../static/img/turniej.jpg" class="subjectPicture" >
+
+			<div class="tour">
+				<div class="row">
+
+					<div  class="col-lg-2 col-md-2 col-sm-2 col-xs-4  col-lg-offset-0 col-md-offset-0 col-sm-offset-0 col-xs-offset-0" style="padding-top:2%">
+						{% if login == turniej['nadzorca'] %}
+						<a href="/deleteTournament/{{turniej['id']}}"><button type="button" class="btn btn-danger">usuń turniej</button> </a>
+						{% endif %}
+					</div>
+
+					<div  class="col-lg-2 col-md-2 col-sm-2 col-xs-2  col-lg-offset-0 col-md-offset-0 col-sm-offset-0 col-xs-offset-0">
+						{% if turniej['typ'] == 'ligowy' %}
+						<img src="../static/img/liga.png"  class="imgPuchar">
+						{% elif turniej['typ'] == 'pucharowy' %}
+						<img src="../static/img/puchar.png"  class="imgPuchar">
+						{% endif %}
+					</div>
+
+					<div  class="col-lg-4 col-md-4 col-sm-4 col-xs-2  col-lg-offset-0 col-md-offset-0 col-sm-offset-0 col-xs-offset-0">
+						<span class="typ">{{turniej['typ']}}</span>
+							{% if turniej['opis'] %}
+					<p>{{turniej['opis']}}</p>
+					</div>
+					<div  class="col-lg-1 col-md-1 col-sm-1 col-xs-1  col-lg-offset-2 col-md-offset-2 col-sm-offset-2 col-xs-offset-2">
+						<span class="typ">#{{turniej['id']}}</span>
+						<p>{{turniej['nadzorca']}}</p>
+					</div>
+{% endif %}
+				</div>
+			</div>
+
+
+
+
+		<div class="match">
+				{% for mecz in turniej['mecze'] %}
+					{% if mecz['data'] %}
+						<div class="itemData" style="border-radius:0px">
+							<p class="piD">Data: {{mecz['data']}}</p>
+						</div>
+
+						<div class="itemScore">
+							<div class="piS">
+								{{mecz['gracz1']}}
+								<img src="../static/img/avatar.jpg"  class="imgPlayer">
+								<b>{{mecz['wynik_meczu'][0]}} : {{mecz['wynik_meczu'][1]}} </b>
+								<img src="../static/img/avatar.jpg" class="imgPlayer">
+								{{mecz['gracz2']}}
+								<span type="button" class="detailsScore" onclick="detailsList('{{loop.index}}')" >sety</span>
+							</div>
+						</div>
+
+						<div class="detailsMatch" id="detailsMatch{{loop.index}}">
+							{% for i in mecz['przebieg_meczu'] %}
+								<p>
+									{% if mecz['punkty_gracz1'][loop.index] > mecz['punkty_gracz2'][loop.index] %}
+										<b style="color:teal">{{mecz['gracz1']}} wygrał &nbsp; {{mecz['punkty_gracz1'][loop.index]}} : {{mecz['punkty_gracz2'][loop.index]}}</b>
+									{% elif mecz['punkty_gracz1'][loop.index] < mecz['punkty_gracz2'][loop.index] %}
+										<b style="color:tomato">{{mecz['gracz2']}} wygrał &nbsp; {{mecz['punkty_gracz2'][loop.index]}} : {{mecz['punkty_gracz1'][loop.index]}}</b>
+									{% else %}
+										<b>remis &nbsp; {{mecz['punkty_gracz1'][loop.index]}} : {{mecz['punkty_gracz2'][loop.index]}}</b>
+									{% endif %}
+								</p>
+								{% for j in i %}
+									{% if j == 0 %}
+										<img id="red2"  src="../static/img/red2.png">
+									{% elif j == 1 %}
+										<img id="blue2"  src="../static/img/blue2.png">
+									{% endif %}
+								{% endfor %}
+								<p></p>
+							{% endfor %}
+						</div>
+					{% else %}
+						<div class="itemData" style="border-radius:0px">
+							<p class="piD"><b>{{mecz['gracz1']}} - {{mecz['gracz2']}}</b>: &nbsp; mecz się nie odbył</p>
+						</div>
+					{% endif %}
+				{% endfor %}
+		</div>
+		<div>
+			{% for gracz in turniej['ranking'] %}
+			{% if loop.index < 4 %}
+			<p>{{loop.index}}. {{gracz}}</p>
+			{% endif %}
+			{% endfor %}
+		</div>
+
+		{% if turniej['typ']=='pucharowy' %}
+			<main id="tournament">
+				{% for runda in turniej['rundy'] %}
+					<ul class="round round-{{loop.index}}">
+						{% for mecz in runda %}
+						<li class="spacer">&nbsp;</li>
+						{% if mecz['wynik_meczu'][0] > mecz['wynik_meczu'][1]%}
+						<li class="game game-top winner">{{mecz['gracz1']}}<span>{{mecz['wynik_meczu'][0]}}</span></li>
+						<li class="game game-spacer">&nbsp;</li>
+						<li class="game game-bottom ">{{mecz['gracz2']}}<span>{{mecz['wynik_meczu'][1]}}</span></li>
+						{% elif mecz['wynik_meczu'][0] < mecz['wynik_meczu'][1]%}
+						<li class="game game-top winner">{{mecz['gracz2']}}<span>{{mecz['wynik_meczu'][1]}}</span></li>
+						<li class="game game-spacer">&nbsp;</li>
+						<li class="game game-bottom ">{{mecz['gracz1']}}<span>{{mecz['wynik_meczu'][0]}}</span></li>
+						{% else %}
+						<li class="game game-bottom">{{mecz['gracz1']}}<span>{{mecz['wynik_meczu'][0]}}</span></li>
+						<li class="game game-spacer">&nbsp;</li>
+						<li class="game game-bottom ">{{mecz['gracz2']}}<span>{{mecz['wynik_meczu'][1]}}</span></li>
+						{% endif %}
+						<li class="spacer">&nbsp;</li>
+						{% endfor %}
+					</ul>
+				{% endfor %}
+			</main>
+		{% elif turniej['typ'] == 'ligowy' %}
+			<table>
+			{% for wiersz in turniej['tabela'] %}
+				<tr>
+						{% for k in wiersz %}
+						<td>
+							{{k}}
+						</td>
+						{% endfor %}
+				</tr>
+			{% endfor %}
+			</table>
+		{% endif %}
+
+	</div>
 
 
 
@@ -269,7 +240,20 @@
 <footer class="footer">
         &copy; Zespół 10. Wszelkie prawa zastrzeżone
 </footer>
+<script>
+function detailsList(index) {
+		console.log(555);
 
+		if (openDetails  == true) {
+			$("#detailsMatch" + index).slideUp();
+			openDetails  = false;
+
+		} else {
+			$("#detailsMatch" + index).slideDown();
+			openDetails  = true;
+		}
+}
+</script>
 </body>
 
 </html>

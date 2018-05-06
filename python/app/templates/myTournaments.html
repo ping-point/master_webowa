@@ -114,10 +114,10 @@
 	<div class="tour">
 		<div class="row">
 
-				<div  class="col-lg-2 col-md-2 col-sm-3 col-xs-12  col-lg-offset-0 col-md-offset-0 col-sm-offset-0">
+				<div  class="col-lg-2 col-md-2 col-sm-2 col-xs-2  col-lg-offset-0 col-md-offset-0 col-sm-offset-0 col-xs-offset-0" >
 					<span class="glyphicon glyphicon-menu-down" onclick="openTour('{{loop.index}}')"></span>
 				</div>
-			<div  class="col-lg-2 col-md-2 col-sm-3 col-xs-12  col-lg-offset-0 col-md-offset-0 col-sm-offset-0">
+			<div  class="col-lg-2 col-md-2 col-sm-2 col-xs-2  col-lg-offset-0 col-md-offset-0 col-sm-offset-0 col-xs-offset-0">
 				{% if turniej['typ'] == 'ligowy' %}
 				<img src="../static/img/liga.png"  class="imgPuchar">
 				{% elif turniej['typ'] == 'pucharowy' %}
@@ -125,25 +125,29 @@
 				{% endif %}
 			</div>
 
-			<div  class="col-lg-4 col-md-2 col-sm-3 col-xs-12  col-lg-offset-0 col-md-offset-0 col-sm-offset-0">
+			<div  class="col-lg-4 col-md-4 col-sm-4 col-xs-4  col-lg-offset-0 col-md-offset-0 col-sm-offset-0 col-xs-offset-0">
 				<span class="typ">{{turniej['typ']}}</span>
 					{% if turniej['opis'] %}
 			<p>{{turniej['opis']}}</p>
 			</div>
-			<div  class="col-lg-1 col-md-2 col-sm-3 col-xs-12  col-lg-offset-2 col-md-offset-0 col-sm-offset-0">
+			<div  class="col-lg-1 col-md-1 col-sm-1 col-xs-1  col-lg-offset-2 col-md-offset-2 col-sm-offset-2 col-xs-offset-2">
 				<span class="typ">#{{turniej['id']}}</span>
 				<p>{{turniej['nadzorca']}}</p>
 			</div>
-		</div>
 
 
 
 
-
-		{% endif %}
+			<div  class="col-lg-2 col-md-2 col-sm-2 col-xs-2  col-lg-offset-10 col-md-offset-10 col-sm-offset-10 col-xs-offset-4">
+				{% endif %}
 		{% if login == turniej['nadzorca'] %}
-		<a href="/deleteTournament/{{turniej['id']}}"><p style="color:red;"> usuń turniej</p></a>
+		<a href="/deleteTournament/{{turniej['id']}}"><button type="button" class="btn btn-danger">usuń turniej</button> </a>
 		{% endif %}
+			</div>
+
+
+
+		</div>
 	</div>
 	<div class="matchItemTournament" id="detailsTour{{loop.index}}" style="display:none">
 		<div class="matchTournament">
@@ -246,7 +250,6 @@
 	<h3>Nie brałeś jeszcze udziału w żadnym turnieju.</h3>
 
 	{% endif %}
-
 </div>
 
 <footer class="footer">

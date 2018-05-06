@@ -112,16 +112,28 @@
 	</nav>
 </div>
 
-<h1>Witaj {{login}}! </h1>
-<div>
+<div class="row">
+
+			<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 col-lg-offset-0 col-md-offset-0 col-sm-offset-0 col-xs-offset-0 " style="margin-left:5%;text-align:left">
+				<h1>Witaj {{login}}! </h1>
+
 	<h3>Rozegranych meczy: {{statystyki['rozegranych']}}</h3>
 	<h3>Wygranych meczy: {{statystyki['wygranych']}}</h3>
 	<h3>Zaplanowanych meczy turniejowych: {{statystyki['nierozegranych']}}</h3>
 
 	{% if zdarzenia['rozegrane_mecze'] %}
-	<h3>Ostatnio rozegrane mecze:</h3>
-	<div class="match" >
-		{% for mecz in zdarzenia['rozegrane_mecze'] %}
+
+			</div>
+
+</div>
+
+
+
+
+	<div class="row">
+		<div  class="col-lg-6 col-md-6 col-sm-6 col-xs-12  col-lg-offset-0 col-md-offset-0 col-sm-offset-0 col-xs-offset-0">
+			<h3 style="margin-bottom:20px"><span style="border-bottom:3px solid #02647d">Ostatnio rozegrane mecze</span></h3>
+			{% for mecz in zdarzenia['rozegrane_mecze'] %}
 
 					<div class="itemData">
 						<p class="piD">Data: {{ mecz['data'] }}</p>
@@ -139,11 +151,11 @@
 							<img src="../static/img/avatar.jpg" class="imgPlayer">
 							{{mecz['przeciwnik']}}
 
-							<span type="button" id="detailsScore">relacja</span>
+							<span type="button" class="detailsScore" onclick="detailsList('{{loop.index}}')">relacja</span>
 						</div>
                 	</div>
 
-					<div class="detailsMatch" id="Match">
+					<div class="detailsMatch" id="detailsMatch{{loop.index}}">
 						{% for i in mecz['przebieg_meczu'] %}
 							<p>
 								{% if mecz['punkty_moje'][loop.index] > mecz['punkty_przeciwnika'][loop.index] %}
@@ -164,31 +176,63 @@
 							<p></p>
 						{% endfor %}
                 	</div>
-		{% endfor %}
-	</div>
-	{% else %}
-	<h3>Nie rozegrałeś jeszcze żadnych meczy</h3>
-	{% endif %}
-	{% if zdarzenia['nierozegrane_mecze'] %}
-	<h3>Zaplanowane mecze turniejowe:</h3>
-		<div class="match">
-		{% for mecz in zdarzenia['nierozegrane_mecze'] %}
-			<div class="itemData">
-				<p>Mecz przeciwko: {{mecz['przeciwnik']}}</p>
-				<a href="/showTournament/{{mecz['id_turnieju']}}"><p style="border-bottom: 1px solid #02647d;color:gray"> id turnieju: {{mecz['id_turnieju']}}</p></a>
-                </p>
-			</div>
-		{% endfor %}
+			{% endfor %}
+			{% else %}
+			<h3>Nie rozegrałeś jeszcze żadnych meczy</h3>
+			{% endif %}
+
+
 		</div>
-	{% endif %}
+		<div  class="col-lg-6 col-md-6 col-sm-6 col-xs-12  col-lg-offset-0 col-md-offset-0 col-sm-offset-0 col-xs-offset-0">
+
+			{% if zdarzenia['nierozegrane_mecze'] %}
+			<h3 style="margin-bottom:20px;"><span style="border-bottom:3px solid #e03238">Zaplanowane mecze turniejowe</span></h3>
+			<div class="match">
+			{% for mecz in zdarzenia['nierozegrane_mecze'] %}
+				<div class="itemData">
+					<p>Mecz przeciwko: {{mecz['przeciwnik']}}</p>
+					<a href="/showTournament/{{mecz['id_turnieju']}}"><p style="border-bottom: 1px solid #02647d;color:gray"> id turnieju: {{mecz['id_turnieju']}}</p></a>
+
+				</div>
+			{% endfor %}
+			</div>
+			{% endif %}
+
+		</div>
+
+	</div>
 
 
 
 
-</div>
-<footer class="footer">
+
+
+
+
+
+
+
+
+<footer class="footer" style="margin-top:50px;">
         &copy; Zespół 10. Wszelkie prawa zastrzeżone
 </footer>
+<script>
+
+function detailsList(index) {
+
+		if (open == true) {
+			$("#detailsMatch" + index).slideUp();
+			open = false;
+
+		} else {
+			$("#detailsMatch" + index).slideDown();
+			open = true;
+		}
+}
+</script>
+
+
+
 
 </body>
 
