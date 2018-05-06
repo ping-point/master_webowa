@@ -1,6 +1,5 @@
 from flask import Flask, render_template, json, request, redirect, session
 from flaskext.mysql import MySQL
-from werkzeug.security import generate_password_hash, check_password_hash
 from collections import OrderedDict
 import random
 
@@ -215,6 +214,7 @@ def getTournamentMatches(id_turnieju):
                 'wynik_meczu': wynik_meczu,
                 'id': k[0],
             })
+
     mecze = mecze + mecze2
     cursor.close()
     con.close()
@@ -268,10 +268,10 @@ def getTournamentDetails(id_turnieju):
     ilosc_graczy = len(gracze) # zapisuję do zmiennej ilość graczy biorących udział w turnieju
 
     if typ == 'pucharowy': # dla turnieju pucharowego:
-        mecze = sorted(mecze, key=lambda x: x['id']) # sortuje mecze w kolejności ich utworzenia
+        mecze2 = sorted(mecze, key=lambda x: x['id']) # sortuje mecze w kolejności ich utworzenia
         runda = [] # zmienna pomocnicza zawiera mecze danego etapu turnieju pucharowego
         gracze = set() # czyszczę zmienną pomocniczą
-        for mecz in mecze[:ilosc_graczy - 1]: # przeglądam mecze turnieju pomijając dogrywki o trzecie miejsce
+        for mecz in mecze2[:ilosc_graczy - 1]: # przeglądam mecze turnieju pomijając dogrywki o trzecie miejsce
             if ((mecz['gracz1'] or mecz['gracz2']) in gracze): # sprawdzam w ten sposób czy mecz należy do kolejnego etapu
                 gracze = set() # czyszczę zmienną pomocniczą
                 # sprawdzanie czy gracze już grali w tym etapie pomaga odróżnić etapy turnieju pucharowego
@@ -299,7 +299,7 @@ def getTournamentDetails(id_turnieju):
 
         # jeśli odbywały się jakieś dodatkowe mecze (dogrywki o trzecie miejsce) to uwzgledniam kto wygrał dogrywkę
         if (zakonczony == True) and (len(mecze) > (ilosc_graczy - 1)):
-            for m in mecze[ilosc_graczy - 1:]:
+            for m in mecze2[ilosc_graczy - 1:]:
                 if m['wynik_meczu'][0] > m['wynik_meczu'][1]:
                     ranking.pop(m['gracz2'])
                 else:
@@ -543,8 +543,6 @@ def newTournament():
             p_typ = request.form.get('inputTyp')
             p_opis = request.form['inputOpis']
             p_login = session.get('user')
-            error = 0
-            info = ''
 
         if p_punkty and p_sety and p_typ and p_login:
             #Tworze turniej w bazie danych
@@ -581,13 +579,18 @@ def newTournament():
             for i in pary:
                 cursor.callproc('sp_newMecz', (id_turnieju, i[0], i[1]))
                 con.commit()
-            cursor.close()
-            con.close()
         else:
             info = 'Nie utworzono turnieju!'
-            error = 1
-
-        return render_template('newTournament.html', info = info, error=error, login=session.get('user'))
+            
+        cursor.callproc('sp_getTurniejeIdGracza', (p_login,))
+        dane = cursor.fetchall()
+        turnieje = []
+        for i in dane:  # znajduje mecze, które naleza do turnieju i zapisuje id turniejow do zmiennej moje_turnieje
+            turnieje.append(getTournamentDetails(i))
+        con.commit()
+        cursor.close()
+        con.close()
+        return render_template('myTournaments.html', info=info, turnieje=turnieje, login=session.get('user'))
     else:
 
         return render_template('signin.html')
@@ -598,7 +601,6 @@ def showTournament(id):
     turniej = getTournamentDetails(id)
 
     return render_template('tournament.html',turniej=turniej, login=session.get('user'))
-
 
 @app.route('/myTournaments')
 def myTournaments():
