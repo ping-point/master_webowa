@@ -30,12 +30,6 @@
     openUserMenu = false;
     $(document).ready(function() {
 
-
-
-
-
-
-
         $("#clickOpenMenuUser").click(function() {
             if (openUserMenu == true) {
                 $(".userMenu").slideUp();
@@ -91,7 +85,7 @@
 						<p style="border-bottom: 1px solid #02647d;color:#000"><b>TURNIEJE</b></p>
 					</a>
 
-					<a href="/myMatches">
+					<a href="/myMatches/0">
 						<p style="border-bottom: 1px solid #02647d;color:#000"><b>MECZE</b></p>
 					</a>
 
@@ -108,6 +102,10 @@
 <div class="container">
 	<img src="../static/img/mecz.jpg" class="subjectPicture" style="margin-bottom:0px;">
 
+	{% if a > 0 %}
+	<a href="/myMatches/{{a-1}}"><b style="color:teal;">Wstecz</b></a>
+	{% endif %}
+	<a href="/myMatches/{{a+1}}"><b style="color:teal;">Dalej</b></a>
 
 {% if mecze %}
 	{% for mecz in mecze %}

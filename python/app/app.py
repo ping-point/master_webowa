@@ -29,83 +29,7 @@ def is_power2(n):
     else:
         return False
 
-def getMatchDetails(id_meczu, login):
-    """
-    Funkcja, która pobiera id meczu oraz login zalogowanego użytkownika i zwraca słownik zawierający informacje o meczu
-    w formie:  {
-                  'przeciwnik'          - login przeciwnika
-                  'data'                - data rozegrania meczu
-                  'punkty_moje'         - zdobyte przez zalogowanego uzytkownika punkty dla każdego setu
-                  'punkty_przeciwnika'  - zdobyte przez przeciwnika punkty dla każdego setu
-                  'przebieg_meczu'      - zmienna zawierająca dane o zdobytych lub straconych punktach w każdym secie
-                  'wynik_meczu'         - ostateczny wynik meczu
-                  'id_turnieju'         - id turnieju, jeżeli mecz zawiera się w jakimś turnieju
-                  }.
-    """
-
-    con = mysql.connect()  # połączenie z bazą danych
-    cursor = con.cursor()
-    cursor.callproc('sp_getMecz2', (id_meczu,)) # wywołanie w bazie procedury SQL
-    dane = cursor.fetchall() # pobieranie danych z bazy o meczu
-    con.commit()
-
-    data = dane[0][4] # zapisanie daty rozegrania meczu, jeżeli jest None to mecz się nie odbył
-    id_turnieju = dane[0][1]
-    wynik_meczu = [0, 0]  # jeżeli mecz się nie odbył, domyślna wartość wyniku meczu to 0:0
-
-    # pozostałe zmienne, które będą przechowywać dane meczu
-    punkty_moje = {}
-    punkty_przeciwnika = {}
-    przebieg_meczu = []
-
-    if dane[0][2] == login: # sprawdzanie, który gracz jest zalogowanym, a który jego przeciwnikiem w tym meczu
-        przeciwnik = dane[0][3]
-    else:
-        przeciwnik = dane[0][2]
-
-    # pobieranie informacji o punktach w meczu:
-    p_set = [] # zmienna pomocnicza przechowująca informacje o pojedyńczym secie
-    if data: # jeżeli mecz się odbył pobieram dane o punktach w tym meczu:
-        # wywołanie w bazie procedury ktora dla danego meczu zwraca dane o punktach:
-        cursor.callproc('sp_getPunkty', (id_meczu,))
-        dane2 = cursor.fetchall() # pobrane z bazy dane zawieraja loginy graczy ktorzy zdobyli pojedynczy punkt
-        con.commit()
-        cursor.close()  # zamykam połączenie z bazą danych
-        con.close()
-
-        for j in dane2:  # zliczanie punktów dla obu graczy
-            if j[0] not in punkty_moje:  # jeśli punkty dla tego setu nie są jeszcze liczone
-                punkty_moje[j[0]] = 0  # punkty dla tego setu ustawiam na 0
-                punkty_przeciwnika[j[0]] = 0
-                przebieg_meczu.append(p_set)  # do przebiegu meczu dodaję poprzedni set
-                p_set = []  # tworze nowy pusty set, ktory bedzie zawieral przebieg gry
-            if j[1] == login:  # jeśli punkt zdobył gracz1 to dodaje mu punkt w tym secie
-                punkty_moje[j[0]] += 1
-                p_set.append(1)
-            elif j[1] == przeciwnik: # dodaje punkt przeciwnikowi
-                punkty_przeciwnika[j[0]] += 1
-                p_set.append(0)
-        przebieg_meczu.append(p_set) # dodaję do przebiegu meczu ostatni set
-        przebieg_meczu = przebieg_meczu[1:] # usuwam pusty set z początku liczenia przebiegu meczu
-
-        # obliczanie wyniku meczu
-        for j in range(len(punkty_moje)): # sumowanie wygranych setów do ostatecznego wyniku meczu
-            if punkty_moje[j + 1] > punkty_przeciwnika[j + 1]:
-                wynik_meczu[0] += 1
-            elif punkty_moje[j + 1] < punkty_przeciwnika[j + 1]:
-                wynik_meczu[1] += 1
-
-    # dla danego meczu uzupełniam nastepujace dane i zwracam słownik z informacjami o meczu
-    return({'przeciwnik': przeciwnik,
-                  'data': data,
-                  'punkty_moje': punkty_moje,
-                  'punkty_przeciwnika': punkty_przeciwnika,
-                  'przebieg_meczu': przebieg_meczu,
-                  'wynik_meczu': wynik_meczu,
-                  'id_turnieju': id_turnieju,
-                  })
-
-def getUserMatches(login):
+def getUserMatches(login, a):
     """
     Funkcja pobiera login użytkownika, zwraca listę rozegranych przez niego meczy zaczynając w kolejności od
     meczy rozegranych. Do pobierania danych o każdym z meczy używa funkcji getMatchDetails.
@@ -113,25 +37,67 @@ def getUserMatches(login):
 
     con = mysql.connect()  # łączenie z bazą danych
     cursor = con.cursor()
-    cursor.callproc('sp_getMecz', (login,))  # wywołanie procedury SQL, która pobiera mecze uzytkownika
-    dane = cursor.fetchall() # pobrane z bazy dane zawiera liste meczy zalogowanego uzytkownika
+    cursor.callproc('sp_getRozegraneMecze', (login,))  # wywołanie procedury SQL, która pobiera mecze uzytkownika
+    dane = cursor.fetchall()[(a*8):(a*8)+8] # pobrane z bazy dane zawiera liste meczy zalogowanego uzytkownika
     # struktura pobranego meczu: {id_meczu, ..., login1, login2}
     con.commit()
-    cursor.close()
-    con.close() # zamykam połączenie z bazą danych
 
-    mecze = [] # lista będzie przechowywać rozegrane mecze
-    mecze2 = [] # lista pomocnicza będzie przechowywać mecze nierozegrane
-    for i in dane:  # dla kazdego meczu zalogowanego uzytkownika
-        mecz = getMatchDetails(i[0], login) # pobieram szczegółowe dane o meczu
+    mecze = []
+    for m in dane:  # dla kazdego meczu zalogowanego uzytkownika
+        data = m[4]  # zapisanie daty rozegrania meczu, jeżeli jest None to mecz się nie odbył
+        id_meczu = m[0]
+        id_turnieju = m[1]
+        wynik_meczu = [0, 0]  # jeżeli mecz się nie odbył, domyślna wartość wyniku meczu to 0:0
 
-        if mecz['data']:  # jeżeli mecz się odbył dodaję go do listy meczy rozegranych
-            mecze.append(mecz)
-        else: # w przeciwnym razie dodaję go do listy meczy nierozegranych
-            mecze2.append(mecz)
+        # pozostałe zmienne, które będą przechowywać dane meczu
+        punkty_moje = {}
+        punkty_przeciwnika = {}
+        przebieg_meczu = []
 
-    mecze = mecze + mecze2 # do listy meczy rozegranych dołączam listę meczy nierozegranych
+        if m[2] == login:  # sprawdzanie, który gracz jest zalogowanym, a który jego przeciwnikiem w tym meczu
+            przeciwnik = m[3]
+        else:
+            przeciwnik = m[2]
 
+        # pobieranie informacji o punktach w meczu:
+        p_set = []  # zmienna pomocnicza przechowująca informacje o pojedyńczym secie
+        if data:  # jeżeli mecz się odbył pobieram dane o punktach w tym meczu:
+            # wywołanie w bazie procedury ktora dla danego meczu zwraca dane o punktach:
+            cursor.callproc('sp_getPunkty', (id_meczu,))
+            dane2 = cursor.fetchall()  # pobrane z bazy dane zawieraja loginy graczy ktorzy zdobyli pojedynczy punkt
+
+            for j in dane2:  # zliczanie punktów dla obu graczy
+                if j[0] not in punkty_moje:  # jeśli punkty dla tego setu nie są jeszcze liczone
+                    punkty_moje[j[0]] = 0  # punkty dla tego setu ustawiam na 0
+                    punkty_przeciwnika[j[0]] = 0
+                    przebieg_meczu.append(p_set)  # do przebiegu meczu dodaję poprzedni set
+                    p_set = []  # tworze nowy pusty set, ktory bedzie zawieral przebieg gry
+                if j[1] == login:  # jeśli punkt zdobył gracz1 to dodaje mu punkt w tym secie
+                    punkty_moje[j[0]] += 1
+                    p_set.append(1)
+                elif j[1] == przeciwnik:  # dodaje punkt przeciwnikowi
+                    punkty_przeciwnika[j[0]] += 1
+                    p_set.append(0)
+            przebieg_meczu.append(p_set)  # dodaję do przebiegu meczu ostatni set
+            przebieg_meczu = przebieg_meczu[1:]  # usuwam pusty set z początku liczenia przebiegu meczu
+
+            # obliczanie wyniku meczu
+            for j in range(len(punkty_moje)):  # sumowanie wygranych setów do ostatecznego wyniku meczu
+                if punkty_moje[j + 1] > punkty_przeciwnika[j + 1]:
+                    wynik_meczu[0] += 1
+                elif punkty_moje[j + 1] < punkty_przeciwnika[j + 1]:
+                    wynik_meczu[1] += 1
+        mecze.append({'przeciwnik': przeciwnik,
+                  'data': data,
+                  'punkty_moje': punkty_moje,
+                  'punkty_przeciwnika': punkty_przeciwnika,
+                  'przebieg_meczu': przebieg_meczu,
+                  'wynik_meczu': wynik_meczu,
+                  'id_turnieju': id_turnieju,
+                  })
+    con.commit()
+    cursor.close()  # zamykam połączenie z bazą danych
+    con.close()
     return mecze
 
 def getTournamentMatches(id_turnieju):
@@ -470,58 +436,55 @@ def userHome():
         #STATYSTYKI
         con = mysql.connect() # łączenie z baza danych
         cursor = con.cursor()
-        cursor.callproc('sp_getMecz', (login,)) #wywoluje procedure SQL, ktora pobiera mecze uzytkownika
-        dane = cursor.fetchall()
+        cursor.callproc('sp_getNierozegraneMecze', (login,)) #wywoluje procedure SQL, ktora pobiera mecze uzytkownika
+        zaplanowane = cursor.fetchall()
         con.commit()
-
-        rozegrane_mecze = [] # zmienne pomocnicze, listy zawierające dane o meczach użytkownika
-        nierozegrane_mecze = []
-        for i in dane: # przeglądanie wszystkich meczy zalogowanego gracza
-            if i[4]: # jeżeli mecz się odbył dodaję go do listy rozegranych meczy
-                rozegrane_mecze.append(i)
-            else: # w przeciwnym wypadku kiedy data meczu wynosi None to dodaje mecz do listy nierozegranych.
-                nierozegrane_mecze.append(i)
-        rozegrane_mecze = sorted(rozegrane_mecze, key=lambda x: x[4], reverse=True) # sortuję rozegrane według daty
 
         # wywołuję procedurę sql która zwraca ilość wygranych meczy i zapisuję tą informację do zmiennej 'wygranych'
         cursor.callproc('sp_getWinners',)
-        dane=cursor.fetchall()
+        wygrane = cursor.fetchall()
         con.commit() # zamykam połączenie z bazą danych
+
+        # wywołuję procedurę w bazie, która zwraca ilość rozegranych meczy użytkownika
+        cursor.callproc('sp_getIloscRozegranychMeczy', (login,))
+        rozegranych = cursor.fetchall()[0][0]
         cursor.close()
         con.close()
-        for i in dane:
+
+        # wydobywam szczegóły o ostatnich trzech rozegranych meczach i zapisuję te informacje do listy 'mecze'
+        ostatnie_mecze = getUserMatches(login, 0)[:3]
+        for o in ostatnie_mecze:
+            print(o)
+
+        for i in wygrane:
             if i[0] == login:
                 wygranych = i[1]
 
         # zapisuję statystyki gracza do słownika
         statystyki={
-            'rozegranych' : len(rozegrane_mecze),
+            'rozegranych' : rozegranych,
             'wygranych' : wygranych,
-            'nierozegranych' : len(nierozegrane_mecze),
+            'nierozegranych' : len(zaplanowane),
         }
 
-        # wydobywam szczegóły o ostatnich trzech rozegranych meczach i zapisuję te informacje do listy 'mecze'
-        mecze=[]
-        for i in rozegrane_mecze[:3]:
-            mecze.append(getMatchDetails(i[0], login))
-
-        # zapisuję do listy 'mecze2' informacje o nierozegranych meczach turniejowych.
-        mecze2=[]
-        for i in nierozegrane_mecze:
+        # zapisuję do listy 'zaplanowane_mecze' informacje o nierozegranych meczach turniejowych.
+        zaplanowane_mecze=[]
+        for i in zaplanowane:
             if i[2] == login: # uwzględniam przeciwika i zapisuję jego login.
                 przeciwnik = i[3]
             else:
                 przeciwnik = i[2]
 
-            mecze2.append({ # słownik zawiera dla każdego nierozegranego meczu id_turnieju oraz login przeciwnika
+            zaplanowane_mecze.append({ # słownik zawiera dla każdego nierozegranego meczu id_turnieju oraz login przeciwnika
                 'przeciwnik' : przeciwnik,
                 'id_turnieju' : i[1],
             })
 
         zdarzenia={ # słownik który zawiera wszystkie zebrane informacje o meczach
-            'rozegrane_mecze' : mecze,
-            'nierozegrane_mecze' : mecze2,
+            'ostatnie_mecze' : ostatnie_mecze,
+            'nierozegrane_mecze' : zaplanowane_mecze,
         }
+        print(zdarzenia['ostatnie_mecze'])
 
         # przekazuje zmienne do wyswietlenia na stronie domowej użytkownika
         if len(statystyki):
@@ -531,8 +494,8 @@ def userHome():
     else:
         return redirect('/showSignUp') # jeżeli użytkownik się nie zalogował następuje przekierowanie
 
-@app.route('/myMatches')
-def myMatches():
+@app.route('/myMatches/<int:a>')
+def myMatches(a):
     """
     Metoda ta wyświetla wszystkie rozegrane mecze zalogowanego gracza w raz ze szczegółowymi informacjami.
     Korzysta z funkcji getUserMatches().
@@ -541,10 +504,10 @@ def myMatches():
     #jesli uzytkownik poprawnie sie zalogowal
     if session.get('user'):
         login = session.get('user') # zmienna zawiera login zalogowanego uzytkownika
-        mecze = getUserMatches(login) # pobieram dane o meczach
+        mecze = getUserMatches(login, a) # pobieram dane o meczach
 
         # przekazuję dane o meczach i wyświetlam w stronie myMatches.html
-        return render_template('myMatches.html', login=login, mecze=mecze)
+        return render_template('myMatches.html', login=login, mecze=mecze, a=a)
     else:
         return redirect('/showSignUp')
 

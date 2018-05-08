@@ -98,7 +98,7 @@
 						<p style="border-bottom: 1px solid #02647d;color:#000"><b>TURNIEJE</b></p>
 					</a>
 
-					<a href="/myMatches">
+					<a href="/myMatches/0">
 						<p style="border-bottom: 1px solid #02647d;color:#000"><b>MECZE</b></p>
 					</a>
 
@@ -121,19 +121,17 @@
 	<h3>Wygranych meczy: {{statystyki['wygranych']}}</h3>
 	<h3>Zaplanowanych meczy turniejowych: {{statystyki['nierozegranych']}}</h3>
 
-	{% if zdarzenia['rozegrane_mecze'] %}
+	{% if zdarzenia['ostatnie_mecze'] %}
 
 			</div>
 
 </div>
 
-
-
-
 	<div class="row">
 		<div  class="col-lg-6 col-md-6 col-sm-6 col-xs-12  col-lg-offset-0 col-md-offset-0 col-sm-offset-0 col-xs-offset-0">
 			<h3 style="margin-bottom:20px"><span style="border-bottom:3px solid #02647d">Ostatnio rozegrane mecze</span></h3>
-			{% for mecz in zdarzenia['rozegrane_mecze'] %}
+
+			{% for mecz in zdarzenia['ostatnie_mecze'] %}
 
 					<div class="itemData">
 						<p class="piD">Data: {{ mecz['data'] }}</p>

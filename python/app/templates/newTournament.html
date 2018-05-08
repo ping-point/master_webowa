@@ -58,7 +58,11 @@
 
 			<select class="multiSelect" multiple="multiple" name="inputGracze" id="inputGracze">
                 {% for gracz in uzytkownicy %}
+                {% if gracz == nadzorca %}
+                <option value="{{gracz}}" selected>{{gracz}}</option>
+                {% else %}
                 <option value="{{gracz}}">{{gracz}}</option>
+                {% endif %}
                 {% endfor %}
             </select>
 
