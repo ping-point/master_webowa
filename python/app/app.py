@@ -100,23 +100,35 @@ def getUserMatches(login, a):
     con.close()
     return mecze
 
-def getTournamentMatches(id_turnieju):
+def getTournamentDetails(id_turnieju):
     """
-    Funkcja, która pobiera id turnieju i zwraca listę meczy dla tego turnieju w kolejności zaczynając od meczy
-    rozegranych, tak jak w przypadku getUserMatches.
-    Struktura danych o każdym meczu różni się jednak, ponieważ nie uwzględnia, który użytkownik jest zalogowany, a
-    który z nich jest przeciwnikiem meczu stąd w słowniku z danymi o meczu znajdują się pola:
-                'gracz1'        - loginy graczy
-                'gracz2'
-                'punkty_gracz1' - punkty graczy
-                'punkty_gracz2'
+    Funkcja pobiera id turnieju i zwraca slownik zawierający dane o turnieju:
+        {
+        'id'        - id turnieju
+        'nadzorca'  - nadzorca, czyli gracz, który utworzył turniej
+        'typ'       - typ turnieju (ligowy lub pucharowy)
+        'opis'      - opis turnieju
+        'mecze'     - lista ze szczegółowymi danymi o meczach tego turnieju
+        'rundy'     - poszczególne etapy turnieju pucharowego, zmienna potrzebna do zbudowania drzewa turnieju
+        'ranking'   - ranking najlepszych uczestników turnieju
+        'tabela'    - dane potrzebne do zbudowania tabeli wyników meczu ligowego
+        }
     """
-    con = mysql.connect()  # lacze z baza danych
+    con = mysql.connect() # połączenie z bazą danych
     cursor = con.cursor()
+    cursor.callproc('sp_getTurniej', (id_turnieju,))  # pobieranie z bazy podstawowych danych o turnieju
+    dane3 = cursor.fetchall() # dane o turnieju
+
     cursor.callproc('sp_getMeczTurnieju', (id_turnieju,))  # pobieram mecze turnieju o danym id
-    dane2 = cursor.fetchall()
+    dane2 = cursor.fetchall() # mecze turnieju
     con.commit()
 
+
+    # uzupełnienie podstawowych informacji o turnieju do zmiennych:
+    id = dane3[0][0]
+    nadzorca = dane3[0][5]
+    typ = dane3[0][3]
+    opis = dane3[0][4]
     mecze = []
     mecze2 = []
 
@@ -180,44 +192,11 @@ def getTournamentMatches(id_turnieju):
                 'wynik_meczu': wynik_meczu,
                 'id': k[0],
             })
-
-    mecze = mecze + mecze2
-    cursor.close()
-    con.close()
-
-    return mecze
-
-def getTournamentDetails(id_turnieju):
-    """
-    Funkcja pobiera id turnieju i zwraca slownik zawierający dane o turnieju:
-        {
-        'id'        - id turnieju
-        'nadzorca'  - nadzorca, czyli gracz, który utworzył turniej
-        'typ'       - typ turnieju (ligowy lub pucharowy)
-        'opis'      - opis turnieju
-        'mecze'     - lista ze szczegółowymi danymi o meczach tego turnieju
-        'rundy'     - poszczególne etapy turnieju pucharowego, zmienna potrzebna do zbudowania drzewa turnieju
-        'ranking'   - ranking najlepszych uczestników turnieju
-        'tabela'    - dane potrzebne do zbudowania tabeli wyników meczu ligowego
-        }
-    """
-    con = mysql.connect() # połączenie z bazą danych
-    cursor = con.cursor()
-    cursor.callproc('sp_getTurniej', (id_turnieju,))  # pobieranie z bazy podstawowych danych o turnieju
-    dane3 = cursor.fetchall() # dane o turnieju
     con.commit()
     cursor.close() # zamknięcie połączenia z bazą danych
     con.close()
 
-    # uzupełnienie podstawowych informacji o turnieju do zmiennych:
-    id = dane3[0][0]
-    nadzorca = dane3[0][5]
-    typ = dane3[0][3]
-    opis = dane3[0][4]
-
-    # pobieranie do zmiennej 'mecze' listy z danymi o meczach tego turnieju
-    mecze = getTournamentMatches(id)
-
+    mecze = mecze + mecze2
     # pozostałe zmienne, które będą przechowywać dane o turnieju
     ranking = {}
     rundy = []
@@ -276,45 +255,49 @@ def getTournamentDetails(id_turnieju):
     elif typ == 'ligowy': # jeżeli turniej jest ligowym:
         wiersz = ['']  # zmienna pomocnicza zawierać będzie dane potrzebne do tabeli turnieju ligowego
 
-        if zakonczony == True:
-            # ranking dla ligowego:
-            for mecz in mecze:
-                if mecz['gracz1'] not in ranking:
-                    ranking[mecz['gracz1']] = mecz['wynik_meczu'][0]
-                else:
-                    ranking[mecz['gracz1']] += mecz['wynik_meczu'][0]
+        for mecz in mecze:
+            if mecz['gracz1'] not in ranking:
+                ranking[mecz['gracz1']] = mecz['wynik_meczu'][0]
+            else:
+                ranking[mecz['gracz1']] += mecz['wynik_meczu'][0]
 
-                if mecz['gracz2'] not in ranking:
-                    ranking[mecz['gracz2']] = mecz['wynik_meczu'][1]
-                else:
-                    ranking[mecz['gracz2']] += mecz['wynik_meczu'][1]
+            if mecz['gracz2'] not in ranking:
+                ranking[mecz['gracz2']] = mecz['wynik_meczu'][1]
+            else:
+                ranking[mecz['gracz2']] += mecz['wynik_meczu'][1]
 
-            ranking = OrderedDict(sorted(ranking.items(), key=lambda x: x[1], reverse=True)) # sortowanie rankingu
+        ranking = OrderedDict(sorted(ranking.items(), key=lambda x: x[1], reverse=True))  # sortowanie rankingu
 
-            # obliczenia do listy 'tabela' potrzebne do stworzenia tabeli turnieju ligowego
-            for gracz in ranking: # dla każdego gracza zaczynając od najlepszych
-                wiersz.append(gracz) # wypełniam pierwszy wiersz loginami uczestników turnieju
-            tabela.append(wiersz) # dodaję wiersz do tabeli
-            wiersz = [] # czyszczę zmienną pomocniczą zawierającą pojedyńczy wiersz tabeli
-            for gracz1 in ranking: # dla każdego uczestnika trunieju
-                wiersz.append(gracz1) # zaczynam wypełniać wiersz zaczynając od loginu uczestnika
-                for gracz2 in ranking: # przeglądam kolejny raz po uczestnikach turnieju
-                    if gracz1 == gracz2: # w miejscu tabeli dla tego samego gracza wstawiam ---
-                        wynik = '---'
-                        wiersz.append(wynik) # dodaję wynik do aktualnego wiersza
-                    else: # dla pary graczy w tabeli
-                        for mecz in mecze: # szukam meczu, który rozegrała para graczy
-                            # wpisuję do tabeli wyniki graczy
-                            if mecz['gracz1'] == gracz1 and mecz['gracz2'] == gracz2:
+        # obliczenia do listy 'tabela' potrzebne do stworzenia tabeli turnieju ligowego
+        for gracz in ranking:  # dla każdego gracza zaczynając od najlepszych
+            wiersz.append(gracz)  # wypełniam pierwszy wiersz loginami uczestników turnieju
+        tabela.append(wiersz)  # dodaję wiersz do tabeli
+        wiersz = []  # czyszczę zmienną pomocniczą zawierającą pojedyńczy wiersz tabeli
+        for gracz1 in ranking:  # dla każdego uczestnika trunieju
+            wiersz.append(gracz1)  # zaczynam wypełniać wiersz zaczynając od loginu uczestnika
+            for gracz2 in ranking:  # przeglądam kolejny raz po uczestnikach turnieju
+                if gracz1 == gracz2:  # w miejscu tabeli dla tego samego gracza wstawiam ---
+                    wynik = '***'
+                    wiersz.append(wynik)  # dodaję wynik do aktualnego wiersza
+                else:  # dla pary graczy w tabeli
+                    for mecz in mecze:  # szukam meczu, który rozegrała para graczy
+                        # wpisuję do tabeli wyniki graczy
+                        if mecz['gracz1'] == gracz1 and mecz['gracz2'] == gracz2:
+                            if mecz['wynik_meczu'] == [0,0]:
+                                wiersz.append(' - ')
+                            else:
                                 wynik = str(mecz['wynik_meczu'][0]) + ':' + str(mecz['wynik_meczu'][1])
                                 wiersz.append(wynik)
-                            elif mecz['gracz1'] == gracz2 and mecz['gracz2'] == gracz1:
+                        elif mecz['gracz1'] == gracz2 and mecz['gracz2'] == gracz1:
+                            if mecz['wynik_meczu'] == [0,0]:
+                                wiersz.append(' - ')
+                            else:
                                 wynik = str(mecz['wynik_meczu'][1]) + ':' + str(mecz['wynik_meczu'][0])
                                 wiersz.append(wynik)
-                tabela.append(wiersz) # do tabeli dodaję bieżący wiersz
-                wiersz = [] # czyszczę pomocniczą zmienną przechowującą pojedyńczy wiersz tabeli
+            tabela.append(wiersz)  # do tabeli dodaję bieżący wiersz
+            wiersz = []  # czyszczę pomocniczą zmienną przechowującą pojedyńczy wiersz tabeli
 
-    turniej = { # zapisuję dane turnieju
+    return { # zwracam dane turnieju
         'id': id,
         'nadzorca': nadzorca,
         'typ': typ,
@@ -323,9 +306,8 @@ def getTournamentDetails(id_turnieju):
         'rundy': rundy,
         'ranking': ranking,
         'tabela': tabela,
+        'zakonczony' : zakonczony,
     }
-
-    return turniej
 
 @app.route("/")
 def main():
