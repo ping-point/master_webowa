@@ -404,12 +404,12 @@ a:hover {
 }
 
 .detailsMatch {
-  margin-left: 30px;
   background-color: #f5f5f5;
   border: 1px solid #e3e3e3;
   border-radius: 4px;
   text-align:center;
   display:none;
+  margin-bottom:30px;
 
 }
 

@@ -140,7 +140,7 @@
 				{% for mecz in turniej['mecze'] %}
 					{% if mecz['data'] %}
 
-						<div class="itemData" style="border-radius:10px 10px 0px 0px">
+						<div class="itemData" style="border-radius:10px 10px 0px 0px;border-top:0px">
 							<p class="piD">Data: {{mecz['data']}}</p>
 						</div>
 
@@ -156,7 +156,7 @@
 						</div>
 
 
-						<div class="detailsMatch" id="detailsMatch{{loop.index}}">
+						<div class="detailsMatch" id="detailsMatch{{loop.index}}" >
 							{% for i in mecz['przebieg_meczu'] %}
 								<p>
 									{% if mecz['punkty_gracz1'][loop.index] > mecz['punkty_gracz2'][loop.index] %}
@@ -179,7 +179,7 @@
 						</div>
 
 					{% else %}
-						<div class="itemData" style="border-radius:0px">
+						<div class="itemData" style="border-radius:0px;border-top:1px solid #02647d;">
 							<p class="piD"><b>{{mecz['gracz1']}} - {{mecz['gracz2']}}</b>: &nbsp; mecz się nie odbył</p>
 						</div>
 					{% endif %}
