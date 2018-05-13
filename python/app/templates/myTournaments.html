@@ -222,27 +222,38 @@
 				</main>
 
 			{% elif turniej['typ'] == 'ligowy' %}
-				<table>
+				 <table class="table table-bordered" style="margin-top:20px; font: 16px calibri">
 				{% for wiersz in turniej['tabela'] %}
-					<tr>
+					 <tbody>
+						<tr>
 							{% for k in wiersz %}
 							<td>
 								{{k}}
 							</td>
 							{% endfor %}
-					</tr>
+						</tr>
+					 </tbody>
 				{% endfor %}
 				</table>
 			{% endif %}
 		</div>
 	</div>
 	{% endfor %}
-		{% if a > 0 %}
-		<a href="/myTournaments/{{a-1}}"><b style="color:teal;">Wstecz</b></a>
-		{% endif %}
-		{% if ((a+1)*5) < ilosc_turniejow %}
-		<a href="/myTournaments/{{a+1}}"><b style="color:teal;">Dalej</b></a>
-		{% endif %}
+		<div class="navigatorMatches" style="text-align:center;">
+			{% if a > 0 %}
+			<a href="/myTournaments/{{a-1}}" style="text-decoration:none" >
+				<span class="glyphicon glyphicon-arrow-left" style="color: teal;margin-right:10px;margin-left:10px;"></span>
+				<b style="color:teal; padding-right:10px;">Wstecz</b>
+			</a>
+
+			{% endif %}
+			{% if ((a+1)*5) < ilosc_turniejow %}
+			<a href="/myTournaments/{{a+1}}" style="text-decoration:none">
+				<b style="color:teal; margin-left:10px" >Dalej</b>
+				<span class="glyphicon glyphicon-arrow-right" style="color: teal; margin-left:10px"></span>
+			</a>
+			{% endif %}
+		</div>
 	{% else %}
 	<h3>Nie brałeś jeszcze udziału w żadnym turnieju.</h3>
 

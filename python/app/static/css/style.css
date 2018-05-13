@@ -195,6 +195,7 @@ a:hover {
 .matchItem {
     width : 48%;
     margin-left:1%;
+    margin-right:1%;
     margin-top:30px;
     text-align:center;
     position: relative;
@@ -249,12 +250,9 @@ a:hover {
     height: auto;
     padding: 0px 0px 0px; 8px;
     background: #f6f6f6;
-    border: 1px solid silver;
     font: 16px calibri;
     letter-spacing: -1px;
-    -webkit-box-shadow: 0 0 2px silver;
-    -moz-box-shadow: 0 0 2px silver;
-    box-shadow: 0 0 2px silver;
+
 }
 
 
@@ -264,14 +262,26 @@ a:hover {
     height: auto;
     padding: 0px 0px 0px; 8px;
     background: #f6f6f6;
-    border: 1px solid silver;
+
+
     font: 16px calibri;
     letter-spacing: -1px;
     -webkit-box-shadow: 0 0 2px silver;
     -moz-box-shadow: 0 0 2px silver;
     box-shadow: 0 0 2px silver;
     border-radius: 15px;
+
 }
+
+.lineMatch {
+    width:100%;
+    height:50px;
+    background-color: #fff;
+    border: 0px ;
+    border-top: 1px solid  #02647d;
+
+}
+
 
 .matchUserHome {
 
@@ -290,6 +300,14 @@ a:hover {
     border-radius: 15px;
 }
 
+.navigatorMatches {
+    width:100%;
+    position: relative;
+    float:left;
+    padding: 30px;
+    text-align:center;
+
+}
 
 .itemMatch {
     width:100%;
@@ -314,6 +332,8 @@ a:hover {
     height:auto;
     text-align: left;
     border-radius: 15px 15px 0px 0px;
+    border-top:2px solid #02647d;
+
 }
 
 .piD {
@@ -388,6 +408,7 @@ a:hover {
   background-color: #f5f5f5;
   border: 1px solid #e3e3e3;
   border-radius: 4px;
+  text-align:center;
   display:none;
 
 }

@@ -136,10 +136,11 @@
 
 
 
-		<div class="match">
+			<div class="match">
 				{% for mecz in turniej['mecze'] %}
 					{% if mecz['data'] %}
-						<div class="itemData" style="border-radius:0px">
+
+						<div class="itemData" style="border-radius:10px 10px 0px 0px">
 							<p class="piD">Data: {{mecz['data']}}</p>
 						</div>
 
@@ -153,6 +154,7 @@
 								<span type="button" class="detailsScore" onclick="detailsList('{{loop.index}}')" >sety</span>
 							</div>
 						</div>
+
 
 						<div class="detailsMatch" id="detailsMatch{{loop.index}}">
 							{% for i in mecz['przebieg_meczu'] %}
@@ -175,20 +177,22 @@
 								<p></p>
 							{% endfor %}
 						</div>
+
 					{% else %}
 						<div class="itemData" style="border-radius:0px">
 							<p class="piD"><b>{{mecz['gracz1']}} - {{mecz['gracz2']}}</b>: &nbsp; mecz się nie odbył</p>
 						</div>
 					{% endif %}
 				{% endfor %}
-		</div>
-		<div>
-			{% if turniej['zakonczony'] == True %}
-			{% for gracz in turniej['ranking'] %}
-			<p><b style="color:teal;">{{loop.index}}. {{gracz}}</b></p>
-			{% endfor %}
-			{% endif %}
-		</div>
+			</div>
+
+			<div>
+				{% if turniej['zakonczony'] == True %}
+				{% for gracz in turniej['ranking'] %}
+				<p><b style="color:teal;">{{loop.index}}. {{gracz}}</b></p>
+				{% endfor %}
+				{% endif %}
+			</div>
 
 		{% if turniej['typ']=='pucharowy' %}
 			<main id="tournament">
@@ -215,20 +219,22 @@
 				{% endfor %}
 			</main>
 		{% elif turniej['typ'] == 'ligowy' %}
-			<table>
+			 <table class="table table-bordered" style="margin-top:20px; font: 16px calibri">
 			{% for wiersz in turniej['tabela'] %}
-				<tr>
+				<tbody>
+				 	<tr>
 						{% for k in wiersz %}
 						<td>
 							{{k}}
 						</td>
 						{% endfor %}
-				</tr>
+					</tr>
+				 </tbody>
 			{% endfor %}
 			</table>
 		{% endif %}
 
-	</div>
+		</div>
 
 
 

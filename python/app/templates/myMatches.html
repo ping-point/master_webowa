@@ -18,7 +18,7 @@
 	<!-- BOOTSTRAP -->
 	<link href="../static/css/bootstrap.css" rel="stylesheet">
     <link href="http://getbootstrap.com/examples/jumbotron-narrow/jumbotron-narrow.css" rel="stylesheet">
-
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <!-- GŁÓWNY ARKUSZ STYLI -->
     <link href="../static/css/style.css" rel="stylesheet">
 
@@ -109,12 +109,14 @@
 				<p class="piD">Data: {{ mecz['data'] }}</p>
 				{% if mecz['id_turnieju'] %}
 				<a href="/showTournament/{{mecz['id_turnieju']}}"><p style="border-bottom: 1px solid #02647d;color:gray"> id turnieju: {{mecz['id_turnieju']}}</p></a>
+
+				{% else %}
+				<p style="border-bottom: 1px solid #02647d;">&nbsp</p>
 				{% endif %}
 			</div>
 
 			<div class="itemScore">
 				<div class="piS">
-
 					{{login}}
 					<img src="../static/img/avatar.jpg"  class="imgPlayer">
 					<b>{{mecz['wynik_meczu'][0]}} : {{mecz['wynik_meczu'][1]}} </b>
@@ -150,19 +152,36 @@
 		</div>
 	</div>
 	{% endfor %}
-		{% if a > 0 %}
-		<a href="/myMatches/{{a-1}}"><b style="color:teal;">Wstecz</b></a>
-		{% endif %}
-		{% if ((a+1)*8) < ilosc_meczow %}
-		<a href="/myMatches/{{a+1}}"><b style="color:teal;">Dalej</b></a>
-		{% endif %}
-	{% else %}
+		<div class="navigatorMatches" style="text-align:center;">
+			{% if a > 0 %}
+			<a href="/myMatches/{{a-1}}" style="text-decoration:none">
+				<span class="glyphicon glyphicon-arrow-left" style="color: teal;margin-right:10px"></span>
+				<b style="color:teal; margin-right:10px;">Wstecz</b>
+			</a>
+			<b >|</b>
+
+			{% endif %}
+
+			{% if ((a+1)*8) < ilosc_meczow %}
+
+			<a href="/myMatches/{{a+1}}"  style="text-decoration:none">
+				<b style="color:teal; margin-left:10px" >Dalej</b>
+				<span class="glyphicon glyphicon-arrow-right" style="color: teal; margin-left:10px"></span>
+			</a>
+			{% endif %}
+		</div>
+
+
+
+		{% else %}
+
 	<h3>Nie brałeś udziału w żadnym meczu.</h3></p>
+
 	{% endif %}
 
 </div>
 
-<footer class="footer" style="margin-top:30px;">
+<footer class="footer" >
 	&copy; Zespół 10. Wszelkie prawa zastrzeżone
 </footer>
 <script>
