@@ -81,7 +81,7 @@
 				<img style="cursor:pointer;" src="../static/img/avatar.jpg"  class="imgPlayer">
 
 				<div class="userMenu ">
-					<a href="/myTournaments">
+					<a href="/myTournaments/0">
 						<p style="border-bottom: 1px solid #02647d;color:#000"><b>TURNIEJE</b></p>
 					</a>
 
@@ -101,19 +101,10 @@
 
 <div class="container">
 	<img src="../static/img/mecz.jpg" class="subjectPicture" style="margin-bottom:0px;">
-
-	{% if a > 0 %}
-	<a href="/myMatches/{{a-1}}"><b style="color:teal;">Wstecz</b></a>
-	{% endif %}
-	<a href="/myMatches/{{a+1}}"><b style="color:teal;">Dalej</b></a>
-
 {% if mecze %}
 	{% for mecz in mecze %}
 	<div class="matchItem">
-
-		{% if mecz['data'] %}
 		<div class="match" >
-
 			<div class="itemData">
 				<p class="piD">Data: {{ mecz['data'] }}</p>
 				{% if mecz['id_turnieju'] %}
@@ -130,7 +121,7 @@
 					<img src="../static/img/avatar.jpg" class="imgPlayer">
 					{{mecz['przeciwnik']}}
 
-					<span type="button" class="detailsScore"  onclick="detailsList('{{loop.index}}')" itemid="{{loop.index}}">relacja</span>
+					<span type="button" class="detailsScore"  onclick="detailsList('{{loop.index}}')" itemid="{{loop.index}}">sety</span>
 				</div>
 			</div>
 
@@ -157,10 +148,14 @@
 			</div>
 
 		</div>
-		{% endif %}
-
 	</div>
 	{% endfor %}
+		{% if a > 0 %}
+		<a href="/myMatches/{{a-1}}"><b style="color:teal;">Wstecz</b></a>
+		{% endif %}
+		{% if ((a+1)*8) < ilosc_meczow %}
+		<a href="/myMatches/{{a+1}}"><b style="color:teal;">Dalej</b></a>
+		{% endif %}
 	{% else %}
 	<h3>Nie brałeś udziału w żadnym meczu.</h3></p>
 	{% endif %}

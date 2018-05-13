@@ -84,7 +84,7 @@
 				<img style="cursor:pointer;" src="../static/img/avatar.jpg"  class="imgPlayer">
 
 				<div class="userMenu ">
-					<a href="/myTournaments">
+					<a href="/myTournaments/0">
 						<p style="border-bottom: 1px solid #02647d;color:#000"><b>TURNIEJE</b></p>
 					</a>
 
@@ -184,7 +184,7 @@
 		</div>
 		<div>
 			{% if turniej['zakonczony'] == True %}
-			{% for gracz in turniej['ranking'][:3] %}
+			{% for gracz in turniej['ranking'] %}
 			<p><b style="color:teal;">{{loop.index}}. {{gracz}}</b></p>
 			{% endfor %}
 			{% endif %}
@@ -197,17 +197,17 @@
 						{% for mecz in runda %}
 						<li class="spacer">&nbsp;</li>
 						{% if mecz['wynik_meczu'][0] > mecz['wynik_meczu'][1]%}
-						<li class="game game-top winner">{{mecz['gracz1']}}<span>{{mecz['wynik_meczu'][0]}}</span></li>
-						<li class="game game-spacer">&nbsp;</li>
-						<li class="game game-bottom ">{{mecz['gracz2']}}<span>{{mecz['wynik_meczu'][1]}}</span></li>
+							<li class="game game-top winner">{{mecz['gracz1']}}<span>{{mecz['wynik_meczu'][0]}}</span></li>
+							<li class="game game-spacer">&nbsp;</li>
+							<li class="game game-bottom ">{{mecz['gracz2']}}<span>{{mecz['wynik_meczu'][1]}}</span></li>
 						{% elif mecz['wynik_meczu'][0] < mecz['wynik_meczu'][1]%}
-						<li class="game game-top winner">{{mecz['gracz2']}}<span>{{mecz['wynik_meczu'][1]}}</span></li>
-						<li class="game game-spacer">&nbsp;</li>
-						<li class="game game-bottom ">{{mecz['gracz1']}}<span>{{mecz['wynik_meczu'][0]}}</span></li>
+							<li class="game game-top winner">{{mecz['gracz2']}}<span>{{mecz['wynik_meczu'][1]}}</span></li>
+							<li class="game game-bottom ">{{mecz['gracz1']}}<span>{{mecz['wynik_meczu'][0]}}</span></li>
+							<li class="game game-spacer">&nbsp;</li>
 						{% else %}
-						<li class="game game-bottom">{{mecz['gracz1']}}<span>{{mecz['wynik_meczu'][0]}}</span></li>
-						<li class="game game-spacer">&nbsp;</li>
-						<li class="game game-bottom ">{{mecz['gracz2']}}<span>{{mecz['wynik_meczu'][1]}}</span></li>
+							<li class="game game-bottom">{{mecz['gracz1']}}<span>{{mecz['wynik_meczu'][0]}}</span></li>
+							<li class="game game-spacer">&nbsp;</li>
+							<li class="game game-bottom ">{{mecz['gracz2']}}<span>{{mecz['wynik_meczu'][1]}}</span></li>
 						{% endif %}
 						<li class="spacer">&nbsp;</li>
 						{% endfor %}

@@ -88,7 +88,7 @@
 				<img style="cursor:pointer;" src="../static/img/avatar.jpg"  class="imgPlayer">
 
 				<div class="userMenu ">
-					<a href="/myTournaments">
+					<a href="/myTournaments/0">
 						<p style="border-bottom: 1px solid #02647d;color:#000"><b>TURNIEJE</b></p>
 					</a>
 
@@ -177,7 +177,6 @@
 										<img id="blue2"  src="../static/img/blue2.png">
 									{% endif %}
 								{% endfor %}
-								<p></p>
 							{% endfor %}
 						</div>
 					{% else %}
@@ -188,13 +187,14 @@
 				{% endfor %}
 
 
-			<div>
+
 				{% if turniej['zakonczony'] == True %}
-				{% for gracz in turniej['ranking'][:3] %}
-				<p><b style="color:teal;">{{loop.index}}. {{gracz}}</b></p>
-				{% endfor %}
+					<div>
+						{% for gracz in turniej['ranking'] %}
+						<p><b style="color:teal;">{{loop.index}}. {{gracz}}</b></p>
+						{% endfor %}
+					</div>
 				{% endif %}
-			</div>
 
 			{% if turniej['typ']=='pucharowy' %}
 				<main id="tournament">
@@ -237,7 +237,12 @@
 		</div>
 	</div>
 	{% endfor %}
-
+		{% if a > 0 %}
+		<a href="/myTournaments/{{a-1}}"><b style="color:teal;">Wstecz</b></a>
+		{% endif %}
+		{% if ((a+1)*5) < ilosc_turniejow %}
+		<a href="/myTournaments/{{a+1}}"><b style="color:teal;">Dalej</b></a>
+		{% endif %}
 	{% else %}
 	<h3>Nie brałeś jeszcze udziału w żadnym turnieju.</h3>
 

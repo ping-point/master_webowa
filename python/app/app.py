@@ -38,11 +38,13 @@ def getUserMatches(login, a):
     con = mysql.connect()  # łączenie z bazą danych
     cursor = con.cursor()
     cursor.callproc('sp_getRozegraneMecze', (login,))  # wywołanie procedury SQL, która pobiera mecze uzytkownika
-    dane = cursor.fetchall()[(a*8):(a*8)+8] # pobrane z bazy dane zawiera liste meczy zalogowanego uzytkownika
+    dane = cursor.fetchall() # pobrane z bazy dane zawiera liste meczy zalogowanego uzytkownika
+    ilosc_meczow = len(dane)
+    dane = dane[(a*8):(a*8)+8]
     # struktura pobranego meczu: {id_meczu, ..., login1, login2}
     con.commit()
 
-    mecze = []
+    mecze = [ilosc_meczow,]
     for m in dane:  # dla kazdego meczu zalogowanego uzytkownika
         data = m[4]  # zapisanie daty rozegrania meczu, jeżeli jest None to mecz się nie odbył
         id_meczu = m[0]
@@ -251,6 +253,7 @@ def getTournamentDetails(id_turnieju):
                     ranking.pop(m['gracz1'])
 
         ranking = OrderedDict(sorted(ranking.items(), key=lambda x: x[1], reverse=True)) # sortuję ranking
+        print(ranking)
 
     elif typ == 'ligowy': # jeżeli turniej jest ligowym:
         wiersz = ['']  # zmienna pomocnicza zawierać będzie dane potrzebne do tabeli turnieju ligowego
@@ -277,7 +280,7 @@ def getTournamentDetails(id_turnieju):
             wiersz.append(gracz1)  # zaczynam wypełniać wiersz zaczynając od loginu uczestnika
             for gracz2 in ranking:  # przeglądam kolejny raz po uczestnikach turnieju
                 if gracz1 == gracz2:  # w miejscu tabeli dla tego samego gracza wstawiam ---
-                    wynik = '***'
+                    wynik = '#'
                     wiersz.append(wynik)  # dodaję wynik do aktualnego wiersza
                 else:  # dla pary graczy w tabeli
                     for mecz in mecze:  # szukam meczu, który rozegrała para graczy
@@ -434,7 +437,7 @@ def userHome():
         con.close()
 
         # wydobywam szczegóły o ostatnich trzech rozegranych meczach i zapisuję te informacje do listy 'mecze'
-        ostatnie_mecze = getUserMatches(login, 0)[:3]
+        ostatnie_mecze = getUserMatches(login, 0)[1:4]
         for o in ostatnie_mecze:
             print(o)
 
@@ -487,9 +490,11 @@ def myMatches(a):
     if session.get('user'):
         login = session.get('user') # zmienna zawiera login zalogowanego uzytkownika
         mecze = getUserMatches(login, a) # pobieram dane o meczach
+        ilosc_meczow = mecze[0] # pierwsza wartosc zawiera liczbę ilości meczy
+        mecze = mecze[1:] # obcinam liste meczy o pierwszą wartość z ilościom wszystkich meczy
 
         # przekazuję dane o meczach i wyświetlam w stronie myMatches.html
-        return render_template('myMatches.html', login=login, mecze=mecze, a=a)
+        return render_template('myMatches.html', login=login, mecze=mecze, a=a, ilosc_meczow=ilosc_meczow)
     else:
         return redirect('/showSignUp')
 
@@ -576,16 +581,7 @@ def newTournament():
             info = 'Nie utworzono turnieju!'
 
         # po pomyślnym utworzeniu turnieju pobieram informacje o turniejach zalogowanego użytkownika
-        cursor.callproc('sp_getTurniejeIdGracza', (p_login,))
-        dane = cursor.fetchall()
-        turnieje = []
-        for i in dane:  # znajduje mecze, które naleza do turnieju i zapisuje id turniejow do zmiennej moje_turnieje
-            turnieje.append(getTournamentDetails(i))
-        con.commit()
-        cursor.close()
-        con.close()
-        # wyświetlam stronę z turniejami użytkownika wraz z informacją o utworzeniu nowego turnieju
-        return render_template('myTournaments.html', info=info, turnieje=turnieje, login=session.get('user'))
+        return redirect('myTournaments/0')
     else:
 
         return render_template('signin.html')
@@ -601,8 +597,8 @@ def showTournament(id):
     # przekazuję dane do strony tournament.html i wyświetlam.
     return render_template('tournament.html',turniej=turniej, login=session.get('user'))
 
-@app.route('/myTournaments')
-def myTournaments():
+@app.route('/myTournaments/<int:a>')
+def myTournaments(a):
     """
     Metoda odpowiada za pobranie danych o wszystkich turniejach zalogowanego gracza i wyświetleniu ich.
     Korzysta z funkcji getTournamentDetails() oraz procedury w bazie danych: 'sp_getTurniejeIdGracza'
@@ -614,6 +610,8 @@ def myTournaments():
         cursor = con.cursor()
         cursor.callproc('sp_getTurniejeIdGracza', (login,))
         dane=cursor.fetchall() # pobieram z bazy danych id turniejów w któ©ych brał udział
+        ilosc_turniejow = len(dane)
+        dane = dane[(a*5):(a*5)+5] # zmniejszam dane do pięciu turniejów
         con.commit()
         cursor.close()
         con.close() # zmaykam połączenie z bazą danych.
@@ -623,7 +621,8 @@ def myTournaments():
             turnieje.append(getTournamentDetails(i))
 
         # przekazuję do wyświetlenia informacje o wszystkich meczech gracza
-        return render_template('myTournaments.html', turnieje = turnieje, login=session.get('user'))
+        return render_template('myTournaments.html', turnieje = turnieje, login=session.get('user'), a=a,
+                               ilosc_turniejow=ilosc_turniejow)
     return render_template('signin.html')
 
 @app.route('/deleteTournament/<int:id>', methods=['GET'])
@@ -644,12 +643,12 @@ def deleteTournament(id):
         con.commit()
         cursor.close()
         con.close()
-        return redirect('/myTournaments') # wyświetlenie strony z turniejami użytkownika
+        return redirect('/myTournaments/0') # wyświetlenie strony z turniejami użytkownika
     else:
         con.commit()
         cursor.close()
         con.close()
-        return redirect('/myTournaments')
+        return redirect('/myTournaments/0')
 
 @app.route('/rank')
 def rank():
