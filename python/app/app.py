@@ -498,8 +498,8 @@ def myMatches(a):
     else:
         return redirect('/showSignUp')
 
-@app.route('/showTournamentForm/')
-def showTournamentForm():
+@app.route('/showTournamentForm/<string:info>')
+def showTournamentForm(info):
     """
     Metoda odpowiedzialna jest za zgromadzenie listy użytkowników zarejestrowanych w systemie i przekazanie tej listy
     do formularza tworzenia nowego turnieju. Korzysta z procedury bazodanowej 'sp_getUsers'
@@ -515,6 +515,14 @@ def showTournamentForm():
         con.commit() # zamykam połaczenie z bazą
         cursor.close()
         con.close()
+
+        # W przypadku błędu we wcześniejszym tworzeniu turnieju, pod formularzem wyświetlam komunikat.
+        if info == 'err1':
+            info = 'Nie utworzono turnieju!'
+        elif info == 'err2':
+            info = 'Zla liczba uczestnikow. W turnieju pucharowym liczba uczestników musi wynosić 2^n'
+        else:
+            info = ''
 
         for i in dane: # dodaję użytkowników do listy
             uzytkownicy.append(i[0])
@@ -540,17 +548,15 @@ def newTournament():
         p_login = session.get('user')
 
         if p_punkty and p_sety and p_typ and p_login: # sprawdzam czy pola były wypełnione
-            #Tworze turniej w bazie danych z pomocą procedury SQL
-            con = mysql.connect()
-            cursor = con.cursor()
-            cursor.callproc('sp_newTurniej', (p_punkty, p_sety, p_typ, p_opis, p_login))  #
-            id_turnieju = cursor.fetchall() # pobieram id nowo utworzonego turnieju
-            con.commit()
-
             liczba_uczestnikow = len(p_uczestnicy) # zapisuję ilość uczestników turnieju
-
             pary = []  # zmienna bedzie zawierac pary graczy ktorzy beda rozgrywac mecz
             if p_typ == 'ligowy': # w zależności od typu tunieju
+                # Tworze turniej w bazie danych z pomocą procedury SQL
+                con = mysql.connect()
+                cursor = con.cursor()
+                cursor.callproc('sp_newTurniej', (p_punkty, p_sety, p_typ, p_opis, p_login))  #
+                id_turnieju = cursor.fetchall()  # pobieram id nowo utworzonego turnieju
+                con.commit()
                 #tworze pary uczestnikow ktorzy beda razem grac ze soba mecze "kazdy z kazdym" - LIGOWY
                 for i in range(liczba_uczestnikow - 1):
                     for j in range(liczba_uczestnikow - 1 - i):
@@ -564,6 +570,12 @@ def newTournament():
             elif p_typ == 'pucharowy':  #PUCHAROWY
                 if is_power2(liczba_uczestnikow)==True: # sprawdzam czy liczba użytkowników jest odpowiednia
                     random.shuffle(p_uczestnicy)
+                    # Tworze turniej w bazie danych z pomocą procedury SQL
+                    con = mysql.connect()
+                    cursor = con.cursor()
+                    cursor.callproc('sp_newTurniej', (p_punkty, p_sety, p_typ, p_opis, p_login))  #
+                    id_turnieju = cursor.fetchall()  # pobieram id nowo utworzonego turnieju
+                    con.commit()
                     for i in range(int(liczba_uczestnikow / 2)): # tworzę pary użytkowników grających mecze
                         para = []
                         para.append(p_uczestnicy[i])
@@ -572,7 +584,7 @@ def newTournament():
                     info = 'Utworzono Turniej pucharowy' # zapisuję do zmiennej informację o utworzeniu meczu
                 else:
                     # liczba graczy w turnieju pucharowym musi być 2^n
-                    info = 'Zla liczba uczestnikow. W turnieju pucharowym liczba uczestników musi wynosić 2^n'
+                    return redirect('/showTournamentForm/err2')
 
             #wywoluje procedure SQL w bazie, ktora tworzy pojedyncze mecze dla turnieju:
 
@@ -580,7 +592,7 @@ def newTournament():
                 cursor.callproc('sp_newMecz', (id_turnieju, i[0], i[1]))
                 con.commit()
         else:
-            info = 'Nie utworzono turnieju!'
+            return redirect('/showTournamentForm/err1')
 
         # pobieram informacje o turniejach zalogowanego użytkownika
         cursor.callproc('sp_getTurniejeIdGracza', (p_login,))
